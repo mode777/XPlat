@@ -18,7 +18,6 @@ namespace net_gles2
             SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_RED_SIZE, 8);
             SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_GREEN_SIZE, 8);
             SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_BLUE_SIZE, 8);
-            //SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 1);
 
             var window = SDL.SDL_CreateWindow("SDL running on .NET 6.0", SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED, 640, 480,
                 SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN | SDL.SDL_WindowFlags.SDL_WINDOW_RESIZABLE | SDL.SDL_WindowFlags.SDL_WINDOW_ALLOW_HIGHDPI);
@@ -40,6 +39,7 @@ namespace net_gles2
                 }
                 int w,h;
                 SDL.SDL_GL_GetDrawableSize(window, out w, out h);
+
                 GL.glViewport(0,0,(uint)w,(uint)h);
                 GL.glClearColor(1,0,0,1);
                 GL.glClear(GL.GL_COLOR_BUFFER_BIT);

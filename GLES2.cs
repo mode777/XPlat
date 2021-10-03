@@ -5,7 +5,7 @@ namespace GLES2
 {
     public static class GL
     {
-        private const string nativeLibName = "GLESv2";
+        private const string nativeLibName = "libGLESv2";
 
         #region CONSTANTS
 
