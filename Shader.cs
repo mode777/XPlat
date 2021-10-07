@@ -4,24 +4,42 @@ using GLES2;
 
 namespace net6test
 {
+    public enum ShaderAttribute {
+        Position = 1,
+        Normal = 2,
+        Color = 3
+    }
+
     public class Shader
     {
-        public class ShaderProperty {
+        private class ShaderProperty {
             public int Size { get; set; }
             public uint Type { get; set; }
             public string Name { get; set; }
             public int Id { get; set; }
         }
 
+        public class ShaderOptions {
+            public string NormalAttribute { get; set; }
+            public string PositionAttribute { get; set; }
+            public string ColorAttribute { get; set; }
+        }
+
         public uint Handle { get; }
         private readonly Dictionary<string, ShaderProperty> _uniforms = new();
         private readonly Dictionary<string, ShaderProperty> _attributes = new();
-        
+        private readonly Dictionary<ShaderAttribute, ShaderProperty> _standardAttributes = new();
 
-        public Shader(string vertex_source, string fragment_source)
+
+        public Shader(string vertex_source, string fragment_source, ShaderOptions options = null)
         {
             Handle = GlUtil.CreateProgram(vertex_source, fragment_source);
             CollectInfo();
+            if(options != null) {
+                if(options.NormalAttribute != null) _standardAttributes.Add(ShaderAttribute.Normal, _attributes[options.NormalAttribute]); 
+                if(options.ColorAttribute != null) _standardAttributes.Add(ShaderAttribute.Color, _attributes[options.ColorAttribute]); 
+                if(options.PositionAttribute != null) _standardAttributes.Add(ShaderAttribute.Position, _attributes[options.PositionAttribute]); 
+            }
         }
 
         public void Use(){
@@ -45,27 +63,35 @@ namespace net6test
             EnableAttribute(id, attr);
         }
 
+        public void EnableAttribute(ShaderAttribute type, VertexAttribute attr){
+             uint id = (uint)_standardAttributes[type].Id;
+            EnableAttribute(id, attr);
+        }
+
+        public void EnableAttribute(ShaderAttribute type){
+            var attr = _standardAttributes[type];
+            EnableAttribute((uint)attr.Id, ResolveVertexAttribByType(attr.Type));
+        }
+
         public void EnableAttribute(string name){
-            var attr = _attributes[name];
-            VertexAttribute vertexAttribute;
-            switch (attr.Type)
+            var attr = _attributes[name];           
+            EnableAttribute((uint)attr.Id, ResolveVertexAttribByType(attr.Type));
+        }
+
+        private VertexAttribute ResolveVertexAttribByType(uint type){
+            switch (type)
             {
                 case GL.GL_FLOAT:
-                    vertexAttribute = VertexAttribute.Float;
-                    break;
+                    return VertexAttribute.Float;
                 case GL.GL_FLOAT_VEC2:
-                    vertexAttribute = VertexAttribute.Vec2f;
-                    break;
+                    return VertexAttribute.Vec2f;
                 case GL.GL_FLOAT_VEC3:
-                    vertexAttribute = VertexAttribute.Vec3f;
-                    break;
+                    return VertexAttribute.Vec3f;
                 case GL.GL_FLOAT_VEC4:
-                    vertexAttribute = VertexAttribute.Vec4f;
-                    break;
+                    return VertexAttribute.Vec4f;
                 default:
                     throw new Exception("Unable to derive attribute type automatically");
             }
-            EnableAttribute((uint)attr.Id, vertexAttribute);
         }
 
         private void CollectInfo(){

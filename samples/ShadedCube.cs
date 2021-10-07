@@ -1,6 +1,6 @@
 using GLES2;
+using SharpGLTF.Schema2;
 using System.Numerics;
-using glTFLoader;
 
 namespace net6test.samples
 {
@@ -11,13 +11,18 @@ namespace net6test.samples
         // See: https://github.com/bonigarcia/webgl-examples/blob/master/lighting/relistic_shading.html
         public void Init()
         {
-            shader = new Shader(vshader, fshader);
+            shader = new Shader(vshader, fshader, new() { 
+                PositionAttribute = "a_Position",
+                NormalAttribute = "a_Normal",
+                ColorAttribute = "a_Color"
+            });
             shader.Use();
             GL.glEnable(GL.GL_DEPTH_TEST);
             GL.glEnable(GL.GL_CULL_FACE);
             
-            var model = Interface.LoadModel("assets/cube.glb");
-            
+            var model = ModelRoot.Load("assets/cube.glb");
+            //model.LogicalBuffers[0].Content;
+                        
             pos = GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, vertices);
             norm = GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, normals);
             col = GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, colors);
@@ -49,13 +54,13 @@ namespace net6test.samples
             shader.SetUniform("u_LightColor", lightColor);
 
             GL.glBindBuffer(GL.GL_ARRAY_BUFFER, pos);
-            shader.EnableAttribute("a_Position", VertexAttribute.Vec3f);
+            shader.EnableAttribute(ShaderAttribute.Position, VertexAttribute.Vec3f);
 
             GL.glBindBuffer(GL.GL_ARRAY_BUFFER, col);
-            shader.EnableAttribute("a_Color");
+            shader.EnableAttribute(ShaderAttribute.Color);
 
             GL.glBindBuffer(GL.GL_ARRAY_BUFFER, norm);
-            shader.EnableAttribute("a_Normal");
+            shader.EnableAttribute(ShaderAttribute.Normal);
 
             GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, idx);
 
