@@ -6,33 +6,52 @@ namespace net6test.samples
 {
     public class ShadedCube : ISdlApp
     {
+        
         float r = 0;
+
+        public void LoadModel(){
+            var model = ModelRoot.Load("assets/cube.glb");
+            var prim = model.LogicalMeshes.First().Primitives.First();
+            
+            var indices = prim.GetIndexAccessor().AsIndicesArray().Select(x => (ushort)x).ToArray();
+            var idxBuf = GlUtil.CreateBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indices);
+            
+            var posAccessor = prim.GetVertexAccessor("POSITION");
+            var posData = posAccessor.AsVector3Array().ToArray();
+            var posBuf = GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, posData);
+            
+            var normAccessor = prim.GetVertexAccessor("NORMAL");
+            var normData = normAccessor.AsVector3Array().ToArray();
+            var normBuf = GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, normData);
+        }
 
         // See: https://github.com/bonigarcia/webgl-examples/blob/master/lighting/relistic_shading.html
         public void Init()
         {
             shader = new Shader(vshader, fshader, new() { 
-                PositionAttribute = "a_Position",
-                NormalAttribute = "a_Normal",
-                ColorAttribute = "a_Color"
+                [VertexAttributeType.Position] = "a_Position",
+                [VertexAttributeType.Normal] = "a_Normal",
+                [VertexAttributeType.Color] = "a_Color"
             });
             shader.Use();
             GL.glEnable(GL.GL_DEPTH_TEST);
             GL.glEnable(GL.GL_CULL_FACE);
             
             var model = ModelRoot.Load("assets/cube.glb");
-            //model.LogicalBuffers[0].Content;
+            model.LogicalMeshes.First().Primitives.First();
                         
             pos = GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, vertices);
             norm = GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, normals);
             col = GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, colors);
              
             idx = GlUtil.CreateBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indices);
+
+            LoadModel();
         }
 
         public void Update()
         {
-            GL.glClearColor(0,0,0,1);
+            GL.glClearColor(0.5f,0.5f,0.5f,1);
             GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
             shader.Use();
@@ -54,13 +73,13 @@ namespace net6test.samples
             shader.SetUniform("u_LightColor", lightColor);
 
             GL.glBindBuffer(GL.GL_ARRAY_BUFFER, pos);
-            shader.EnableAttribute(ShaderAttribute.Position, VertexAttribute.Vec3f);
+            shader.EnableAttribute(VertexAttributeType.Position, VertexAttributeDescriptor.Vec3f);
 
             GL.glBindBuffer(GL.GL_ARRAY_BUFFER, col);
-            shader.EnableAttribute(ShaderAttribute.Color);
+            shader.EnableAttribute(VertexAttributeType.Color);
 
             GL.glBindBuffer(GL.GL_ARRAY_BUFFER, norm);
-            shader.EnableAttribute(ShaderAttribute.Normal);
+            shader.EnableAttribute(VertexAttributeType.Normal);
 
             GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, idx);
 
