@@ -422,9 +422,9 @@ namespace GLES2
         [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
         public static unsafe extern void glGenTextures(uint n, uint* textures);
         [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void glGetActiveAttrib(uint program, uint index, uint bufSize, out uint length, out uint size, out uint type, out string name);
+        public static extern void glGetActiveAttrib(uint program, uint index, uint bufSize, out uint length, out uint size, out uint type, StringBuilder name);
         [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
-        public static extern void glGetActiveUniform(uint program, uint index, uint bufSize, out uint length, out int size, out uint type, out string name);
+        public static extern void glGetActiveUniform(uint program, uint index, uint bufSize, out uint length, out uint size, out uint type, StringBuilder name);
         [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
         public static unsafe extern void glGetAttachedShaders(uint program, uint maxCount, out uint count, uint* shaders);
         [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
@@ -465,8 +465,8 @@ namespace GLES2
         // public static extern void glGetUniformfv(uint program, int location, float*params);
         // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
         // public static extern void glGetUniformiv(uint program, int location, int* paras);
-        // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
-        // public static extern int glGetUniformLocation(uint program, const GLchar* name);
+        [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int glGetUniformLocation(uint program, string name);
         // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
         // public static extern void glGetVertexAttribfv(uint index, uint pname, float*params);
         // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
@@ -551,10 +551,10 @@ namespace GLES2
         // public static extern void glUniform2i(int location, int v0, int v1);
         // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
         // public static extern void glUniform2iv(int location, uint count, const int* value);
-        // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
-        // public static extern void glUniform3f(int location, float v0, float v1, float v2);
-        // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
-        // public static extern void glUniform3fv(int location, uint count, const float* value);
+        [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void glUniform3f(int location, float v0, float v1, float v2);
+        [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
+        public static unsafe extern void glUniform3fv(int location, uint count, float* value);
         // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
         // public static extern void glUniform3i(int location, int v0, int v1, int v2);
         // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
@@ -571,8 +571,8 @@ namespace GLES2
         // public static extern void glUniformMatrix2fv(int location, uint count, bool transpose, const float* value);
         // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
         // public static extern void glUniformMatrix3fv(int location, uint count, bool transpose, const float* value);
-        // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
-        // public static extern void glUniformMatrix4fv(int location, uint count, bool transpose, const float* value);
+        [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
+        public static unsafe extern void glUniformMatrix4fv(int location, uint count, bool transpose, float* value);
         [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
         public static extern void glUseProgram(uint program);
         // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]

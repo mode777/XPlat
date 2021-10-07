@@ -10,7 +10,7 @@ namespace net_gles2
     {
         static void Main(string[] args)
         {
-            new SdlHost(new SimpleExample()).Run();
+            new SdlHost(new ShadedCube()).Run();
 
         }
     }

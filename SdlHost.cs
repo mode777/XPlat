@@ -30,7 +30,14 @@ namespace net6test
             SDL.SDL_GL_SetSwapInterval(0);
 
             app.Init();
-            
+        
+            // int w,h;
+            // SDL.SDL_GL_GetDrawableSize(window, out w, out h);
+            // GL.glViewport(0,0,(uint)w,(uint)h);
+
+            // app.Update();
+            // SDL.SDL_GL_SwapWindow(window);
+
             SDL.SDL_Event @event;
 
             while(true){

@@ -1,46 +1,65 @@
 using GLES2;
+using System.Numerics;
+using glTFLoader;
 
 namespace net6test.samples
 {
     public class ShadedCube : ISdlApp
     {
+        float r = 0;
+
         // See: https://github.com/bonigarcia/webgl-examples/blob/master/lighting/relistic_shading.html
         public void Init()
         {
-            programm = GlUtil.CreateProgram(vshader, fshader);
+            shader = new Shader(vshader, fshader);
+            shader.Use();
+            GL.glEnable(GL.GL_DEPTH_TEST);
+            GL.glEnable(GL.GL_CULL_FACE);
+            
+            var model = Interface.LoadModel("assets/cube.glb");
             
             pos = GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, vertices);
             norm = GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, normals);
             col = GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, colors);
-            
-            posA = GL.glGetAttribLocation(programm, "a_Position");
-            posN = GL.glGetAttribLocation(programm, "a_Normal");
-            posC = GL.glGetAttribLocation(programm, "a_Color");
-            
+             
             idx = GlUtil.CreateBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indices);
         }
 
         public void Update()
         {
             GL.glClearColor(0,0,0,1);
-            GL.glClear(GL.GL_COLOR_BUFFER_BIT);
+            GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
 
-            GL.glUseProgram(programm);
+            shader.Use();
+
+            matP = Matrix4x4.CreatePerspectiveFieldOfView((float)Math.PI / 2, 1, 0.1f, 100);
+            shader.SetUniform("u_pMatrix", ref matP);
+
+            matV = Matrix4x4.CreateLookAt(new Vector3(0,0,-3),new Vector3(0,0,0), new Vector3(0,1,0));
+            shader.SetUniform("u_vMatrix", ref matV);
+
+            matM = Matrix4x4.CreateRotationY(r+=0.1f);
+            shader.SetUniform("u_mvMatrix", ref matM);
+
+            var lightDirection = new Vector3(8, -8, -8);
+            lightDirection = Vector3.Normalize(lightDirection);
+            shader.SetUniform("u_LightDirection", lightDirection);
+ 
+            var lightColor = new Vector3(1,1,1);
+            shader.SetUniform("u_LightColor", lightColor);
 
             GL.glBindBuffer(GL.GL_ARRAY_BUFFER, pos);
-            GL.glEnableVertexAttribArray((uint)posA);
-            GL.glVertexAttribPointer((uint)posA, 3, GL.GL_FLOAT, false, 0, IntPtr.Zero);
+            shader.EnableAttribute("a_Position", VertexAttribute.Vec3f);
 
             GL.glBindBuffer(GL.GL_ARRAY_BUFFER, col);
-            GL.glEnableVertexAttribArray((uint)posC);
-            GL.glVertexAttribPointer((uint)posC, 3, GL.GL_FLOAT, false, 0, IntPtr.Zero);
+            shader.EnableAttribute("a_Color");
 
             GL.glBindBuffer(GL.GL_ARRAY_BUFFER, norm);
-            GL.glEnableVertexAttribArray((uint)posN);
-            GL.glVertexAttribPointer((uint)posN, 3, GL.GL_FLOAT, false, 0, IntPtr.Zero);
+            shader.EnableAttribute("a_Normal");
 
             GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, idx);
 
+            GL.glDrawElements(GL.GL_TRIANGLES, 6*2*3, GL.GL_UNSIGNED_BYTE, IntPtr.Zero);
         }
 
         string vshader = @"attribute vec3 a_Color;
@@ -84,7 +103,7 @@ namespace net6test.samples
     };
 
         float[] colors = new float[]{ // Colors
-      1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v1-v2-v3 front
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, // v0-v1-v2-v3 front
       1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v3-v4-v5 right
       1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v0-v5-v6-v1 up
       1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, // v1-v6-v7-v2 left
@@ -108,13 +127,13 @@ namespace net6test.samples
       16, 17, 18, 16, 18, 19, // down
       20, 21, 22, 20, 22, 23 // back
       };
-        private uint programm;
+        private Shader shader;
         private uint pos;
         private uint norm;
         private uint col;
         private uint idx;
-        private int posA;
-        private int posN;
-        private int posC;
+        private Matrix4x4 matP;
+        private Matrix4x4 matV;
+        private Matrix4x4 matM;
     }
 }

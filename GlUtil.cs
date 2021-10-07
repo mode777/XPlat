@@ -1,4 +1,5 @@
 
+using System.Numerics;
 using System.Text;
 using GLES2;
 namespace net6test
@@ -6,6 +7,18 @@ namespace net6test
 
     public static class GlUtil
     {
+        public static void SendUniform(int location, ref Matrix4x4 mat){
+            unsafe { fixed(float* p = &mat.M11) {
+                GL.glUniformMatrix4fv(location, 1, false, p);
+            } }
+        }
+
+        public static void SendUniform(int location, Vector3 v3){
+            unsafe {
+                GL.glUniform3fv(location, 1, &v3.X);
+            } 
+        }
+
         public static uint CreateBuffer<T>(uint buffer_type, T[] data) where T : unmanaged {
             uint[] buffer = new uint[1];
             unsafe{ 
