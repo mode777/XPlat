@@ -1,3 +1,5 @@
+using System.Drawing;
+using System.Numerics;
 using GLES2;
 using SDL2;
 
@@ -5,11 +7,16 @@ namespace net6test
 {
     public class SdlHost
     {
+        public static SdlHost Current { get; private set;}
+
         private readonly ISdlApp app;
         public SdlHost(ISdlApp app)
         {
             this.app = app;
+            Current = this;
         }
+
+        public Size RendererSize { get; set; }
 
         public void Run()
         {
@@ -52,14 +59,16 @@ namespace net6test
                 }
                 int w,h;
                 SDL.SDL_GL_GetDrawableSize(window, out w, out h);
+                RendererSize = new Size(w,h);
                 GL.glViewport(0,0,(uint)w,(uint)h);
 
                 app.Update();
 
                 SDL.SDL_GL_SwapWindow(window);
                 
-                t = 17-(t-SDL.SDL_GetTicks());
-                if(t > 0) SDL.SDL_Delay(t);      
+                //t = 16-(t-SDL.SDL_GetTicks());
+                //if(t > 0) SDL.SDL_Delay(t);   
+                SDL.SDL_Delay(10);   
             }
         }
 

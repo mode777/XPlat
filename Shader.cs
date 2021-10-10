@@ -4,8 +4,11 @@ using GLES2;
 
 namespace net6test
 {
+
     public class Shader
     {
+        public static Shader Default { get; set; }
+    
         private class ShaderProperty {
             public int Size { get; set; }
             public uint Type { get; set; }
@@ -41,6 +44,10 @@ namespace net6test
 
         public void SetUniform(string name, Vector3 v){
             GlUtil.SendUniform(_uniforms[name].Id, v);
+        }
+
+        public bool HasAttribute(VertexAttributeType type){
+            return _standardAttributes.ContainsKey(type);
         }
 
         public void EnableAttribute(uint id, VertexAttributeDescriptor attr){
