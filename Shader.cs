@@ -28,10 +28,11 @@ namespace net6test
         public uint Handle { get; }
         private readonly Dictionary<string, ShaderProperty> _uniforms = new();
         private readonly Dictionary<string, ShaderProperty> _attributes = new();
-        private readonly Dictionary<VertexAttributeType, ShaderProperty> _standardAttributes = new();
+        private readonly Dictionary<StandardAttribute, ShaderProperty> _standardAttributes = new();
+        private readonly Dictionary<StandardUniform, ShaderProperty> _standardUniforms = new();
 
 
-        public Shader(string vertex_source, string fragment_source, Dictionary<VertexAttributeType, string> attributes = null)
+        public Shader(string vertex_source, string fragment_source, Dictionary<StandardAttribute, string> attributes = null, Dictionary<StandardUniform, string> uniforms = null)
         {
             Handle = GlUtil.CreateProgram(vertex_source, fragment_source);
             CollectInfo();
@@ -41,19 +42,23 @@ namespace net6test
                     _standardAttributes.Add(kv.Key, _attributes[kv.Value]);
                 }
             }
+            if(uniforms != null) {
+                foreach (var kv in uniforms)
+                {
+                    _standardUniforms.Add(kv.Key, _uniforms[kv.Value]);
+                }
+            }
         }
 
-        public void SetUniform(string name, ref Matrix4x4 mat){
-            GlUtil.SendUniform(_uniforms[name].Id, ref mat);
-        }
+        public void SetUniform(int id, ref Matrix4x4 mat) => GlUtil.SendUniform(id, ref mat);
+        public void SetUniform(string name, ref Matrix4x4 mat) => SetUniform(_uniforms[name].Id, ref mat);
+        public void SetUniform(StandardUniform uniform, ref Matrix4x4 mat) => SetUniform(_standardUniforms[uniform].Id, ref mat);
+        public void SetUniform(int id, Vector3 v) => GlUtil.SendUniform(id, v);
+        public void SetUniform(string name, Vector3 v) => SetUniform(_uniforms[name].Id, v);
+        public void SetUniform(StandardUniform uniform, Vector3 v) => SetUniform(_standardUniforms[uniform].Id, v);
 
-        public void SetUniform(string name, Vector3 v){
-            GlUtil.SendUniform(_uniforms[name].Id, v);
-        }
-
-        public bool HasAttribute(VertexAttributeType type){
-            return _standardAttributes.ContainsKey(type);
-        }
+        public bool HasAttribute(StandardAttribute type) => _standardAttributes.ContainsKey(type);
+        public bool HasUniform(StandardUniform type) => _standardUniforms.ContainsKey(type);
 
         public void EnableAttribute(uint id, VertexAttributeDescriptor attr){
             GL.glEnableVertexAttribArray(id);
@@ -64,12 +69,12 @@ namespace net6test
             EnableAttribute(id, attr);
         }
 
-        public void EnableAttribute(VertexAttributeType type, VertexAttributeDescriptor attr){
+        public void EnableAttribute(StandardAttribute type, VertexAttributeDescriptor attr){
              uint id = (uint)_standardAttributes[type].Id;
             EnableAttribute(id, attr);
         }
 
-        public void EnableAttribute(VertexAttributeType type){
+        public void EnableAttribute(StandardAttribute type){
             var attr = _standardAttributes[type];
             EnableAttribute((uint)attr.Id, ResolveVertexAttribByType(attr.Type));
         }

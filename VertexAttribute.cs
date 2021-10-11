@@ -4,16 +4,15 @@ namespace net6test
 {
     public class VertexAttribute 
     {
-        private readonly VertexAttributeType _type;
+        private readonly StandardAttribute _type;
         private readonly uint _glBuffer;
         private readonly VertexAttributeDescriptor _descriptor;
 
-        public VertexAttribute(VertexAttributeType type, uint glBuffer, VertexAttributeDescriptor descriptor){
+        public VertexAttribute(StandardAttribute type, uint glBuffer, VertexAttributeDescriptor descriptor){
             this._type = type;
             this._glBuffer = glBuffer;
             this._descriptor = descriptor;
         }
-
 
         public void EnableOnShader(Shader shader){
             if(!shader.HasAttribute(_type)) return;
@@ -27,7 +26,7 @@ namespace net6test
     {
         private readonly T[] _data;
 
-        public VertexAttribute(VertexAttributeType type, T[] data, VertexAttributeDescriptor descriptor) 
+        public VertexAttribute(StandardAttribute type, T[] data, VertexAttributeDescriptor descriptor) 
             : base(type, GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, data), descriptor)
         {
             this._data = data;

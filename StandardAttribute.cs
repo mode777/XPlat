@@ -1,6 +1,7 @@
 namespace net6test
 {
-    public enum VertexAttributeType {
+
+    public enum StandardAttribute {
         Position = 1,
         Normal = 2,
         Color = 3,

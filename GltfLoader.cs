@@ -38,13 +38,13 @@ namespace net6test
             return new Primitive(LoadAttributes(prim).ToArray(), vis);
         }
 
-        private static readonly Dictionary<string, VertexAttributeType> mappings = new()
+        private static readonly Dictionary<string, StandardAttribute> mappings = new()
         {
-            ["POSITION"] = VertexAttributeType.Position,
-            ["NORMAL"] = VertexAttributeType.Normal,
-            ["TANGENT"] = VertexAttributeType.Tangent,
-            ["TEXCOORD_0"] = VertexAttributeType.Uv_0,
-            ["TEXCOORD_1"] = VertexAttributeType.Uv_1,
+            ["POSITION"] = StandardAttribute.Position,
+            ["NORMAL"] = StandardAttribute.Normal,
+            ["TANGENT"] = StandardAttribute.Tangent,
+            ["TEXCOORD_0"] = StandardAttribute.Uv_0,
+            ["TEXCOORD_1"] = StandardAttribute.Uv_1,
         };
 
         private static IEnumerable<VertexAttribute> LoadAttributes(SharpGLTF.Schema2.MeshPrimitive prim)
