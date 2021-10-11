@@ -60,11 +60,12 @@ namespace net6test
     public class RendererComponent : Component
     {
         public Mesh? Mesh { get; set; }
-        public Shader? Shader { get; set; } = Shader.Default;
+        public Shader? Shader { get; set; } = Shader.Current;
 
         public void Draw(){
             if(Mesh != null && Shader != null)
             {
+                Shader.Use(Shader);
                 Mesh.DrawUsingShader(Shader);
             }
         }

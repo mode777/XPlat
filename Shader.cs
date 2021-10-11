@@ -7,7 +7,16 @@ namespace net6test
 
     public class Shader
     {
-        public static Shader Default { get; set; }
+        public static void Use(Shader shader) 
+        {
+            if(Current != shader)
+            {
+                GL.glUseProgram(shader.Handle);
+                Current = shader;
+            }
+        }
+
+        public static Shader Current { get; private set; }
     
         private class ShaderProperty {
             public int Size { get; set; }
@@ -32,10 +41,6 @@ namespace net6test
                     _standardAttributes.Add(kv.Key, _attributes[kv.Value]);
                 }
             }
-        }
-
-        public void Use(){
-            GL.glUseProgram(Handle);
         }
 
         public void SetUniform(string name, ref Matrix4x4 mat){

@@ -23,9 +23,7 @@ namespace net6test.samples
                 [VertexAttributeType.Position] = "position",
                 [VertexAttributeType.Normal] = "normal"
             });
-            shader.Use();
-            
-            Shader.Default = shader;
+            Shader.Use(shader);
 
             GL.glEnable(GL.GL_DEPTH_TEST);
             GL.glEnable(GL.GL_CULL_FACE);
@@ -37,8 +35,6 @@ namespace net6test.samples
         {
             GL.glClearColor(0.5f, 0.5f, 0.5f, 1);
             GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
-
-            shader.Use();
 
             var screenSize = SdlHost.Current.RendererSize;
             matP = Matrix4x4.CreatePerspectiveFieldOfView((float)Math.PI / 2, screenSize.Width / (float)screenSize.Height, 0.1f, 100);
