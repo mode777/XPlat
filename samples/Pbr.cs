@@ -5,7 +5,7 @@ using System.Numerics;
 namespace net6test.samples
 {
 
-    public class ShadedCube : ISdlApp
+    public class Pbr : ISdlApp
     {
 
         float r = 0;
@@ -19,15 +19,17 @@ namespace net6test.samples
 
         public void Init()
         {
-            shader = new Shader(File.ReadAllText("shaders/phong.vertex.glsl"), File.ReadAllText("shaders/phong.fragment.glsl"), new()
+            var vertexSource = File.ReadAllText("shaders/pbr.vertex.glsl");
+            var fragmentSource = File.ReadAllText("shaders/pbr.fragment.glsl");
+            shader = new Shader(vertexSource, fragmentSource, new()
             {
-                [StandardAttribute.Position] = "position",
-                [StandardAttribute.Normal] = "normal"
+                [StandardAttribute.Position] = "aPos",
+                [StandardAttribute.Normal] = "aNormal"
             }, new() 
             {
-                [StandardUniform.ModelMatrix] = "meshTransform",
-                [StandardUniform.ViewMatrix] = "cameraLookAt",
-                [StandardUniform.ProjectionMatrix] = "cameraProjection",
+                [StandardUniform.ModelMatrix] = "model",
+                [StandardUniform.ViewMatrix] = "view",
+                [StandardUniform.ProjectionMatrix] = "projection",
             });
             Shader.Use(shader);
 
@@ -52,8 +54,15 @@ namespace net6test.samples
             var cameraTarget = new Vector3(0, 0, 0);
             matV = Matrix4x4.CreateLookAt(cameraPos, cameraTarget, new Vector3(0, 1, 0));
             shader.SetUniform(StandardUniform.ViewMatrix, ref matV);
-            shader.SetUniform("cameraPosition", cameraPos);
             
+            shader.SetUniform("albedo", new Vector3(1.0f,0,0));
+            shader.SetUniform("metallic", 0.1f);
+            shader.SetUniform("roughness", 0.5f);
+            shader.SetUniform("ao", 1f);
+            shader.SetUniform("lightPositions[0]", new Vector3(2,2,0));
+            shader.SetUniform("lightColors[0]", new Vector3(1,1,1));
+            shader.SetUniform("camPos", cameraPos);
+
             float time = SDL.SDL_GetTicks() / 1000f;
             var scale = (float)Math.Sin(time)/4+1;
             t.Scale = new Vector3(scale, scale, scale);
@@ -61,12 +70,6 @@ namespace net6test.samples
             matM = t.GetMatrix();
             //matM = Matrix4x4.CreateRotationY(r += 0.01f);
             shader.SetUniform(StandardUniform.ModelMatrix, ref matM);
-
-
-            Matrix4x4 matMI;
-            Matrix4x4.Invert(matM, out matMI);
-            Matrix4x4 matMIT = Matrix4x4.Transpose(matMI);
-            shader.SetUniform("meshTransformTransposedInverse", ref matMIT);
 
             scene.RootNode.Draw();
         }

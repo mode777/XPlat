@@ -535,8 +535,8 @@ namespace GLES2
         // public static extern void glTexParameteriv(uint target, uint pname, const int* paras);
         // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
         // public static extern void glTexSubImage2D(uint target, int level, int xoffset, int yoffset, uint width, uint height, uint format, uint type, const IntPtr pixels);
-        // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
-        // public static extern void glUniform1f(int location, float v0);
+        [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
+        public static extern void glUniform1f(int location, float v0);
         // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]
         // public static extern void glUniform1fv(int location, uint count, const float* value);
         // [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl)]

@@ -4,6 +4,7 @@ namespace net6test
 {
     public class Node 
     {
+        public string? Name { get; set; }
         private List<Node> _children = new();
         private List<Component> _components = new();
         public Node? Parent { get; private set; }
@@ -22,6 +23,8 @@ namespace net6test
             _children.Remove(node);
             node.Parent = null;
         }
+
+        public Node? Find(string name) => Name == name ? this : _children.Select(x => x.Find(name)).FirstOrDefault();
 
         public void AddComponent(Component comp)
         {
@@ -66,10 +69,20 @@ namespace net6test
             if(Mesh != null && Shader != null)
             {
                 Shader.Use(Shader);
+                var mat = Node.Transform.Matrix;
+                //Shader.SetUniform(StandardUniform.ModelMatrix, ref mat);
                 Mesh.DrawUsingShader(Shader);
             }
         }
+    }
 
+    public class ActionComponent : Component
+    {
+        public Action<ActionComponent>? InitAction { get; set; }
+        public Action<ActionComponent>? UpdateAction { get; set; }
+
+        public override void Init() => this.InitAction?.Invoke(this);
+        public override void Update() => this.UpdateAction?.Invoke(this);
     }
 }
 

@@ -19,6 +19,7 @@ namespace net6test
         {
             var mynode = new Node(); 
             mynode.Transform = node.LocalTransform;
+            mynode.Name = node.Name;
             if(node.Mesh != null)
             {
                 var prims = node.Mesh.Primitives.Select(x => LoadPrimitive(x)).ToArray();

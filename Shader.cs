@@ -53,9 +53,14 @@ namespace net6test
         public void SetUniform(int id, ref Matrix4x4 mat) => GlUtil.SendUniform(id, ref mat);
         public void SetUniform(string name, ref Matrix4x4 mat) => SetUniform(_uniforms[name].Id, ref mat);
         public void SetUniform(StandardUniform uniform, ref Matrix4x4 mat) => SetUniform(_standardUniforms[uniform].Id, ref mat);
+        
         public void SetUniform(int id, Vector3 v) => GlUtil.SendUniform(id, v);
         public void SetUniform(string name, Vector3 v) => SetUniform(_uniforms[name].Id, v);
         public void SetUniform(StandardUniform uniform, Vector3 v) => SetUniform(_standardUniforms[uniform].Id, v);
+
+        public void SetUniform(int id, float v) => GlUtil.SendUniform(id, v);
+        public void SetUniform(string name, float v) => SetUniform(_uniforms[name].Id, v);
+        public void SetUniform(StandardUniform uniform, float v) => SetUniform(_standardUniforms[uniform].Id, v);
 
         public bool HasAttribute(StandardAttribute type) => _standardAttributes.ContainsKey(type);
         public bool HasUniform(StandardUniform type) => _standardUniforms.ContainsKey(type);

@@ -13,6 +13,10 @@ namespace net6test
             } }
         }
 
+        public static void SendUniform(int location, float v){
+            GL.glUniform1f(location, v);
+        }
+
         public static void SendUniform(int location, Vector3 v3){
             unsafe {
                 GL.glUniform3fv(location, 1, &v3.X);

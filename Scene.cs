@@ -7,6 +7,8 @@ namespace net6test
             RootNode = new Node();
         }
 
+        public Node FindNode(string name) => RootNode.Find(name);
+
         public Node RootNode { get; }
     }
 }
