@@ -57,7 +57,7 @@ namespace net6test.samples
             float time = SDL.SDL_GetTicks() / 1000f;
             var scale = (float)Math.Sin(time)/4+1;
             t.Scale = new Vector3(scale, scale, scale);
-            t.Rotation = new Vector3(r+=0.01f,0,r+(float)Math.PI);
+            t.Rotation = Quaternion.CreateFromYawPitchRoll(r+=0.01f,0,r+(float)Math.PI);
             matM = t.GetMatrix();
             //matM = Matrix4x4.CreateRotationY(r += 0.01f);
             shader.SetUniform(StandardUniform.ModelMatrix, ref matM);

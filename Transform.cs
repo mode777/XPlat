@@ -9,7 +9,7 @@ namespace net6test
         Matrix4x4 _rotationMatrix;
         private Vector3 _translation;
         private Vector3 _scale;
-        private Vector3 _rotation;
+        private Quaternion _rotation;
 
         public Vector3 Translation
         {
@@ -29,26 +29,26 @@ namespace net6test
                 _scaleMatrix = Matrix4x4.CreateScale(value);
             }
         }
-        public Vector3 Rotation
+        public Quaternion Rotation
         {
             get => _rotation; 
             set
             {
                 _rotation = value;
-                _rotationMatrix = Matrix4x4.CreateFromYawPitchRoll(value.X, value.Y, value.Z);
+                _rotationMatrix = Matrix4x4.CreateFromQuaternion(value);
             }
         }
 
         public Transform()
         {
             Translation = new Vector3();
-            Rotation = new Vector3();
+            Rotation = new Quaternion();
             Scale = new Vector3(1,1,1);
         }
 
         public Matrix4x4 GetMatrix()
         {
-            return _translationMatrix * _rotationMatrix * _scaleMatrix;
+            return _scaleMatrix * _rotationMatrix * _translationMatrix;
         }
     }
 }

@@ -8,7 +8,19 @@ namespace net6test
         private List<Node> _children = new();
         private List<Component> _components = new();
         public Node? Parent { get; private set; }
-        public AffineTransform Transform { get; set; } = new AffineTransform();
+        public Transform Transform { get; set; } = new Transform();
+
+        internal void Update()
+        {
+            foreach (var c in _components)
+            {
+                c.Update();
+            }
+            foreach (var c in _children)
+            {
+                c.Update();
+            }
+        }
 
         public Node(){}
         
@@ -50,39 +62,6 @@ namespace net6test
         public T? GetComponent<T>() where T : Component => _components.FirstOrDefault(x => x is T) as T;
 
         private bool IsChildAllowed(Node node) => Parent == null || (Parent.IsChildAllowed(node) && node != this);
-    }
-
-    public class Component
-    {
-        public virtual void Init(){}
-        public virtual void Update(){}
-
-        public Node? Node { get; set; }
-    }
-
-    public class RendererComponent : Component
-    {
-        public Mesh? Mesh { get; set; }
-        public Shader? Shader { get; set; } = Shader.Current;
-
-        public void Draw(){
-            if(Mesh != null && Shader != null)
-            {
-                Shader.Use(Shader);
-                var mat = Node.Transform.Matrix;
-                //Shader.SetUniform(StandardUniform.ModelMatrix, ref mat);
-                Mesh.DrawUsingShader(Shader);
-            }
-        }
-    }
-
-    public class ActionComponent : Component
-    {
-        public Action<ActionComponent>? InitAction { get; set; }
-        public Action<ActionComponent>? UpdateAction { get; set; }
-
-        public override void Init() => this.InitAction?.Invoke(this);
-        public override void Update() => this.UpdateAction?.Invoke(this);
     }
 }
 

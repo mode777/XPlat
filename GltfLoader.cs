@@ -18,7 +18,10 @@ namespace net6test
         public static Node LoadNode(SharpGLTF.Schema2.Node node)
         {
             var mynode = new Node(); 
-            mynode.Transform = node.LocalTransform;
+            var gltfTrans = node.LocalTransform;
+            mynode.Transform.Rotation = gltfTrans.Rotation;
+            mynode.Transform.Translation = gltfTrans.Translation;
+            mynode.Transform.Scale = gltfTrans.Scale;
             mynode.Name = node.Name;
             if(node.Mesh != null)
             {
@@ -36,7 +39,18 @@ namespace net6test
             var indices = prim.GetIndexAccessor().AsIndicesArray().Select(x => (ushort)x).ToArray();
             var vis = new VertexIndices(indices);
 
-            return new Primitive(LoadAttributes(prim).ToArray(), vis);
+            var p = new Primitive(LoadAttributes(prim).ToArray(), vis); 
+            var c = prim.Material?.FindChannel("BaseColor")?.Parameter;
+            var mr = prim.Material?.FindChannel("MetallicRoughness")?.Parameter;
+
+            p.Material = new PbrMaterial 
+            {
+                 BaseColor = c.HasValue ? new Vector3(c.Value.X, c.Value.Y, c.Value.Z) : new Vector3(),
+                 RoughnessFactor = mr.HasValue ? mr.Value.X : 0,
+                 MetallicFactor = mr.HasValue ? mr.Value.Y : 0
+            };
+
+            return p;
         }
 
         private static readonly Dictionary<string, StandardAttribute> mappings = new()
