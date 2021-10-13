@@ -11,7 +11,7 @@ namespace net6test
         {
             if(Current != shader)
             {
-                GL.glUseProgram(shader.Handle);
+                GL.UseProgram(shader.Handle);
                 Current = shader;
             }
         }
@@ -66,8 +66,8 @@ namespace net6test
         public bool HasUniform(StandardUniform type) => _standardUniforms.ContainsKey(type);
 
         public void EnableAttribute(uint id, VertexAttributeDescriptor attr){
-            GL.glEnableVertexAttribArray(id);
-            GL.glVertexAttribPointer(id, attr.Components, attr.Type, attr.Normalized, attr.VertexSize, (IntPtr)attr.Offset);
+            GL.EnableVertexAttribArray(id);
+            GL.VertexAttribPointer(id, attr.Components, attr.Type, attr.Normalized, attr.VertexSize, (IntPtr)attr.Offset);
         }
         public void EnableAttribute(string name, VertexAttributeDescriptor attr){
             uint id = (uint)_attributes[name].Id;
@@ -92,13 +92,13 @@ namespace net6test
         private VertexAttributeDescriptor ResolveVertexAttribByType(uint type){
             switch (type)
             {
-                case GL.GL_FLOAT:
+                case GL.FLOAT:
                     return VertexAttributeDescriptor.Float;
-                case GL.GL_FLOAT_VEC2:
+                case GL.FLOAT_VEC2:
                     return VertexAttributeDescriptor.Vec2f;
-                case GL.GL_FLOAT_VEC3:
+                case GL.FLOAT_VEC3:
                     return VertexAttributeDescriptor.Vec3f;
-                case GL.GL_FLOAT_VEC4:
+                case GL.FLOAT_VEC4:
                     return VertexAttributeDescriptor.Vec4f;
                 default:
                     throw new Exception("Unable to derive attribute type automatically");
@@ -110,12 +110,12 @@ namespace net6test
             uint length;
 
             int numAttributes;
-            GL.glGetProgramiv(Handle, GL.GL_ACTIVE_ATTRIBUTES, out numAttributes);
+            GL.GetProgramiv(Handle, GL.ACTIVE_ATTRIBUTES, out numAttributes);
 
             for (int i = 0; i < numAttributes; i++)
             {
                 uint size, type;
-                GL.glGetActiveAttrib(Handle, (uint)i, (uint)sb.Capacity, out length, out size, out type, sb);
+                GL.GetActiveAttrib(Handle, (uint)i, (uint)sb.Capacity, out length, out size, out type, sb);
                 _attributes.Add(sb.ToString(), new ShaderProperty{
                     Id = i,
                     Size = (int)size,
@@ -126,12 +126,12 @@ namespace net6test
             }
 
             int numUniforms;
-            GL.glGetProgramiv(Handle, GL.GL_ACTIVE_UNIFORMS, out numUniforms);
+            GL.GetProgramiv(Handle, GL.ACTIVE_UNIFORMS, out numUniforms);
 
             for (int i = 0; i < numUniforms; i++)
             {
                 uint size, type;
-                GL.glGetActiveUniform(Handle, (uint)i, (uint)sb.Capacity, out length, out size, out type, sb);
+                GL.GetActiveUniform(Handle, (uint)i, (uint)sb.Capacity, out length, out size, out type, sb);
                 _uniforms.Add(sb.ToString(), new ShaderProperty{
                     Id = i,
                     Size = (int)size,

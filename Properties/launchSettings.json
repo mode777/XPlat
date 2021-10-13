@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "net6test": {
+      "commandName": "Project",
+      "workingDirectory": "$(ProjectDir)"
+    }
+  }
+}

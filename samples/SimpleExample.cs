@@ -29,23 +29,23 @@ namespace net6test.samples
         public void Init()
         {
             program = GlUtil.CreateProgram(vsource,fsource);
-            vbuffer = GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, positions);
-            ibuffer = GlUtil.CreateBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, indices);
-            location = GL.glGetAttribLocation(program, "a_Position");
+            vbuffer = GlUtil.CreateBuffer(GL.ARRAY_BUFFER, positions);
+            ibuffer = GlUtil.CreateBuffer(GL.ELEMENT_ARRAY_BUFFER, indices);
+            location = GL.GetAttribLocation(program, "a_Position");
         }
 
         public void Update()
         {
-            GL.glClearColor(1,0,0,1);
-            GL.glClear(GL.GL_COLOR_BUFFER_BIT);
+            GL.ClearColor(1,0,0,1);
+            GL.Clear(GL.COLOR_BUFFER_BIT);
 
-            GL.glUseProgram(program);
+            GL.UseProgram(program);
             
-            GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vbuffer);
-            GL.glVertexAttribPointer((uint)location, 2, GL.GL_FLOAT, false, 0, IntPtr.Zero);
-            GL.glEnableVertexAttribArray((uint)location);
-            GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, ibuffer);
-            GL.glDrawElements(GL.GL_TRIANGLES, 6, GL.GL_UNSIGNED_SHORT, IntPtr.Zero);
+            GL.BindBuffer(GL.ARRAY_BUFFER, vbuffer);
+            GL.VertexAttribPointer((uint)location, 2, GL.FLOAT, false, 0, IntPtr.Zero);
+            GL.EnableVertexAttribArray((uint)location);
+            GL.BindBuffer(GL.ELEMENT_ARRAY_BUFFER, ibuffer);
+            GL.DrawElements(GL.TRIANGLES, 6, GL.UNSIGNED_SHORT, IntPtr.Zero);
         }
     }
 }

@@ -32,8 +32,8 @@ namespace net6test.samples
             });
             Shader.Use(shader);
 
-            GL.glEnable(GL.GL_DEPTH_TEST);
-            GL.glEnable(GL.GL_CULL_FACE);
+            GL.Enable(GL.DEPTH_TEST);
+            GL.Enable(GL.CULL_FACE);
 
             scene = LoadScene();
             var model = scene.FindNode("Suzanne");
@@ -48,8 +48,8 @@ namespace net6test.samples
 
         public void Update()
         {
-            GL.glClearColor(0.5f, 0.5f, 0.5f, 1);
-            GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+            GL.ClearColor(0.5f, 0.5f, 0.5f, 1);
+            GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 
             scene.Update();
 

@@ -45,7 +45,7 @@ namespace net6test
 
             p.Material = new PbrMaterial 
             {
-                 BaseColor = c.HasValue ? new Vector3(c.Value.X, c.Value.Y, c.Value.Z) : new Vector3(),
+                 BaseColor = c.HasValue ? new Vector3(c.Value.X, c.Value.Y, c.Value.Z) : new Vector3(1,0,1),
                  RoughnessFactor = mr.HasValue ? mr.Value.X : 0,
                  MetallicFactor = mr.HasValue ? mr.Value.Y : 0
             };
@@ -73,7 +73,7 @@ namespace net6test
 
                     if (acc.Dimensions == SharpGLTF.Schema2.DimensionType.VEC3 && acc.Encoding == SharpGLTF.Schema2.EncodingType.FLOAT)
                     {
-                        var desc = new VertexAttributeDescriptor(3, GL.GL_FLOAT, 0, 0, acc.Normalized);
+                        var desc = new VertexAttributeDescriptor(3, GL.FLOAT, 0, 0, acc.Normalized);
                         yield return new VertexAttribute<Vector3>(type, acc.AsVector3Array().ToArray(), desc);
                     }
                 }

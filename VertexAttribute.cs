@@ -16,7 +16,7 @@ namespace net6test
 
         public void EnableOnShader(Shader shader){
             if(!shader.HasAttribute(_type)) return;
-            GL.glBindBuffer(GL.GL_ARRAY_BUFFER, _glBuffer);
+            GL.BindBuffer(GL.ARRAY_BUFFER, _glBuffer);
             shader.EnableAttribute(_type, _descriptor);
         }
 
@@ -27,7 +27,7 @@ namespace net6test
         private readonly T[] _data;
 
         public VertexAttribute(StandardAttribute type, T[] data, VertexAttributeDescriptor descriptor) 
-            : base(type, GlUtil.CreateBuffer(GL.GL_ARRAY_BUFFER, data), descriptor)
+            : base(type, GlUtil.CreateBuffer(GL.ARRAY_BUFFER, data), descriptor)
         {
             this._data = data;
         }

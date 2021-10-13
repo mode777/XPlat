@@ -60,7 +60,7 @@ namespace net6test
                 int w,h;
                 SDL.SDL_GL_GetDrawableSize(window, out w, out h);
                 RendererSize = new Size(w,h);
-                GL.glViewport(0,0,(uint)w,(uint)h);
+                GL.Viewport(0,0,(uint)w,(uint)h);
 
                 app.Update();
 

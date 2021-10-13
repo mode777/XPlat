@@ -10,12 +10,12 @@ namespace net6test
         public VertexIndices(ushort[] data)
         {
             this._data = data;
-            this._glBuffer = GlUtil.CreateBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, data);
+            this._glBuffer = GlUtil.CreateBuffer(GL.ELEMENT_ARRAY_BUFFER, data);
         }
 
         public void DrawWithShader(Shader shader){
-            GL.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, _glBuffer);
-            GL.glDrawElements(GL.GL_TRIANGLES, (uint)_data.Length, GL.GL_UNSIGNED_SHORT, IntPtr.Zero);
+            GL.BindBuffer(GL.ELEMENT_ARRAY_BUFFER, _glBuffer);
+            GL.DrawElements(GL.TRIANGLES, (uint)_data.Length, GL.UNSIGNED_SHORT, IntPtr.Zero);
         }
     }
 }
