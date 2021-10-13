@@ -3037,7 +3037,7 @@ namespace NanoVGDotNet
 					int y = dirty[1];
 					int w = dirty[2] - dirty[0];
 					int h = dirty[3] - dirty[1];
-					ctx.params_.renderUpdateTexture(ctx.params_.userPtr, fontImage, x, y, w, h, data);
+					ctx.params_.renderUpdateTexture(ctx.params_.userPtr, fontImage, x, y, iw, ih, data);
 				}
 			}
 		}

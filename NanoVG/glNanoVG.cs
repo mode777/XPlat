@@ -658,7 +658,7 @@ namespace NanoVGDotNet
 					GL.RGBA, GL.UNSIGNED_BYTE, p); } }
 			else
                 //glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, w, h, 0, GL_RED, GL_UNSIGNED_BYTE, data);
-                unsafe { fixed(void* p = data) { GL.TexImage2D(GL.TEXTURE_2D, 0, (int)GL.ALPHA, (uint)w, (uint)h, 0,
+                unsafe { fixed(void* p = data) { GL.TexImage2D(GL.TEXTURE_2D, 0, (int)GL.LUMINANCE, (uint)w, (uint)h, 0,
 					GL.LUMINANCE, GL.UNSIGNED_BYTE, p); } }
 
 			if ((imageFlags & (int)NVGimageFlags.NVG_IMAGE_GENERATE_MIPMAPS) != 0)
@@ -884,32 +884,28 @@ namespace NanoVGDotNet
 
 			GL.PixelStorei(GL.UNPACK_ALIGNMENT, 1);
 
+			int offset = 0;
 #if NANOVG_GLES2 == false
 			//GL.PixelStore(GL.UNPACK_ROW_LENGTH, tex.width);
 			//GL.PixelStore(GL.UNPACK_SKIP_PIXELS, x);
 			//GL.PixelStore(GL.UNPACK_SKIP_ROWS, y);
 #else
 			// No support for all of skip, need to update a whole row at a time.
-			/*if (tex.type == (int)NVGtexture.NVG_TEXTURE_RGBA)
-			data += y * tex.width * 4;
-			else
-			data += y * tex.width;*/
-			x = 0;
-			w = tex.width;
+			// if (tex.type == (int)NVGtexture.NVG_TEXTURE_RGBA)
+			// 	offset = y * tex.width * 4;
+			// else
+			// 	offset = y * tex.width;
+			
+			// x = 0;
+			// w = tex.width;
 #endif
 
 			if (tex.type == (int)NVGtexture.NVG_TEXTURE_RGBA)
                 //glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, GL_RGBA, GL_UNSIGNED_BYTE, data);
-                unsafe { fixed(void* p = data) { GL.TexSubImage2D(GL.TEXTURE_2D, 0, x, y, (uint)w, (uint)h,
-					GL.RGBA, GL.UNSIGNED_BYTE, p); }}
+                unsafe { fixed(byte* p = data) { GL.TexSubImage2D(GL.TEXTURE_2D, 0, x, y, (uint)w, (uint)h,
+					GL.RGBA, GL.UNSIGNED_BYTE, (void*)(p+offset)); }}
 			else
-#if NANOVG_GLES2_IMPLEMENTATION
-				unsafe { fixed(void* p = data) { GL.TexSubImage2D(GL.TEXTURE_2D, 0, x,y, (uint)w,(uint)h, GL.LUMINANCE, GL.UNSIGNED_BYTE, p); }}
-#else
-                //glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, GL_RED, GL_UNSIGNED_BYTE, data);
-                GL.TexSubImage2D(GL.TEXTURE_2D, 0, x, y, w, h, 
-					Pencil.Gaming.Graphics.PixelFormat.Red, GL.UNSIGNED_BYTE, data);
-#endif
+				unsafe { fixed(byte* p = data) { GL.TexSubImage2D(GL.TEXTURE_2D, 0, x,y, (uint)w,(uint)h, GL.LUMINANCE, GL.UNSIGNED_BYTE, (void*)(p+offset)); }}
 
 			GL.PixelStorei(GL.UNPACK_ALIGNMENT, 4);
 #if NANOVG_GLES2 == false
