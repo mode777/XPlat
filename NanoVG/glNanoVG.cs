@@ -36,17 +36,17 @@
  *  the file lgpl-3.0.txt for more details.
  */
 
-#define NANOVG_GLES2_IMPLEMENTATION
-//#define NANOVG_GL_USE_STATE_FILTER
+//#define NANOVG_GLES2_IMPLEMENTATION
+////#define NANOVG_GL_USE_STATE_FILTER
 
-#if NANOVG_GL2_IMPLEMENTATION
-#define NANOVG_GL2
-#define NANOVG_GL_IMPLEMENTATION
-#elif NANOVG_GL3_IMPLEMENTATION
-#define NANOVG_GL3
-#define NANOVG_GL_IMPLEMENTATION
-#define NANOVG_GL_USE_UNIFORMBUFFER
-#endif
+//#if NANOVG_GL2_IMPLEMENTATION
+//#define NANOVG_GL2
+//#define NANOVG_GL_IMPLEMENTATION
+//#elif NANOVG_GL3_IMPLEMENTATION
+//#define NANOVG_GL3
+//#define NANOVG_GL_IMPLEMENTATION
+//#define NANOVG_GL_USE_UNIFORMBUFFER
+//#endif
 
 using System;
 using System.Text;
@@ -74,24 +74,9 @@ namespace NanoVGDotNet
 		#region SHADERS
 
 		static string shaderHeader =
-#if NANOVG_GL2
-			"#define NANOVG_GL2 1\n" +
-#elif NANOVG_GL3
-			"#version 150 core\n" +
-			"#def NANOVG_GLES2fine NANOVG_GL3 1\n" +
-#elif NANOVG_GLES2
 			"#version 100\n" +
 			"#define NANOVG_GL2 1\n" +
-#elif NANOVG_GLES3
-			"#version 300 es\n" +
-			"#define NANOVG_GL3 1\n" +
-#endif
-
-#if NANOVG_GL_USE_UNIFORMBUFFER
-			"#define USE_UNIFORMBUFFER 1\n" +
-#else
 			"#define UNIFORMARRAY_SIZE 11\n" +
-#endif
 			"\n";
 
 		static string fillVertShader =
@@ -258,15 +243,7 @@ namespace NanoVGDotNet
 
 		static void glnvg__bindTexture(GLNVGcontext gl, uint tex)
 		{
-#if NANOVG_GL_USE_STATE_FILTER
-			if (gl.boundTexture != tex)
-			{
-				gl.boundTexture = tex;
-				GL.BindTexture(GL.TEXTURE_2D, tex);
-			}
-#else
 			GL.BindTexture(GL.TEXTURE_2D, tex);
-#endif
 		}
 
 		static int glnvg__maxi(int a, int b)
@@ -430,11 +407,7 @@ namespace NanoVGDotNet
 			shader.loc[(int)GLNVGuniformLoc.GLNVG_LOC_VIEWSIZE] = GL.GetUniformLocation(shader.prog, "viewSize");
 			shader.loc[(int)GLNVGuniformLoc.GLNVG_LOC_TEX] = GL.GetUniformLocation(shader.prog, "tex");
 
-#if NANOVG_GL_USE_UNIFORMBUFFER
-			shader.loc[(int)GLNVGuniformLoc.GLNVG_LOC_FRAG] = GL.GetUniformBlockIndex(shader.prog, "frag");
-#else
 			shader.loc[(int)GLNVGuniformLoc.GLNVG_LOC_FRAG] = GL.GetUniformLocation(shader.prog, "frag");
-#endif
 		}
 
 		static int glnvg__renderCreate(object uptr)
@@ -459,20 +432,9 @@ namespace NanoVGDotNet
 			glnvg__getUniforms(gl.shader);
 
 			// Create dynamic vertex array
-#if NANOVG_GL3
-			GL.GenVertexArrays(1, out gl.vertArr);
-#endif
 			uint[] buffer = new uint[1];
 			unsafe { fixed (uint* p = buffer) { GL.GenBuffers(1, p); } }
 			gl.vertBuf = buffer[0];
-
-#if NANOVG_GL_USE_UNIFORMBUFFER
-			// Create UBOs
-			uint iBlock = (uint)gl.shader.loc[(int)GLNVGuniformLoc.GLNVG_LOC_FRAG];
-			GL.UniformBlockBinding(gl.shader.prog, iBlock, (int)GLNVGuniformBindings.GLNVG_FRAG_BINDING);
-			GL.GenBuffers(1, out gl.fragBuf);
-			GL.GetInteger(GetPName.UniformBufferOffsetAlignment, out align);
-#endif
 
 			int size = (int)GLNVGfragUniforms.GetSize; 
 			gl.fragSize = size + align - size % align;
@@ -512,14 +474,6 @@ namespace NanoVGDotNet
 
 			glnvg__deleteShader(gl.shader);
 
-			#if NANOVG_GL3
-			#if NANOVG_GL_USE_UNIFORMBUFFER
-		if (gl->fragBuf != 0)
-			glDeleteBuffers(1, &gl->fragBuf);
-			#endif
-		if (gl->vertArr != 0)
-			glDeleteVertexArrays(1, &gl->vertArr);
-			#endif
 			if (gl.vertBuf != 0)
 				unsafe { fixed (uint* p = &gl.vertBuf) { GL.DeleteBuffers(1, p); } }
 
@@ -528,14 +482,6 @@ namespace NanoVGDotNet
 				if (gl.textures[i].tex != 0 && (gl.textures[i].flags & (int)NVGimageFlagsGL.NVG_IMAGE_NODELETE) == 0)
 					unsafe { fixed (uint* p = &gl.textures[i].tex) { GL.DeleteTextures(1, p); } }
 			}
-			//free(gl.textures);
-
-			//free(gl.paths);
-			//free(gl.verts);
-			//free(gl.uniforms);
-			//free(gl.calls);
-
-			//free(gl);
 			gl = null;
 		}
 
@@ -559,20 +505,6 @@ namespace NanoVGDotNet
 			glnvg__bindTexture(gl, tex.tex);
 
 			GL.PixelStorei(GL.UNPACK_ALIGNMENT, 1);
-			//#if !NANOVG_GLES2
-			//GL.PixelStore(GL.UNPACK_ROW_LENGTH, tex.width);
-			//GL.PixelStore(GL.UNPACK_SKIP_PIXELS, 0);
-			//GL.PixelStore(GL.UNPACK_SKIP_ROWS, 0);
-			//#endif
-
-			#if NANOVG_GL2
-			// GL 1.4 and later has support for generating mipmaps using a tex parameter.
-			if ((imageFlags & (int)NVGimageFlags.NVG_IMAGE_GENERATE_MIPMAPS) != 0)
-			{
-				//glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-				GL.TexParameter(GL.TEXTURE_2D, GL.GENERATE_MIPMAP, (int)GL_TRUE);
-			}
-			#endif
 
 			BitmapData data = bmp.LockBits(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height),
 				                  ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -612,11 +544,6 @@ namespace NanoVGDotNet
 				GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, (int)GL.CLAMP_TO_EDGE);
 
 			GL.PixelStorei(GL.UNPACK_ALIGNMENT, 4);
-			//#if !NANOVG_GLES2
-			//GL.PixelStore(GL.UNPACK_ROW_LENGTH, 0);
-			//GL.PixelStore(GL.UNPACK_SKIP_PIXELS, 0);
-			//GL.PixelStore(GL.UNPACK_SKIP_ROWS, 0);
-			//#endif
 
 			glnvg__checkError(gl, "create tex");
 			glnvg__bindTexture(gl, 0);
@@ -638,20 +565,6 @@ namespace NanoVGDotNet
 			glnvg__bindTexture(gl, tex.tex);
 
 			GL.PixelStorei(GL.UNPACK_ALIGNMENT, 1);
-//#if !NANOVG_GLES2
-//			GL.PixelStore(GL.UNPACK_ROW_LENGTH, tex.width);
-//			GL.PixelStore(GL.UNPACK_SKIP_PIXELS, 0);
-//			GL.PixelStore(GL.UNPACK_SKIP_ROWS, 0);
-//#endif
-
-#if NANOVG_GL2
-			// GL 1.4 and later has support for generating mipmaps using a tex parameter.
-			if ((imageFlags & (int)NVGimageFlags.NVG_IMAGE_GENERATE_MIPMAPS) != 0)
-			{
-				//glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-				GL.TexParameter(GL.TEXTURE_2D, GL.GENERATE_MIPMAP, (int)GL_TRUE);
-			}
-#endif
 
 			if (type == (int)NVGtexture.NVG_TEXTURE_RGBA)
 				unsafe { fixed(void* p = data) { GL.TexImage2D(GL.TEXTURE_2D, 0, (int)GL.RGBA, (uint)w, (uint)h, 0,
@@ -685,11 +598,6 @@ namespace NanoVGDotNet
 				GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, (int)GL.CLAMP_TO_EDGE);
 
 			GL.PixelStorei(GL.UNPACK_ALIGNMENT, 4);
-#if !NANOVG_GLES2
-			//GL.PixelStore(GL.UNPACK_ROW_LENGTH, 0);
-			//GL.PixelStore(GL.UNPACK_SKIP_PIXELS, 0);
-			//GL.PixelStore(GL.UNPACK_SKIP_ROWS, 0);
-#endif
 
 			glnvg__checkError(gl, "create tex");
 			glnvg__bindTexture(gl, 0);
@@ -1226,33 +1134,12 @@ namespace NanoVGDotNet
 
 		static void glnvg__stencilMask(GLNVGcontext gl, uint mask)
 		{
-#if NANOVG_GL_USE_STATE_FILTER
-			if (gl.stencilMask != mask)
-			{
-				gl.stencilMask = mask;
-				GL.StencilMask(mask);
-			}
-#else
 			GL.StencilMask(mask);
-#endif
 		}
 
 		static void glnvg__stencilFunc(GLNVGcontext gl, uint func, int ref_, uint mask)
 		{
-#if NANOVG_GL_USE_STATE_FILTER
-			if ((gl.stencilFunc != func) ||
-			    (gl.stencilFuncRef != ref_) ||
-			    (gl.stencilFuncMask != mask))
-			{
-
-				gl.stencilFunc = func;
-				gl.stencilFuncRef = ref_;
-				gl.stencilFuncMask = mask;
-				GL.StencilFunc(func, ref_, mask);
-			}
-#else
 			GL.StencilFunc(func, ref_, mask);
-#endif
 		}
 
 		static GLNVGtexture glnvg__findTexture(GLNVGcontext gl, int id)
@@ -1284,9 +1171,6 @@ namespace NanoVGDotNet
 
 		static void glnvg__setUniforms(GLNVGcontext gl, int uniformOffset, int image)
 		{
-#if NANOVG_GL_USE_UNIFORMBUFFER
-			glBindBufferRange(GL_UNIFORM_BUFFER, GLNVG_FRAG_BINDING, gl->fragBuf, uniformOffset, sizeof(GLNVGfragUniforms));
-#else
 			GLNVGfragUniforms frag = nvg__fragUniformPtr(gl, uniformOffset);
 
 			//CorrigeFrag(ref frag);
@@ -1309,8 +1193,6 @@ namespace NanoVGDotNet
 			float[] farr = frag.GetFloats;
 
 			unsafe { fixed(float* p = farr) { GL.Uniform4fv(lt, NanoVG.NANOVG_GL_UNIFORMARRAY_SIZE, p); } }//frag.uniformArray); 
-
-#endif
 
 			if (image != 0)
 			{
@@ -1496,24 +1378,8 @@ namespace NanoVGDotNet
 				GL.ActiveTexture(GL.TEXTURE0);
 				GL.BindTexture(GL.TEXTURE_2D, 0);
 
-#if NANOVG_GL_USE_STATE_FILTER
-				gl.boundTexture = 0;
-				gl.stencilMask = 0xffffffff;
-				gl.stencilFunc = GL.ALWAYS;
-				gl.stencilFuncRef = 0;
-				gl.stencilFuncMask = 0xffffffff;
-#endif
-
-#if NANOVG_GL_USE_UNIFORMBUFFER
-				// Upload ubo for frag shaders
-				glBindBuffer(GL_UNIFORM_BUFFER, gl.fragBuf);
-				glBufferData(GL_UNIFORM_BUFFER, gl.nuniforms * gl.fragSize, gl.uniforms, GL_STREAM_DRAW);
-#endif
-
 				// Upload vertex data
-#if NANOVG_GL3
-				GL.BindVertexArray(gl.vertArr);
-#endif
+
 				GL.BindBuffer(GL.ARRAY_BUFFER, gl.vertBuf);
 				//GL.BufferData(GL.ARRAY_BUFFER, gl.nverts * Marshal.SizeOf(typeof(NVGvertex)), gl.verts, GL.STATICDRAW);
 				IntPtr iptr = (IntPtr)(gl.nverts * Marshal.SizeOf(typeof(NVGvertex)));
@@ -1532,10 +1398,6 @@ namespace NanoVGDotNet
 				int loc2 = gl.shader.loc[(int)GLNVGuniformLoc.GLNVG_LOC_VIEWSIZE];
 				GL.Uniform2f(loc2, gl.view[0], gl.view[1]);
 
-#if NANOVG_GL_USE_UNIFORMBUFFER
-				glBindBuffer(GL_UNIFORM_BUFFER, gl->fragBuf);
-#endif
-
 				for (i = 0; i < gl.ncalls; i++)
 				{
 					GLNVGcall call = gl.calls[i];
@@ -1551,9 +1413,7 @@ namespace NanoVGDotNet
 
 				GL.DisableVertexAttribArray(0);
 				GL.DisableVertexAttribArray(1);
-#if NANOVG_GL3
-				GL.BindVertexArray(0);
-#endif
+
 				GL.Disable(GL.CULL_FACE);
 				GL.BindBuffer(GL.ARRAY_BUFFER, 0);
 				GL.UseProgram(0);
@@ -1639,12 +1499,6 @@ namespace NanoVGDotNet
 		public int ctextures;
 		public int textureId;
 		public uint vertBuf;
-		#if NANOVG_GL3
-		public uint vertArr;
-#endif
-		#if NANOVG_GL_USE_UNIFORMBUFFER
-		public uint fragBuf;
-#endif
 		public int fragSize;
 		public int flags;
 
@@ -1663,13 +1517,6 @@ namespace NanoVGDotNet
 		public int nuniforms;
 
 		// cached state
-		#if NANOVG_GL_USE_STATE_FILTER
-		public uint boundTexture;
-		public uint stencilMask;
-		public uint stencilFunc;
-		public int stencilFuncRef;
-		public uint stencilFuncMask;
-		#endif
 
 		public GLNVGcontext()
 		{
