@@ -878,29 +878,23 @@ namespace NanoVGDotNet
 			GLNVGcontext gl = (GLNVGcontext)uptr;
 			GLNVGtexture tex = glnvg__findTexture(gl, image);
 
-			if (tex == null)
-				return 0;
+			if (tex == null) return 0;
 			glnvg__bindTexture(gl, tex.tex);
 
 			GL.PixelStorei(GL.UNPACK_ALIGNMENT, 1);
 
 			int offset = 0;
-#if NANOVG_GLES2 == false
-			//GL.PixelStore(GL.UNPACK_ROW_LENGTH, tex.width);
-			//GL.PixelStore(GL.UNPACK_SKIP_PIXELS, x);
-			//GL.PixelStore(GL.UNPACK_SKIP_ROWS, y);
-#else
-			// No support for all of skip, need to update a whole row at a time.
-			// if (tex.type == (int)NVGtexture.NVG_TEXTURE_RGBA)
-			// 	offset = y * tex.width * 4;
-			// else
-			// 	offset = y * tex.width;
-			
-			// x = 0;
-			// w = tex.width;
-#endif
 
-			if (tex.type == (int)NVGtexture.NVG_TEXTURE_RGBA)
+			// No support for all of skip, need to update a whole row at a time.
+			 if (tex.type == (int)NVGtexture.NVG_TEXTURE_RGBA)
+			 	offset = y * tex.width * 4;
+			 else
+			 	offset = y * tex.width;
+			
+			 x = 0;
+			 w = tex.width;
+
+            if (tex.type == (int)NVGtexture.NVG_TEXTURE_RGBA)
                 //glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, w, h, GL_RGBA, GL_UNSIGNED_BYTE, data);
                 unsafe { fixed(byte* p = data) { GL.TexSubImage2D(GL.TEXTURE_2D, 0, x, y, (uint)w, (uint)h,
 					GL.RGBA, GL.UNSIGNED_BYTE, (void*)(p+offset)); }}
@@ -908,11 +902,6 @@ namespace NanoVGDotNet
 				unsafe { fixed(byte* p = data) { GL.TexSubImage2D(GL.TEXTURE_2D, 0, x,y, (uint)w,(uint)h, GL.LUMINANCE, GL.UNSIGNED_BYTE, (void*)(p+offset)); }}
 
 			GL.PixelStorei(GL.UNPACK_ALIGNMENT, 4);
-#if NANOVG_GLES2 == false
-			//GL.PixelStore(GL.UNPACK_ROW_LENGTH, 0);
-			//GL.PixelStore(GL.UNPACK_SKIP_PIXELS, 0);
-			//GL.PixelStore(GL.UNPACK_SKIP_ROWS, 0);
-#endif
 
 			glnvg__bindTexture(gl, 0);
 

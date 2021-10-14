@@ -29,7 +29,7 @@ namespace net6test.samples
             NanoVG.nvgFontFace(ctx, "sans");
             NanoVG.nvgTextAlign(ctx, (int)NVGalign.NVG_ALIGN_CENTER | (int)NVGalign.NVG_ALIGN_CENTER);
             NanoVG.nvgFontSize(ctx, 100);
-            NanoVG.nvgFontBlur(ctx, 9);
+            NanoVG.nvgFontBlur(ctx, 30);
             NanoVG.nvgFillColor(ctx, NanoVG.nvgRGBA(0,0,0,255));
             NanoVG.nvgTextBox(ctx, 0, size.Height/2, size.Width, "Welcome to NanoVG");
             NanoVG.nvgFontBlur(ctx, 0);
