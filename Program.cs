@@ -8,10 +8,18 @@ namespace net_gles2
 {
     class Program
     {
-        static void Main(string[] args)
-        {
-            new SdlHost(new Nvg()).Run();
+        public static MauiApp CreateMauiApp() =>
+            MauiApp
+                .CreateBuilder()
+                .UseMauiApp<App>()
+                .Build();
 
+        public static void Main(string[] args)
+        {
+            CreateMauiApp().Run();
         }
     }
 }
+
+
+
