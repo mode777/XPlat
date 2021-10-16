@@ -1,6 +1,8 @@
 ﻿#nullable enable
+using System.Drawing;
 using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Primitives;
+using NanoVGDotNet;
 
 namespace Microsoft.Maui
 {
@@ -62,7 +64,7 @@ namespace Microsoft.Maui
 		/// <summary>
 		/// Gets the paint which will fill the background of a View.
 		/// </summary>
-		Paint? Background { get; }
+		NVGpaint? Background { get; }
 
 		/// <summary>
 		/// Gets the bounds of the View within its container.

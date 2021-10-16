@@ -19,6 +19,21 @@ namespace net_gles2
             CreateMauiApp().Run();
         }
     }
+
+    class App : Application
+	{
+		protected override Window CreateWindow(IActivationState activationState) =>
+			new Window(
+				new ContentPage
+				{
+					Content = new Label
+					{
+						Text = "Hello Sandbox!",
+						HorizontalOptions = LayoutOptions.Center,
+						VerticalOptions = LayoutOptions.Center,
+					}
+				});
+	}
 }
 
 

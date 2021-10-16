@@ -1,4 +1,16 @@
-﻿namespace Microsoft.Maui.Primitives
+﻿namespace Microsoft.Maui.Controls
+{
+	[Flags]
+	public enum LayoutAlignment
+	{
+		Start = 0,
+		Center = 1,
+		End = 2,
+		Fill = 3
+	}
+}
+
+namespace Microsoft.Maui.Primitives
 {
 	// We don't use Microsoft.Maui.Controls.LayoutAlignment directly because it has a Flags attribute, which we do not want
 
