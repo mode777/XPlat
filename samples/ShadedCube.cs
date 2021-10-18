@@ -7,7 +7,13 @@ namespace net6test.samples
 
     public class ShadedCube : ISdlApp
     {
+        private readonly IPlatformInfo platform;
 
+        public ShadedCube(IPlatformInfo platform)
+        {
+            this.platform = platform;
+
+        }
         float r = 0;
         Transform t = new Transform();
 
@@ -23,7 +29,7 @@ namespace net6test.samples
             {
                 [StandardAttribute.Position] = "position",
                 [StandardAttribute.Normal] = "normal"
-            }, new() 
+            }, new()
             {
                 [StandardUniform.ModelMatrix] = "meshTransform",
                 [StandardUniform.ViewMatrix] = "cameraLookAt",
@@ -44,7 +50,7 @@ namespace net6test.samples
             GL.ClearColor(0.5f, 0.5f, 0.5f, 1);
             GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 
-            var screenSize = SdlHost.Current.RendererSize;
+            var screenSize = platform.RendererSize;
             matP = Matrix4x4.CreatePerspectiveFieldOfView((float)Math.PI / 2, screenSize.Width / (float)screenSize.Height, 0.1f, 100);
             shader.SetUniform(StandardUniform.ProjectionMatrix, ref matP);
 
@@ -53,11 +59,11 @@ namespace net6test.samples
             matV = Matrix4x4.CreateLookAt(cameraPos, cameraTarget, new Vector3(0, 1, 0));
             shader.SetUniform(StandardUniform.ViewMatrix, ref matV);
             shader.SetUniform("cameraPosition", cameraPos);
-            
+
             float time = SDL.SDL_GetTicks() / 1000f;
-            var scale = (float)Math.Sin(time)/4+1;
+            var scale = (float)Math.Sin(time) / 4 + 1;
             t.Scale = new Vector3(scale, scale, scale);
-            t.Rotation = Quaternion.CreateFromYawPitchRoll(r+=0.01f,0,r+(float)Math.PI);
+            t.Rotation = Quaternion.CreateFromYawPitchRoll(r += 0.01f, 0, r + (float)Math.PI);
             matM = t.GetMatrix();
             //matM = Matrix4x4.CreateRotationY(r += 0.01f);
             shader.SetUniform(StandardUniform.ModelMatrix, ref matM);

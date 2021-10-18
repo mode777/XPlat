@@ -3133,7 +3133,7 @@ namespace NanoVGDotNet
 			return  ms.ToArray();
 		}
 
-		static int nvgCreateImageRGBA(ref NVGcontext ctx, int w, int h, int imageFlags, byte[] data)
+		static int nvgCreateImageRGBA(NVGcontext ctx, int w, int h, int imageFlags, byte[] data)
 		{
 			return ctx.params_.renderCreateTexture(ctx.params_.userPtr, (int)NVGtexture.NVG_TEXTURE_RGBA, w, h, imageFlags, data);
 		}
@@ -3180,7 +3180,7 @@ namespace NanoVGDotNet
 			return rawImage;
 		}
 
-		public static int nvgCreateImage(ref NVGcontext ctx, string filename, int imageFlags)
+		public static int nvgCreateImage(NVGcontext ctx, string filename, int imageFlags)
 		{
 			//int w, h, n;
 			int image = 0;
@@ -3203,7 +3203,8 @@ namespace NanoVGDotNet
 					return 0;
 				}
 			}
-			image = nvgCreateImageRGBA(ref ctx, bmp.Width, bmp.Height, imageFlags, bmp);
+			// TODO: FIX!
+			image = nvgCreateImageRGBA(ctx, bmp.Width, bmp.Height, imageFlags, null);
 			//stbi_image_free(img);
 			return image;
 		}

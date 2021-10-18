@@ -7,6 +7,13 @@ namespace net6test.samples
 
     public class Pbr : ISdlApp
     {
+        private readonly IPlatformInfo platform;
+
+        public Pbr(IPlatformInfo platform)
+        {
+            this.platform = platform;
+
+        }
 
         float r = 0;
 
@@ -24,7 +31,7 @@ namespace net6test.samples
             {
                 [StandardAttribute.Position] = "aPos",
                 [StandardAttribute.Normal] = "aNormal"
-            }, new() 
+            }, new()
             {
                 [StandardUniform.ModelMatrix] = "model",
                 [StandardUniform.ViewMatrix] = "view",
@@ -37,11 +44,12 @@ namespace net6test.samples
 
             scene = LoadScene();
             var model = scene.FindNode("Suzanne");
-            model?.AddComponent(new ActionComponent(null, (c) => {
+            model?.AddComponent(new ActionComponent(null, (c) =>
+            {
                 float time = SDL.SDL_GetTicks() / 1000f;
-                var scale = (float)Math.Sin(time)/4+1;
+                var scale = (float)Math.Sin(time) / 4 + 1;
                 c.Transform.Scale = new Vector3(scale, scale, scale);
-                c.Transform.Rotation = Quaternion.CreateFromYawPitchRoll(r+=0.01f,0,r+(float)Math.PI);
+                c.Transform.Rotation = Quaternion.CreateFromYawPitchRoll(r += 0.01f, 0, r + (float)Math.PI);
             }));
 
         }
@@ -53,7 +61,7 @@ namespace net6test.samples
 
             scene.Update();
 
-            var screenSize = SdlHost.Current.RendererSize;
+            var screenSize = platform.RendererSize;
             matP = Matrix4x4.CreatePerspectiveFieldOfView((float)Math.PI / 2, screenSize.Width / (float)screenSize.Height, 0.1f, 100);
             shader.SetUniform(StandardUniform.ProjectionMatrix, ref matP);
 
@@ -61,9 +69,9 @@ namespace net6test.samples
             var cameraTarget = new Vector3(0, 0, 0);
             matV = Matrix4x4.CreateLookAt(cameraPos, cameraTarget, new Vector3(0, 1, 0));
             shader.SetUniform(StandardUniform.ViewMatrix, ref matV);
-            
-            shader.SetUniform("lightPositions[0]", new Vector3(2,2,0));
-            shader.SetUniform("lightColors[0]", new Vector3(1,1,1));
+
+            shader.SetUniform("lightPositions[0]", new Vector3(2, 2, 0));
+            shader.SetUniform("lightColors[0]", new Vector3(1, 1, 1));
             shader.SetUniform("camPos", cameraPos);
 
             scene.Draw();
