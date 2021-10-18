@@ -2,6 +2,7 @@ using System.Drawing;
 using GLES2;
 using Ink.Runtime;
 using NanoVGDotNet;
+using net6test.UI;
 
 namespace net6test.samples
 {
@@ -121,6 +122,31 @@ namespace net6test.samples
             vg.Rect(w, 0, shadowW, h);
             vg.FillPaint(vg.LinearGradient(w, 0, w + shadowW, 0, vg.RGBA(0,0,0,64), vg.RGBA(0,0,0,0)));
             vg.Fill();
+        }
+
+        private VisualElement BuildLayout(Size size)
+        {
+            var layout = new VisualElement {
+                Id = "window",
+                Style = new() {
+                    Width = $"{size.Width}",
+                    Height = $"{size.Height}",
+                    Background = "#888888" 
+                },
+                Direction = FlowDirection.Horizontal,
+                Children = new() {
+                    new() {
+                        Id = "text_panel",
+                        Direction = FlowDirection.Vertical,
+                        Style = new Style{
+                            Width = "66%",
+                            Background = "#ffffff"
+                        }
+                    }
+                }
+            };
+            layout.Init();
+            return layout;
         }
 
 

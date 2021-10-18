@@ -44,6 +44,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 
 using FontStashDotNet;
+using System.Globalization;
 
 namespace NanoVGDotNet
 {
@@ -3368,6 +3369,17 @@ namespace NanoVGDotNet
 
 	public struct NVGcolor
 	{
+		public static implicit operator NVGcolor(string hexString){
+			var r = byte.Parse(hexString.Substring(1, 2), NumberStyles.AllowHexSpecifier);
+            var g = byte.Parse(hexString.Substring(2, 2), NumberStyles.AllowHexSpecifier);
+            var b = byte.Parse(hexString.Substring(4, 2), NumberStyles.AllowHexSpecifier);
+			var a = hexString.Length > 7 
+				? byte.Parse(hexString.Substring(4, 2), NumberStyles.AllowHexSpecifier)
+				: (byte)255;
+			
+			return NanoVG.nvgRGBA(r,g,b,a);
+		}
+
 		public float r;
 		public float g;
 		public float b;
