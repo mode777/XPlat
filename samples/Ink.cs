@@ -95,7 +95,7 @@ namespace net6test.samples
             {
                 vg.TextBoxBounds(x,y+yOffset,w,choice.text, bounds);
                 var rect = new RectangleF(bounds[0],bounds[1],bounds[2]-bounds[0],bounds[3]-bounds[1]);
-                var normalized = new PointF(platform.MousePosition.X * 2, platform.MousePosition.Y * 2);
+                var normalized = new PointF(platform.MousePosition.X, platform.MousePosition.Y);
                 if(rect.Contains(normalized)){
                     vg.BeginPath();
                     vg.RoundedRect(rect.X, rect.Y, rect.Width, rect.Height, 1*scale.Height);

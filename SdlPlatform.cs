@@ -97,7 +97,7 @@ namespace net6test
                 platformInfo.WindowSize = new Size(w, h);
 
                 SDL.SDL_GetMouseState(out w, out h);
-                platformInfo.MousePosition = new Point(w,h);
+                platformInfo.MousePosition = new Point((int)(w * platformInfo.Scale.Width),(int)(h * platformInfo.Scale.Height));
 
 
                 app.Update();
