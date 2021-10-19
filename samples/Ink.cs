@@ -10,14 +10,9 @@ namespace net6test.samples
     {
         private readonly InkService service;
         private NVGcontext vg;
-        private int font;
         private Story story;
-        private List<string> paragraphs;
-        private List<Choice> choices;
-        private List<float[]> choiceLocations;
+        private Box textBox;
         private readonly IPlatformInfo platform;
-        private SizeF scale;
-        private float textScroll = 0;
 
         public InkApp(InkService service, IPlatformInfo platform)
         {
@@ -30,23 +25,25 @@ namespace net6test.samples
             vg = new NVGcontext();
             GlNanoVG.nvgCreateGL(ref vg, (int)NVGcreateFlags.NVG_ANTIALIAS |
                         (int)NVGcreateFlags.NVG_STENCIL_STROKES);
-            font = vg.CreateFont("sans", "assets/Roboto-Regular.ttf");
+            vg.CreateFont("sans", "assets/Roboto-Regular.ttf");
+            
 
             story = service.LoadStory("assets/test.ink");
-            paragraphs = new List<string>();
-            choices = new List<Choice>();
+
+            textBox = new Box(0,0,66,100, "#ffffff");
         }
 
         public void Update()
         {
-            if(story.canContinue){
-                paragraphs.Add(story.Continue());
-            }
-            if(story.currentChoices.Count > 0){
-                choices.Clear();
-                choices.AddRange(story.currentChoices);
-            }
+            // if(story.canContinue){
+            //     paragraphs.Add(story.Continue());
+            // }
+            // if(story.currentChoices.Count > 0){
+            //     choices.Clear();
+            //     choices.AddRange(story.currentChoices);
+            // }
 
+            textBox.Update(platform);
             Draw();
         }
 
@@ -54,19 +51,26 @@ namespace net6test.samples
         {
             GL.ClearColor(0.5f, 0.5f, 0.5f, 1);
             GL.Clear(GL.COLOR_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
-            var windowSize = platform.WindowSize;
-            var rendererSize = platform.RendererSize;
-            scale.Width = (float)rendererSize.Width / 100.0f;
-            scale.Height = (float)rendererSize.Height / 100.0f;
-            vg.BeginFrame(rendererSize.Width, rendererSize.Height, 1);
-            //vg.Scale(scale.Width, scale.Height);
+            vg.BeginFrame(platform.RendererSize.Width, platform.RendererSize.Height, 1);
             
-            var leftPanelW = rendererSize.Width*0.75f;
-            var textMargin = rendererSize.Height*0.1f;
-            var fontSize = rendererSize.Height * 0.05f;
-            LeftPanel(leftPanelW, rendererSize.Height, rendererSize.Width*0.025f);
-            DrawChoices(fontSize, leftPanelW + textMargin, textMargin, rendererSize.Width - leftPanelW - textMargin);
-            DrawParagraphs(fontSize, textMargin, textMargin-textScroll, leftPanelW - textMargin*2);
+            textBox.Draw(vg);
+            // //vg.Scale(scale.Width, scale.Height);
+            
+            // var leftPanelW = rendererSize.Width*0.75f;
+            // // var textMargin = rendererSize.Height*0.1f;
+            // // var fontSize = rendererSize.Height * 0.05f;
+            // LeftPanel(leftPanelW, rendererSize.Height, rendererSize.Width*0.025f);
+            // // DrawChoices(fontSize, leftPanelW + textMargin, textMargin, rendererSize.Width - leftPanelW - textMargin);
+            // // DrawParagraphs(fontSize, textMargin, textMargin-textScroll, leftPanelW - textMargin*2);
+
+            // var shadowPaint = vg.BoxGradient(100, 100, 100,100, 10, 10, "#000000ff", "#00000000");
+            // vg.BeginPath();
+            // vg.Rect(90, 90, 120, 120);
+            // //NanoVG.nvgRoundedRect(vg, x,y, w,h, cornerRadius);
+            // //NanoVG.nvgPathWinding(vg, (int)NVGsolidity.NVG_HOLE);
+            // vg.FillPaint(shadowPaint);
+            // //vg.FillColor("#000000ff");
+            // vg.Fill();
 
             vg.EndFrame();
         }
@@ -124,30 +128,7 @@ namespace net6test.samples
             vg.Fill();
         }
 
-        private VisualElement BuildLayout(Size size)
-        {
-            var layout = new VisualElement {
-                Id = "window",
-                Style = new() {
-                    Width = $"{size.Width}",
-                    Height = $"{size.Height}",
-                    Background = "#888888" 
-                },
-                Direction = FlowDirection.Horizontal,
-                Children = new() {
-                    new() {
-                        Id = "text_panel",
-                        Direction = FlowDirection.Vertical,
-                        Style = new Style{
-                            Width = "66%",
-                            Background = "#ffffff"
-                        }
-                    }
-                }
-            };
-            layout.Init();
-            return layout;
-        }
+        
 
 
     }

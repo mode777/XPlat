@@ -3371,10 +3371,10 @@ namespace NanoVGDotNet
 	{
 		public static implicit operator NVGcolor(string hexString){
 			var r = byte.Parse(hexString.Substring(1, 2), NumberStyles.AllowHexSpecifier);
-            var g = byte.Parse(hexString.Substring(2, 2), NumberStyles.AllowHexSpecifier);
-            var b = byte.Parse(hexString.Substring(4, 2), NumberStyles.AllowHexSpecifier);
+            var g = byte.Parse(hexString.Substring(3, 2), NumberStyles.AllowHexSpecifier);
+            var b = byte.Parse(hexString.Substring(5, 2), NumberStyles.AllowHexSpecifier);
 			var a = hexString.Length > 7 
-				? byte.Parse(hexString.Substring(4, 2), NumberStyles.AllowHexSpecifier)
+				? byte.Parse(hexString.Substring(7, 2), NumberStyles.AllowHexSpecifier)
 				: (byte)255;
 			
 			return NanoVG.nvgRGBA(r,g,b,a);
