@@ -4,22 +4,6 @@ using NanoVGDotNet;
 namespace net6test.UI
 {
 
-    public class TextNode : Node 
-    {
-        public NVGcolor Color { get; set; }
-        public string Text { get; set; }
-        public float Size { get; set; }
-        internal float SizeScaled { get; set; }
-
-        public bool FitInto(RectangleF bounds, NVGcontext vg)
-        {
-            var res = new float[4];
-            vg.TextBoxBounds(bounds.X, bounds.Y, bounds.Width, Text, res);
-            Rect.Height = res[3] - res[1];
-            return Rect.Height > bounds.Height;
-        }
-    }
-
     public class Box : Node
     {
         public FillStyle? Fill { get; set; }
@@ -27,12 +11,17 @@ namespace net6test.UI
         public float CornerRadius { get; set; }
         public Shadow? Shadow { get; set; }
         public float ScaledCorner { get; private set; }
+        public Thickness Padding { get; set; }
+        internal Thickness ScaledPadding { get; private set; }
+        public RectangleF PaddingBounds { get; private set; }
 
         public override void UpdateBounds(IPlatformInfo ctx)
         {
             base.UpdateBounds(ctx);
             ScaledCorner = ctx.Size(CornerRadius);
             Shadow?.Update(ctx);
+            ScaledPadding = Padding.ToScaled(ctx);
+            PaddingBounds = Bounds.Inset(ScaledPadding);
         }
 
 

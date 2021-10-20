@@ -8,7 +8,7 @@ namespace net6test
         public Size WindowSize { get; set; }
         public Point MousePosition { get; set; }
 
-        public SizeF Scale => new SizeF(RendererSize.Width / (float)WindowSize.Width, RendererSize.Height / (float)WindowSize.Height);
+        public float RetinaScale => RendererSize.Width / (float)WindowSize.Width;
 
         public bool MouseClicked { get; set; }
 

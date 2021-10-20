@@ -12,6 +12,7 @@ namespace net6test.samples
         private NVGcontext vg;
         private Story story;
         private Box textBox;
+        private TextNode text;
         private readonly IPlatformInfo platform;
 
         public InkApp(InkService service, IPlatformInfo platform)
@@ -31,9 +32,16 @@ namespace net6test.samples
             story = service.LoadStory("assets/test.ink");
 
             textBox = new Box {
-                Rect = new(0,0,66,100),
+                Rect = new(0, 0, 66, 100),
                 Fill = "#ffffff",
-                Shadow = new(0,0,5,"#00000088")
+                Shadow = new(0, 0, 5, "#00000088"),
+                Padding = 5
+            };
+
+            text = new TextNode
+            {
+                Text = "This is some expanding tex that probably overflows",
+                Size = 7
             };
         }
 
@@ -48,6 +56,9 @@ namespace net6test.samples
             // }
 
             textBox.UpdateBounds(platform);
+            text.FitInto(textBox.PaddingBounds, vg, platform);
+
+            //text.UpdateBounds(platform);
             Draw();
         }
 
@@ -58,6 +69,7 @@ namespace net6test.samples
             vg.BeginFrame(platform.RendererSize.Width, platform.RendererSize.Height, 1);
             
             textBox.Draw(vg);
+            text.Draw(vg);
             // //vg.Scale(scale.Width, scale.Height);
             
             // var leftPanelW = rendererSize.Width*0.75f;
