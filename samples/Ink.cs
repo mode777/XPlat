@@ -30,7 +30,11 @@ namespace net6test.samples
 
             story = service.LoadStory("assets/test.ink");
 
-            textBox = new Box(0,0,66,100, "#ffffff");
+            textBox = new Box {
+                Rect = new(0,0,66,100),
+                Fill = "#ffffff",
+                Shadow = new(0,0,5,"#00000088")
+            };
         }
 
         public void Update()
@@ -43,7 +47,7 @@ namespace net6test.samples
             //     choices.AddRange(story.currentChoices);
             // }
 
-            textBox.Update(platform);
+            textBox.UpdateBounds(platform);
             Draw();
         }
 
@@ -77,55 +81,42 @@ namespace net6test.samples
 
         private void DrawParagraphs(float fontSize, float x, float y, float w)
         {
-            vg.FontSize(fontSize);
-            var yOffset = 0f;
-            vg.FillColor(vg.RGBA(0,0,0,255));
-            float[] bounds = new float[4];
-            foreach (var text in paragraphs)
-            {
-                vg.TextBoxBounds(x,y+yOffset,w,text, bounds);
-                vg.TextBox(x, y+yOffset, w, text);
-                yOffset += (bounds[3]-bounds[1] + fontSize);
-            }
-            var overlap = bounds[3] - (float)platform.RendererSize.Height;
-            if(overlap > 0) textScroll += overlap + scale.Height * .5f;
+            // vg.FontSize(fontSize);
+            // var yOffset = 0f;
+            // vg.FillColor(vg.RGBA(0,0,0,255));
+            // float[] bounds = new float[4];
+            // foreach (var text in paragraphs)
+            // {
+            //     vg.TextBoxBounds(x,y+yOffset,w,text, bounds);
+            //     vg.TextBox(x, y+yOffset, w, text);
+            //     yOffset += (bounds[3]-bounds[1] + fontSize);
+            // }
+            // var overlap = bounds[3] - (float)platform.RendererSize.Height;
+            // if(overlap > 0) textScroll += overlap + scale.Height * .5f;
         }
 
         private void DrawChoices(float fontSize, float x, float y, float w)
         {
-            vg.FontSize(fontSize);
-            var yOffset = 0f;
-            float[] bounds = new float[4];
-            foreach (var choice in choices)
-            {
-                vg.TextBoxBounds(x,y+yOffset,w,choice.text, bounds);
-                var rect = new RectangleF(bounds[0],bounds[1],bounds[2]-bounds[0],bounds[3]-bounds[1]);
-                var normalized = new PointF(platform.MousePosition.X, platform.MousePosition.Y);
-                if(rect.Contains(normalized)){
-                    vg.BeginPath();
-                    vg.RoundedRect(rect.X, rect.Y, rect.Width, rect.Height, 1*scale.Height);
-                    vg.FillColor(vg.RGBA(0,0,0,128));
-                    vg.Fill();
-                    if(platform.MouseClicked) story.ChooseChoiceIndex(choice.index);
-                }
-                vg.FillColor(vg.RGBA(255,255,255,255));
-                vg.TextBox(x, y+yOffset, w, choice.text);
-                yOffset += (bounds[3]-bounds[1] + fontSize / 2);
-            }
+            // vg.FontSize(fontSize);
+            // var yOffset = 0f;
+            // float[] bounds = new float[4];
+            // foreach (var choice in choices)
+            // {
+            //     vg.TextBoxBounds(x,y+yOffset,w,choice.text, bounds);
+            //     var rect = new RectangleF(bounds[0],bounds[1],bounds[2]-bounds[0],bounds[3]-bounds[1]);
+            //     var normalized = new PointF(platform.MousePosition.X, platform.MousePosition.Y);
+            //     if(rect.Contains(normalized)){
+            //         vg.BeginPath();
+            //         vg.RoundedRect(rect.X, rect.Y, rect.Width, rect.Height, 1*scale.Height);
+            //         vg.FillColor(vg.RGBA(0,0,0,128));
+            //         vg.Fill();
+            //         if(platform.MouseClicked) story.ChooseChoiceIndex(choice.index);
+            //     }
+            //     vg.FillColor(vg.RGBA(255,255,255,255));
+            //     vg.TextBox(x, y+yOffset, w, choice.text);
+            //     yOffset += (bounds[3]-bounds[1] + fontSize / 2);
+            // }
 
-        }
-
-        private void LeftPanel(float w, float h, float shadowW)
-        {
-            vg.BeginPath();
-            vg.Rect(0,0,w,h);
-            vg.FillColor(vg.RGBA(255,255,255,255));
-            vg.Fill();
-
-            vg.BeginPath();
-            vg.Rect(w, 0, shadowW, h);
-            vg.FillPaint(vg.LinearGradient(w, 0, w + shadowW, 0, vg.RGBA(0,0,0,64), vg.RGBA(0,0,0,0)));
-            vg.Fill();
         }
 
         
