@@ -32,10 +32,10 @@ namespace net6test.samples
             story = service.LoadStory("assets/test.ink");
 
             textBox = new Box {
-                Rect = new(0, 0, 66, 100),
+                Rect = new(0, 0, "66vw", "100vh"),
                 Fill = "#ffffff",
-                Shadow = new(0, 0, 5, "#00000088"),
-                Padding = 5
+                Shadow = new(0, 0, "5vh", "#00000088"),
+                Padding = (Quantity)5f
             };
 
             text = new TextNode
@@ -55,9 +55,9 @@ namespace net6test.samples
             //     choices.AddRange(story.currentChoices);
             // }
 
-            textBox.UpdateBounds(platform);
-            text.FitInto(textBox.PaddingBounds, vg, platform);
-
+            //textBox.UpdateBounds(platform);
+            //text.FitInto(textBox.PaddingBounds, vg, platform);
+            textBox.Update(vg);
             //text.UpdateBounds(platform);
             Draw();
         }

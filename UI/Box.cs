@@ -6,72 +6,51 @@ namespace net6test.UI
 
     public class Box : Node
     {
+        private BoxDrawParams _drawParams;
+
         public FillStyle? Fill { get; set; }
         public FillStyle? HoverFill { get; set; }
-        public float CornerRadius { get; set; }
+        public Quantity CornerRadius { get; set; }
         public Shadow? Shadow { get; set; }
-        public float ScaledCorner { get; private set; }
         public Thickness Padding { get; set; }
-        internal Thickness ScaledPadding { get; private set; }
-        public RectangleF PaddingBounds { get; private set; }
+        public RectQ Rect { get; set; }
 
-        public override void UpdateBounds(IPlatformInfo ctx)
+        public override void Update(UiContext ctx)
         {
-            base.UpdateBounds(ctx);
-            ScaledCorner = ctx.Size(CornerRadius);
-            Shadow?.Update(ctx);
-            ScaledPadding = Padding.ToScaled(ctx);
-            PaddingBounds = Bounds.Inset(ScaledPadding);
+            base.Update(ctx);
+            var fill = Fill;
+            if(HasMouseOver && HoverFill != null)
+                fill = HoverFill;
+
+            _drawParams = new BoxDrawParams{
+                Rect = Bounds,
+                CornerRadius = CornerRadius,
+                Fill = fill ?? "#000000",
+                Shadow = Shadow != null
+                    ? new ShadowDrawParams(vg, Bounds, CornerRadius, Shadow.Offset, Shadow.Size, Shadow.Color)
+                    : null
+            };
         }
 
+        protected override RectangleF CalculateBounds(UiContext ctx)
+        {
+
+        }
+
+        protected override void Arrange(UiContext ctx){
+            var bounds = base.CalculateBounds(ctx);
+            var copy = ctx.Clone();
+
+        }
 
         public void Draw(NVGcontext vg)
         {
-            
-            // vg.BeginPath();
-            if(Shadow != null)
-                DrawShadow(vg);
-            // vg.Fill();
-
-            var fill = Fill;
-            if(HoverFill != null && HasMouseOver){
-                fill = HoverFill;
-            }     
-
-            if(Fill != null){
-                vg.BeginPath();
-                fill.Apply(vg);
-                DrawRect(vg);
-                vg.Fill();
-            }
-
+            _drawParams.Draw(vg);
         }
 
-        private void DrawShadow(NVGcontext vg) 
-        {
-            var rlarge = Bounds.Expand(Shadow.SizeScaled);
-            rlarge.Offset(Shadow.OffsetScaled);
-            var trans = Shadow.Color;
-            trans.a = 0;
-            var paint = vg.BoxGradient(Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height, (Shadow.SizeScaled / 2f) + ScaledCorner, Shadow.SizeScaled, Shadow.Color, trans);
-            vg.BeginPath();
-            vg.Rect(rlarge.X, rlarge.Y, rlarge.Width, rlarge.Height);
-            vg.PathWinding((int)NVGsolidity.NVG_HOLE);
-            DrawRect(vg);
-            vg.FillPaint(paint);
-            vg.Fill();
-        }
+        // protected override SizeF CalculateSize(UiContext ctx) => new SizeF(Rect.Width, Rect.Height);
 
-        private void DrawRect(NVGcontext vg)
-        {
-            if(CornerRadius > 0){
-                vg.RoundedRect(Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height, ScaledCorner);
-            } else {
-                vg.Rect(Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height);
-            }
-
-        }
-
+        // protected override PointF CalculatePos(UiContext ctx) => new PointF(Rect.X, Rect.Y);
 
     }
 }

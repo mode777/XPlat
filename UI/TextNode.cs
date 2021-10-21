@@ -3,7 +3,7 @@ using NanoVGDotNet;
 
 namespace net6test.UI
 {
-    public class TextNode
+    public class TextNode : Node
     {
         public NVGcolor Color { get; set; } = NanoVG.nvgRGBA(0, 0, 0, 255);
         public string Text { get; set; }
@@ -24,22 +24,27 @@ namespace net6test.UI
             };
         }
         
-        public bool FitInto(RectangleF requested, NVGcontext vg, IPlatformInfo p)
+        protected override RectangleF CalculateBounds(NVGcontext vg)
         {
-            SizeScaled = p.Size(Size);
-            bounds = requested;
-
-            vg.FontFace(Font);
-            vg.FontSize((int)SizeScaled);
-
-            var res = new float[4];
-
-            vg.TextBoxBounds(requested.X, requested.Y, requested.Width, Text, res);
-
-            bounds.Height = res[3] - res[1];
-
-            return bounds.Height > requested.Height;
+            throw new NotImplementedException();
         }
+        
+        // public bool FitInto(RectangleF requested, NVGcontext vg, IPlatformInfo p)
+        // {
+        //     SizeScaled = p.Size(Size);
+        //     bounds = requested;
+
+        //     vg.FontFace(Font);
+        //     vg.FontSize((int)SizeScaled);
+
+        //     var res = new float[4];
+
+        //     vg.TextBoxBounds(requested.X, requested.Y, requested.Width, Text, res);
+
+        //     bounds.Height = res[3] - res[1];
+
+        //     return bounds.Height > requested.Height;
+        // }
 
         public void Draw(NVGcontext vg)
         {
@@ -52,6 +57,7 @@ namespace net6test.UI
             //vg.TextBox(bounds.X, bounds.Y+lh, bounds.Width, Text);
             //DrawDebugRect(vg);
         }
+
 
         //public void DrawDebugRect(NVGcontext vg)
         //{
