@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Drawing;
 using NanoVGDotNet;
 
@@ -10,23 +11,17 @@ namespace net6test.UI
         public string Font;
         public RectangleF Rect;
         public NVGcolor Color;
-        public float LineHeight;
+        public NVGalign AlignFlags;
 
         public void Draw(NVGcontext vg)
         {
             vg.FontFace(Font);
             vg.FontSize(Size);
             vg.FillColor(Color);          
-            vg.TextBox(Rect.X, Rect.Y + LineHeight, Rect.Width, Text);
-            DrawDebugRect(vg);
+            vg.TextAlign((int)NVGalign.NVG_ALIGN_TOP | (int)AlignFlags);
+            vg.TextBox(Rect.X, Rect.Y, Rect.Width, Text);
         }
 
-        public void DrawDebugRect(NVGcontext vg)
-        {
-            vg.BeginPath();
-            vg.Rect(Rect.X, Rect.Y, Rect.Width, Rect.Height);
-            vg.StrokeColor("#ff00ff");
-            vg.Stroke();
-        }
+
     }
 }

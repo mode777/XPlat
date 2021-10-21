@@ -1,24 +1,15 @@
+using System.Diagnostics;
 using System.Drawing;
 using NanoVGDotNet;
 
 namespace net6test.UI
 {
-    public class UiContext
-    {
-        public NVGcontext Vg;
-        public float? X;
-        public float? Y;
-        public float? MaxX;
-        public float? MinX;
 
-        public UiContext Clone() => (UiContext)MemberwiseClone();
-    }
-
-    public abstract class Node
+    public abstract class Element
     {
         private RectangleF bounds;
 
-        public ICollection<Node> Children { get; } = new List<Node>();
+        public ICollection<Element> Children { get; } = new List<Element>();
         public RectangleF Bounds { get => bounds; }
         public bool HasMouseOver { get; private set; }
         public EventHandler OnClick { get; set; }
@@ -54,10 +45,26 @@ namespace net6test.UI
         public abstract void Arrange(UiContext ctx);
         public virtual void Draw(NVGcontext vg)
         {
+            if(Debugger.IsAttached)
+                DrawDebugRect(vg);
             foreach (var c in Children)
             {
                 c.Draw(vg);
             }
+        }
+
+        private void DrawDebugRect(NVGcontext vg)
+        {
+            vg.BeginPath();
+            vg.Rect(Bounds.X, Bounds.Y, Bounds.Width, Bounds.Height);
+            if(HasMouseOver){
+                // vg.FillColor("#00ffff44");
+                // vg.Fill();
+                vg.StrokeColor("#00ffff");
+            } else {
+                vg.StrokeColor("#ff00ff");
+            }
+            vg.Stroke();
         }
     }
 }

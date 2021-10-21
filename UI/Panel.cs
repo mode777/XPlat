@@ -4,7 +4,7 @@ using NanoVGDotNet;
 namespace net6test.UI
 {
 
-    public class Panel : Node
+    public class Panel : Element
     {
         private BoxDrawParams _drawParams;
 
@@ -45,14 +45,15 @@ namespace net6test.UI
             SetPixelPos(Rect.X, Rect.Y);
 
             var contextCopy = ctx.Clone();
-            contextCopy.MaxX = size.Width;
+            contextCopy.MaxX = size.Width - Padding.Right - Padding.Left;
+            var y = Bounds.Y + Padding.Top;
+            var x = Bounds.X + Padding.Left;
 
-            var y = Bounds.Y;
             foreach (var c in Children)
             {
                 var sizeChild = c.CalculateSize(contextCopy);
                 c.SetPixelSize(sizeChild.Width, sizeChild.Height);
-                c.SetPixelPos(Bounds.X, y);
+                c.SetPixelPos(x, y);
 
                 c.Arrange(contextCopy);
                 y += sizeChild.Height;
@@ -61,7 +62,8 @@ namespace net6test.UI
 
         public override void Draw(NVGcontext vg)
         {
-            _drawParams.Draw(vg);
+            if(Fill != null || HoverFill != null || Shadow != null)
+                _drawParams.Draw(vg);
             base.Draw(vg);
         }
 

@@ -52,10 +52,28 @@ namespace net6test
             SDL.SDL_GL_SetSwapInterval(0);
             logger.LogInformation("OpengGL Context created");
 
+            UpdatePlatform();
 
             app.Init();
             logger.LogInformation("App initialized");
             isRunning = true;
+        }
+
+        private void UpdatePlatform()
+        {
+            int w, h;
+
+            SDL.SDL_GL_GetDrawableSize(window, out w, out h);
+            platformInfo.RendererSize = new Size(w, h);
+
+            GL.Viewport(0, 0, (uint)w, (uint)h);
+
+            SDL.SDL_GetWindowSize(window, out w, out h);
+            platformInfo.WindowSize = new Size(w, h);
+
+            SDL.SDL_GetMouseState(out w, out h);
+            platformInfo.MousePosition = new Point((int)(w * platformInfo.RetinaScale),(int)(h * platformInfo.RetinaScale));
+
         }
 
         public void Run()
@@ -86,19 +104,7 @@ namespace net6test
                             return;
                     }
                 }
-                int w, h;
-
-                SDL.SDL_GL_GetDrawableSize(window, out w, out h);
-                platformInfo.RendererSize = new Size(w, h);
-
-                GL.Viewport(0, 0, (uint)w, (uint)h);
-
-                SDL.SDL_GetWindowSize(window, out w, out h);
-                platformInfo.WindowSize = new Size(w, h);
-
-                SDL.SDL_GetMouseState(out w, out h);
-                platformInfo.MousePosition = new Point((int)(w * platformInfo.RetinaScale),(int)(h * platformInfo.RetinaScale));
-
+                UpdatePlatform();
 
                 app.Update();
 
