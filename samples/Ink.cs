@@ -11,7 +11,7 @@ namespace net6test.samples
         private readonly InkService service;
         private NVGcontext vg;
         private Story story;
-        private Box textBox;
+        private Panel textBox;
         private TextNode text;
         private readonly IPlatformInfo platform;
 
@@ -31,7 +31,7 @@ namespace net6test.samples
 
             story = service.LoadStory("assets/test.ink");
 
-            textBox = new Box {
+            textBox = new Panel {
                 Rect = new(0, 0, "66vw", "100vh"),
                 Fill = "#ffffff",
                 Shadow = new(0, 0, "5vh", "#00000088"),
@@ -41,8 +41,16 @@ namespace net6test.samples
             text = new TextNode
             {
                 Text = "This is some expanding tex that probably overflows",
-                Size = 7
+                Size = "7vh"
             };
+            textBox.Children.Add(text);
+            text = new TextNode
+            {
+                Text = "Microsoft.Hosting.Lifetime: Information: Application started. Press Ctrl+C to shut down.\nMicrosoft.Hosting.Lifetime: Information: Hosting environment: Production",
+                Size = "7vh"
+            };
+            textBox.Children.Add(text);
+
         }
 
         public void Update()
@@ -57,6 +65,8 @@ namespace net6test.samples
 
             //textBox.UpdateBounds(platform);
             //text.FitInto(textBox.PaddingBounds, vg, platform);
+
+            textBox.Arrange(new() { Vg = vg });
             textBox.Update(vg);
             //text.UpdateBounds(platform);
             Draw();
@@ -69,7 +79,6 @@ namespace net6test.samples
             vg.BeginFrame(platform.RendererSize.Width, platform.RendererSize.Height, 1);
             
             textBox.Draw(vg);
-            text.Draw(vg);
             // //vg.Scale(scale.Width, scale.Height);
             
             // var leftPanelW = rendererSize.Width*0.75f;

@@ -4,7 +4,7 @@ using NanoVGDotNet;
 namespace net6test.UI
 {
 
-    public class Box : Node
+    public class Panel : Node
     {
         private BoxDrawParams _drawParams;
 
@@ -15,9 +15,10 @@ namespace net6test.UI
         public Thickness Padding { get; set; }
         public RectQ Rect { get; set; }
 
-        public override void Update(UiContext ctx)
+        public override void Update(NVGcontext vg)
         {
-            base.Update(ctx);
+            base.Update(vg);
+
             var fill = Fill;
             if(HasMouseOver && HoverFill != null)
                 fill = HoverFill;
@@ -32,20 +33,36 @@ namespace net6test.UI
             };
         }
 
-        protected override RectangleF CalculateBounds(UiContext ctx)
+        public override SizeF CalculateSize(UiContext ctx)
         {
-
+            return new SizeF(Rect.Width, Rect.Height);
         }
 
-        protected override void Arrange(UiContext ctx){
-            var bounds = base.CalculateBounds(ctx);
-            var copy = ctx.Clone();
+        public override void Arrange(UiContext ctx){
 
+            var size = CalculateSize(ctx);
+            SetPixelSize(size.Width, size.Height);
+            SetPixelPos(Rect.X, Rect.Y);
+
+            var contextCopy = ctx.Clone();
+            contextCopy.MaxX = size.Width;
+
+            var y = Bounds.Y;
+            foreach (var c in Children)
+            {
+                var sizeChild = c.CalculateSize(contextCopy);
+                c.SetPixelSize(sizeChild.Width, sizeChild.Height);
+                c.SetPixelPos(Bounds.X, y);
+
+                c.Arrange(contextCopy);
+                y += sizeChild.Height;
+            }
         }
 
-        public void Draw(NVGcontext vg)
+        public override void Draw(NVGcontext vg)
         {
             _drawParams.Draw(vg);
+            base.Draw(vg);
         }
 
         // protected override SizeF CalculateSize(UiContext ctx) => new SizeF(Rect.Width, Rect.Height);

@@ -10,13 +10,14 @@ namespace net6test.UI
         public string Font;
         public RectangleF Rect;
         public NVGcolor Color;
+        public float LineHeight;
 
         public void Draw(NVGcontext vg)
         {
             vg.FontFace(Font);
             vg.FontSize(Size);
             vg.FillColor(Color);          
-            vg.TextBox(Rect.X, Rect.Y, Rect.Width, Text);
+            vg.TextBox(Rect.X, Rect.Y + LineHeight, Rect.Width, Text);
             DrawDebugRect(vg);
         }
 

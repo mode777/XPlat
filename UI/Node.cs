@@ -16,27 +16,48 @@ namespace net6test.UI
 
     public abstract class Node
     {
+        private RectangleF bounds;
+
         public ICollection<Node> Children { get; } = new List<Node>();
-        public RectangleF Bounds { get; private set; }
+        public RectangleF Bounds { get => bounds; }
         public bool HasMouseOver { get; private set; }
         public EventHandler OnClick { get; set; }
 
-        public virtual void Update(UiContext ctx)
+        public void SetPixelSize(float width, float height)
         {
-            Bounds = CalculateBounds(ctx);
+            bounds.Width = width;
+            bounds.Height = height;
+        }
+
+        public void SetPixelPos(float x, float y)
+        {
+            bounds.X = x;
+            bounds.Y = y;
+        }
+
+        public virtual void Update(NVGcontext ctx)
+        {            
+            var m = IPlatformInfo.Default.MousePosition;
+            HasMouseOver = bounds.Contains(m);
+            if (HasMouseOver && IPlatformInfo.Default.MouseClicked)
+                OnClick?.Invoke(this, null);
+
             foreach (var c in Children)
             {
                 c.Update(ctx);
             }
-
-            var m = IPlatformInfo.Default.MousePosition;
-            HasMouseOver = Bounds.Contains(m);
-            if (HasMouseOver && IPlatformInfo.Default.MouseClicked)
-                OnClick?.Invoke(this, null);
         }
 
         //protected abstract SizeF CalculateSize(UiContext ctx);
         //protected abstract PointF CalculatePos(UiContext ctx);
-        protected abstract RectangleF CalculateBounds(UiContext ctx);
+        public abstract SizeF CalculateSize(UiContext ctx);
+        public abstract void Arrange(UiContext ctx);
+        public virtual void Draw(NVGcontext vg)
+        {
+            foreach (var c in Children)
+            {
+                c.Draw(vg);
+            }
+        }
     }
 }

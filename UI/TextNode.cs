@@ -9,26 +9,40 @@ namespace net6test.UI
         public string Text { get; set; }
         public Quantity Size { get; set; } = "4vh";
         public string Font { get; set; } = "sans";
-        
+                
         private TextDrawParams drawParams;
+        private float[] bounds = new float[4];
+        private float lineHeight;
 
-        public void Update(NVGcontext ctx)
-        {
+        public override void Update(NVGcontext ctx)
+        {            
+
             drawParams = new TextDrawParams
             {
                 Color = Color,
                 Text = Text,
                 Size = Size,
                 Font = Font,
-                //Rect = ???
+                LineHeight = lineHeight,
+                Rect = Bounds,
             };
         }
-        
-        protected override RectangleF CalculateBounds(NVGcontext vg)
-        {
-            throw new NotImplementedException();
+        public override SizeF CalculateSize(UiContext ctx)
+        {            
+            ctx.Vg.FontFace(Font);
+            ctx.Vg.FontSize(Size);
+            float _ = 0;
+            ctx.Vg.TextMetrics(ref _, ref _, ref lineHeight);
+            ctx.Vg.TextBoxBounds(Bounds.X, Bounds.Y, ctx.MaxX.HasValue ? ctx.MaxX.Value : float.MaxValue, Text, bounds);
+            return new SizeF(bounds[2] - bounds[0], bounds[3] - bounds[1]);
         }
-        
+
+        public override void Arrange(UiContext ctx)
+        {
+        }
+
+
+
         // public bool FitInto(RectangleF requested, NVGcontext vg, IPlatformInfo p)
         // {
         //     SizeScaled = p.Size(Size);
@@ -46,25 +60,10 @@ namespace net6test.UI
         //     return bounds.Height > requested.Height;
         // }
 
-        public void Draw(NVGcontext vg)
+        public override void Draw(NVGcontext vg)
         {
-
-            //vg.FontFace(Font);
-            //vg.FontSize((int)SizeScaled);
-            //vg.FillColor(Color);
-            //float asc = -1, desc = -1, lh = -1;
-            //vg.TextMetrics(ref asc, ref desc, ref lh);
-            //vg.TextBox(bounds.X, bounds.Y+lh, bounds.Width, Text);
-            //DrawDebugRect(vg);
+            drawParams.Draw(vg);
         }
 
-
-        //public void DrawDebugRect(NVGcontext vg)
-        //{
-        //    vg.BeginPath();
-        //    vg.Rect(bounds.X, bounds.Y, bounds.Width, bounds.Height);
-        //    vg.StrokeColor("#ff00ff");
-        //    vg.Stroke();
-        //}
     }
 }
