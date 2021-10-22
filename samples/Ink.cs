@@ -54,34 +54,45 @@ namespace net6test.samples
             layout.Arrange();
         }
 
-        public void Update()
+        void UpdateStory()
         {
-            if(story.canContinue){
+            if (story.canContinue)
+            {
                 storyBox.Children.Clear();
                 optionBox.Children.Clear();
-                while (story.canContinue){
-                    storyBox.Children.Add(new TextNode{
+                while (story.canContinue)
+                {
+                    storyBox.Children.Add(new TextNode
+                    {
                         Text = story.Continue(),
                         Size = "5vh"
                     });
-                    layout.Arrange();
+                    //layout.Arrange();
                 }
             }
-            if(story.currentChoices.Count > 0 && !optionBox.Children.Any()){
+            if (story.currentChoices.Count > 0 && !optionBox.Children.Any())
+            {
                 foreach (var c in story.currentChoices)
-                {                    
-                    var n = new TextNode {
+                {
+                    var n = new TextNode
+                    {
                         Text = c.text,
                         Color = "#ffffff",
                         TextAlign = NVGalign.NVG_ALIGN_CENTER
                     };
-                    n.OnClick += (s,args) => {
+                    n.OnClick += (s, args) => {
                         story.ChooseChoiceIndex(c.index);
                     };
                     optionBox.Children.Add(n);
                 }
                 layout.Arrange();
             }
+
+        }
+
+        public void Update()
+        {
+            UpdateStory();
             
             //text.UpdateBounds(platform);
             layout.Update();
