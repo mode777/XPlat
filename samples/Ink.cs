@@ -58,7 +58,8 @@ namespace net6test.samples
         {
             if(story.canContinue){
                 storyBox.Children.Clear();
-                while(story.canContinue){
+                optionBox.Children.Clear();
+                while (story.canContinue){
                     storyBox.Children.Add(new TextNode{
                         Text = story.Continue(),
                         Size = "5vh"
@@ -76,7 +77,6 @@ namespace net6test.samples
                     };
                     n.OnClick += (s,args) => {
                         story.ChooseChoiceIndex(c.index);
-                        optionBox.Children.Clear();
                     };
                     optionBox.Children.Add(n);
                 }
