@@ -91,10 +91,16 @@ namespace net6test
                 var t = SDL.SDL_GetTicks();
                 platformInfo.MouseClicked = false;
 
+                UpdatePlatform();
+
                 while (SDL.SDL_PollEvent(out @event) == 1)
                 {
                     switch (@event.type)
                     {
+                        case SDL.SDL_EventType.SDL_WINDOWEVENT:
+                            if (@event.window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED)
+                                platformInfo.RaiseOnResize();
+                            break;
                         case SDL.SDL_EventType.SDL_MOUSEBUTTONUP:
                             platformInfo.MouseClicked = true;
                             platformInfo.RaiseOnClick();
@@ -104,7 +110,6 @@ namespace net6test
                             return;
                     }
                 }
-                UpdatePlatform();
 
                 app.Update();
 

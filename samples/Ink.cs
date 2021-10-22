@@ -32,12 +32,12 @@ namespace net6test.samples
             vg.CreateFont("sans", "assets/Roboto-Regular.ttf");
             
 
-            story = service.LoadStory("assets/test.ink");
+            story = service.LoadStory("assets/crimescene.ink");
 
             layout = new Layout(vg);
 
             storyBox = new Panel {
-                Rect = new(0, 0, "66vw", "100vh"),
+                Rect = new(0, 0, "66vw", "100vh"),                
                 Fill = "#ffffff",
                 Shadow = new(0, 0, "5vh", "#00000088"),
                 Padding = "5vh"

@@ -3,32 +3,32 @@ using NanoVGDotNet;
 
 namespace net6test.UI
 {
-
     public class Panel : Element
     {
         private BoxDrawParams _drawParams;
 
-        public FillStyle? Fill { get; set; }
-        public FillStyle? HoverFill { get; set; }
-        public Quantity CornerRadius { get; set; }
-        public Shadow? Shadow { get; set; }
-        public Thickness Padding { get; set; }
+        public Panel()
+        {
+            Style = new Style();
+            HoverStyle = new Style(Style);
+        }
+
+        public Style Style { get; }
+        public Style HoverStyle { get; }
         public RectQ Rect { get; set; }
 
         public override void Update(NVGcontext vg)
         {
             base.Update(vg);
 
-            var fill = Fill;
-            if(HasMouseOver && HoverFill != null)
-                fill = HoverFill;
+            var style = HasMouseOver ? Style : HoverStyle;
 
             _drawParams = new BoxDrawParams{
                 Rect = Bounds,
-                CornerRadius = CornerRadius,
-                Fill = fill ?? "#000000",
-                Shadow = Shadow != null
-                    ? new ShadowDrawParams(vg, Bounds, CornerRadius, Shadow.Offset, Shadow.Size, Shadow.Color)
+                CornerRadius = style.CornerRadius ?? 0,
+                Fill = style.Fill ?? "#000000",
+                Shadow = style.Shadow != null
+                    ? new ShadowDrawParams(vg, Bounds, style.CornerRadius ?? 0, Style.Shadow.Offset, Style.Shadow.Size, Style.Shadow.Color)
                     : null
             };
         }
@@ -45,9 +45,9 @@ namespace net6test.UI
             SetPixelPos(Rect.X, Rect.Y);
 
             var contextCopy = ctx.Clone();
-            contextCopy.MaxX = size.Width - Padding.Right - Padding.Left;
-            var y = Bounds.Y + Padding.Top;
-            var x = Bounds.X + Padding.Left;
+            contextCopy.MaxX = size.Width - Style.Padding?.Right - Style.Padding?.Left;
+            var y = Bounds.Y + Style.Padding?.Top ?? 0;
+            var x = Bounds.X + Style.Padding?.Left ?? 0;
 
             foreach (var c in Children)
             {
@@ -62,8 +62,7 @@ namespace net6test.UI
 
         public override void Draw(NVGcontext vg)
         {
-            if(Fill != null || HoverFill != null || Shadow != null)
-                _drawParams.Draw(vg);
+            _drawParams.Draw(vg);
             base.Draw(vg);
         }
 

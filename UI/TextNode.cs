@@ -5,7 +5,14 @@ namespace net6test.UI
 {
     public class TextNode : Element
     {
-        public NVGcolor Color { get; set; } = NanoVG.nvgRGBA(0, 0, 0, 255);
+        public TextNode()
+        {
+            Style = new Style();
+            HoverStyle = new Style(Style);
+        }
+
+        public Style Style { get; set; }
+        public Style HoverStyle { get; }
         public string Text { get; set; }
         public Quantity Size { get; set; } = "4vh";
         public string Font { get; set; } = "sans";
@@ -18,7 +25,7 @@ namespace net6test.UI
             base.Update(ctx);
             drawParams = new TextDrawParams
             {
-                Color = Color,
+                Color = Style.FontColor.Value,
                 Text = Text,
                 Size = Size,
                 Font = Font,
