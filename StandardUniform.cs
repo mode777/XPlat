@@ -4,6 +4,8 @@ namespace net6test
     {
         ProjectionMatrix = 1,
         ViewMatrix = 2,
-        ModelMatrix = 3
+        ModelMatrix = 3,
+        AlbedoTexture = 4,
+        LightmapTexture = 5,
     }
 }

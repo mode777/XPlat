@@ -39,13 +39,15 @@ namespace net6test
             if(attributes != null) {
                 foreach (var kv in attributes)
                 {
-                    _standardAttributes.Add(kv.Key, _attributes[kv.Value]);
+                    if(_attributes.ContainsKey(kv.Value))
+                        _standardAttributes.Add(kv.Key, _attributes[kv.Value]);
                 }
             }
             if(uniforms != null) {
                 foreach (var kv in uniforms)
                 {
-                    _standardUniforms.Add(kv.Key, _uniforms[kv.Value]);
+                    if(_uniforms.ContainsKey(kv.Value))
+                            _standardUniforms.Add(kv.Key, _uniforms[kv.Value]);
                 }
             }
         }
@@ -57,6 +59,10 @@ namespace net6test
         public void SetUniform(int id, Vector3 v) => GlUtil.SendUniform(id, v);
         public void SetUniform(string name, Vector3 v) => SetUniform(_uniforms[name].Id, v);
         public void SetUniform(StandardUniform uniform, Vector3 v) => SetUniform(_standardUniforms[uniform].Id, v);
+
+        public void SetUniform(int id, int v) => GlUtil.SendUniform(id, v);
+        public void SetUniform(string name, int v) => SetUniform(_uniforms[name].Id, v);
+        public void SetUniform(StandardUniform uniform, int v) => SetUniform(_standardUniforms[uniform].Id, v);
 
         public void SetUniform(int id, float v) => GlUtil.SendUniform(id, v);
         public void SetUniform(string name, float v) => SetUniform(_uniforms[name].Id, v);

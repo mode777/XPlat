@@ -2,6 +2,9 @@
 using System.Numerics;
 using System.Text;
 using GLES2;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+
 namespace net6test
 {
 
@@ -11,6 +14,11 @@ namespace net6test
             unsafe { fixed(float* p = &mat.M11) {
                 GL.UniformMatrix4fv(location, 1, false, p);
             } }
+        }
+
+        public static void SendUniform(int location, int v)
+        {
+            GL.Uniform1i(location, v);
         }
 
         public static void SendUniform(int location, float v){
@@ -84,6 +92,30 @@ namespace net6test
                 throw new Exception("Compile shader error: " + sb.ToString(0, (int)length));
             }
             return shader;
+        }
+
+        public static uint CreateTexture2d(Image<Rgba32> image)
+        {
+            unsafe
+            {
+                uint tex = 0;
+                GL.GenTextures(1, &tex);
+                GL.BindTexture(GL.TEXTURE_2D, tex);
+                if(image.TryGetSinglePixelSpan(out var span))
+                {
+                    fixed(Rgba32* p = span)
+                    {
+                        GL.TexImage2D(GL.TEXTURE_2D, 0, (int)GL.RGBA, (uint)image.Width, (uint)image.Height, 0, GL.RGBA, GL.UNSIGNED_BYTE, p);
+                    }
+                    GL.GenerateMipmap(GL.TEXTURE_2D);
+                    GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, (int)GL.LINEAR);
+                    GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, (int)GL.LINEAR_MIPMAP_LINEAR);
+                } else
+                {
+                    throw new Exception("Cannot access image pixels");
+                }
+                return tex;
+            }
         }
     }
 }
