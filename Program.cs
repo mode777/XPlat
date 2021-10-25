@@ -30,7 +30,7 @@ namespace net_gles2
 
             // var res = String.Join('\n', transformed);
 
-            RunSdlApp<InkApp>(args, s => s.AddTransient<InkService>());
+            RunSdlApp<Pbr>(args, s => s.AddTransient<InkService>());
         }
 
         public static void RunSdlApp<T>(string[] args, Action<IServiceCollection>? addServices = null) where T : class, ISdlApp =>

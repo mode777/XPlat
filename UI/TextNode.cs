@@ -7,7 +7,7 @@ namespace net6test.UI
     {
         public TextNode()
         {
-            Style = new Style();
+            Style = new Style(Style.Default);
             HoverStyle = new Style(Style);
         }
 
@@ -23,9 +23,10 @@ namespace net6test.UI
         public override void Update(NVGcontext ctx)
         {            
             base.Update(ctx);
+            var style = HasMouseOver ? HoverStyle : Style;
             drawParams = new TextDrawParams
             {
-                Color = Style.FontColor.Value,
+                Color = style.FontColor.Value,
                 Text = Text,
                 Size = Size,
                 Font = Font,
@@ -37,13 +38,15 @@ namespace net6test.UI
         {            
             ctx.Vg.FontFace(Font);
             ctx.Vg.FontSize(Size);
-            var width = ctx.MaxX.HasValue ? ctx.MaxX.Value : float.MaxValue;
-            ctx.Vg.TextBoxBounds(Bounds.X, Bounds.Y, width, Text, bounds);
+            var width = ctx.Width ?? ctx.MaxW ?? 0;
+            ctx.Vg.TextBoxBounds(ctx.X ?? 0,ctx.Y ?? 0, width, Text, bounds);
             return new SizeF(width, bounds[3] - bounds[1]);
         }
 
         public override void Arrange(UiContext ctx)
         {
+            SetPixelSize(ctx.Width ?? 0, ctx.Height ?? 0);
+            SetPixelPos(ctx.X ?? 0, ctx.Y ?? 0);
         }
 
         public override void Draw(NVGcontext vg)

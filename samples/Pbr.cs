@@ -19,7 +19,7 @@ namespace net6test.samples
 
         public Scene LoadScene()
         {
-            var model = SharpGLTF.Schema2.ModelRoot.Load("assets/scene.glb");
+            var model = SharpGLTF.Schema2.ModelRoot.Load("assets/monkey.glb");
             return GltfLoader.LoadScene(model);
         }
 
@@ -65,7 +65,7 @@ namespace net6test.samples
             matP = Matrix4x4.CreatePerspectiveFieldOfView((float)Math.PI / 2, screenSize.Width / (float)screenSize.Height, 0.1f, 100);
             shader.SetUniform(StandardUniform.ProjectionMatrix, ref matP);
 
-            var cameraPos = new Vector3(8f, 3, 3f);
+            var cameraPos = new Vector3(1f, 3, 3f);
             var cameraTarget = new Vector3(0, 0, 0);
             matV = Matrix4x4.CreateLookAt(cameraPos, cameraTarget, new Vector3(0, 1, 0));
             shader.SetUniform(StandardUniform.ViewMatrix, ref matV);

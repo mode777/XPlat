@@ -1,7 +1,7 @@
 using NanoVGDotNet;
 using net6test.UI;
 
-namespace net6test.samples
+namespace net6test.UI
 {
     public class Layout
     {
@@ -18,7 +18,14 @@ namespace net6test.samples
         {
             foreach (var c in Children)
             {
-                var ctx = new UiContext { Vg = vg }; 
+                var ctx = new UiContext 
+                { 
+                    Vg = vg,
+                    MinW = 0,
+                    MinH = 0,
+                    MaxW = IPlatformInfo.Default.RendererSize.Width,
+                    MaxH = IPlatformInfo.Default.RendererSize.Height                    
+                };
                 c.Arrange(ctx);
             }
         }

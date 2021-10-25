@@ -22,17 +22,17 @@ namespace net6test.UI
         private FillStyle? fill;
         private Quantity? cornerRadius;
         private Shadow? shadow;
-        private Thickness? padding;
+        //private Thickness? padding;
         private NVGcolor? fontColor;
         private Shadow? fontShadow;
 
         private readonly Style? parent;
 
-        public FillStyle? Fill { get => fill ?? parent?.Fill ?? Default.Fill; set => fill = value; }
-        public Quantity? CornerRadius { get => cornerRadius ?? parent?.CornerRadius ?? Default.CornerRadius; set => cornerRadius = value; }
-        public Shadow? Shadow { get => shadow ?? parent?.Shadow ?? Default.Shadow; set => shadow = value; }
-        public Thickness? Padding { get => padding ?? parent?.Padding ?? Default.Padding; set => padding = value; }
-        public NVGcolor? FontColor { get => fontColor ?? parent?.FontColor ?? Default.FontColor; set => fontColor = value; }
-        public Shadow? FontShadow { get => fontShadow ?? parent?.FontShadow ?? Default.FontShadow; set => fontShadow = value; }
+        public FillStyle? Fill { get => fill ?? parent?.Fill; set => fill = value; }
+        public Quantity? CornerRadius { get => cornerRadius ?? parent?.CornerRadius; set => cornerRadius = value; }
+        public Shadow? Shadow { get => shadow ?? parent?.Shadow; set => shadow = value; }
+        //public Thickness? Padding { get => padding ?? parent?.Padding ?? Default.Padding; set => padding = value; }
+        public NVGcolor? FontColor { get => fontColor ?? parent?.FontColor; set => fontColor = value; }
+        public Shadow? FontShadow { get => fontShadow ?? parent?.FontShadow; set => fontShadow = value; }
     }
 }

@@ -52,28 +52,29 @@ namespace net6test
             SDL.SDL_GL_SetSwapInterval(0);
             logger.LogInformation("OpengGL Context created");
 
-            UpdatePlatform();
+            UpdateWindow();
+            UpdateMouse();
 
             app.Init();
             logger.LogInformation("App initialized");
             isRunning = true;
         }
 
-        private void UpdatePlatform()
+        private void UpdateMouse()
         {
             int w, h;
-
-            SDL.SDL_GL_GetDrawableSize(window, out w, out h);
-            platformInfo.RendererSize = new Size(w, h);
-
-            GL.Viewport(0, 0, (uint)w, (uint)h);
-
-            SDL.SDL_GetWindowSize(window, out w, out h);
-            platformInfo.WindowSize = new Size(w, h);
-
             SDL.SDL_GetMouseState(out w, out h);
             platformInfo.MousePosition = new Point((int)(w * platformInfo.RetinaScale),(int)(h * platformInfo.RetinaScale));
 
+        }
+
+        private void UpdateWindow(){
+            int w, h;
+            SDL.SDL_GL_GetDrawableSize(window, out w, out h);
+            platformInfo.RendererSize = new Size(w, h);
+            GL.Viewport(0, 0, (uint)w, (uint)h);
+            SDL.SDL_GetWindowSize(window, out w, out h);
+            platformInfo.WindowSize = new Size(w, h);
         }
 
         public void Run()
@@ -85,13 +86,12 @@ namespace net6test
             // app.Update();
             // SDL.SDL_GL_SwapWindow(window);
 
-
             while (isRunning)
             {
                 var t = SDL.SDL_GetTicks();
                 platformInfo.MouseClicked = false;
 
-                UpdatePlatform();
+                UpdateMouse();
 
                 while (SDL.SDL_PollEvent(out @event) == 1)
                 {
@@ -99,6 +99,7 @@ namespace net6test
                     {
                         case SDL.SDL_EventType.SDL_WINDOWEVENT:
                             if (@event.window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED)
+                                UpdateWindow();
                                 platformInfo.RaiseOnResize();
                             break;
                         case SDL.SDL_EventType.SDL_MOUSEBUTTONUP:

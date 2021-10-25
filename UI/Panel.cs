@@ -9,13 +9,17 @@ namespace net6test.UI
 
         public Panel()
         {
-            Style = new Style();
+            Style = new Style(Style.Default);
             HoverStyle = new Style(Style);
         }
 
         public Style Style { get; }
         public Style HoverStyle { get; }
-        public RectQ Rect { get; set; }
+        public Quantity? X { get; set; }
+        public Quantity? Y { get; set; }
+        public Quantity? Width { get; set; }
+        public Quantity? Height { get; set; }
+        public Thickness Padding { get; set; }
 
         public override void Update(NVGcontext vg)
         {
@@ -35,28 +39,26 @@ namespace net6test.UI
 
         public override SizeF CalculateSize(UiContext ctx)
         {
-            return new SizeF(Rect.Width, Rect.Height);
+            return new SizeF(Width ?? ctx.MaxW ?? 0, Height ?? ctx.MaxH ?? 0);
         }
 
         public override void Arrange(UiContext ctx){
-
-            var size = CalculateSize(ctx);
-            SetPixelSize(size.Width, size.Height);
-            SetPixelPos(Rect.X, Rect.Y);
+            SetPixelPos(X ?? ctx.X ?? 0, Y ?? ctx.Y ?? 0);
+            SetPixelSize(Width ?? ctx.MaxW ?? 0, Height ?? ctx.MaxH ?? 0);
 
             var contextCopy = ctx.Clone();
-            contextCopy.MaxX = size.Width - Style.Padding?.Right - Style.Padding?.Left;
-            var y = Bounds.Y + Style.Padding?.Top ?? 0;
-            var x = Bounds.X + Style.Padding?.Left ?? 0;
+            contextCopy.Y = Bounds.Y + Padding.Top;
+            contextCopy.X = Bounds.X + Padding.Left;
 
             foreach (var c in Children)
             {
+                contextCopy.MaxW = Bounds.Width - Padding.Right - Padding.Left;
+                contextCopy.Width = null;
                 var sizeChild = c.CalculateSize(contextCopy);
-                c.SetPixelSize(sizeChild.Width, sizeChild.Height);
-                c.SetPixelPos(x, y);
-
+                contextCopy.Height = sizeChild.Height;
+                contextCopy.Width = sizeChild.Width;
                 c.Arrange(contextCopy);
-                y += sizeChild.Height;
+                contextCopy.Y += sizeChild.Height;
             }
         }
 
