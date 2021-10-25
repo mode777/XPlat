@@ -19,19 +19,19 @@ namespace net6test.samples
 
         public Scene LoadScene()
         {
-            var model = SharpGLTF.Schema2.ModelRoot.Load("assets/lightmap_test.glb");
+            var model = SharpGLTF.Schema2.ModelRoot.Load("assets/baked.glb");
             return GltfLoader.LoadScene(model);
         }
 
         public void Init()
         {
-            var vertexSource = File.ReadAllText("shaders/pbr.vertex.glsl");
-            var fragmentSource = File.ReadAllText("shaders/pbr.fragment.glsl");
+            var vertexSource = File.ReadAllText("shaders/lightmap.vertex.glsl");
+            var fragmentSource = File.ReadAllText("shaders/lightmap.fragment.glsl");
             shader = new Shader(vertexSource, fragmentSource, new()
             {
                 [StandardAttribute.Position] = "aPos",
                 [StandardAttribute.Normal] = "aNormal",
-                [StandardAttribute.Uv_0] = "aUv"
+                [StandardAttribute.Uv_1] = "aUv"
             }, new()
             {
                 [StandardUniform.ModelMatrix] = "model",
@@ -45,15 +45,6 @@ namespace net6test.samples
             GL.Enable(GL.CULL_FACE);
 
             scene = LoadScene();
-            var model = scene.FindNode("Suzanne");
-            model?.AddComponent(new ActionComponent(null, (c) =>
-            {
-                float time = SDL.SDL_GetTicks() / 1000f;
-                var scale = (float)Math.Sin(time) / 4 + 1;
-                c.Transform.Scale = new Vector3(scale, scale, scale);
-                c.Transform.Rotation = Quaternion.CreateFromYawPitchRoll(r += 0.01f, 0, r + (float)Math.PI);
-            }));
-
         }
 
         public void Update()
@@ -67,12 +58,12 @@ namespace net6test.samples
             matP = Matrix4x4.CreatePerspectiveFieldOfView((float)Math.PI / 2, screenSize.Width / (float)screenSize.Height, 0.1f, 100);
             shader.SetUniform(StandardUniform.ProjectionMatrix, ref matP);
 
-            var cameraPos = new Vector3(1f, 3, 3f);
+            v = (platform.MousePosition.Y / (float)platform.WindowSize.Height) * 10;
+            var cameraPos = new Vector3(v, v, v);
+            
             var cameraTarget = new Vector3(0, 0, 0);
             matV = Matrix4x4.CreateLookAt(cameraPos, cameraTarget, new Vector3(0, 1, 0));
             shader.SetUniform(StandardUniform.ViewMatrix, ref matV);
-
-            shader.SetUniform("camPos", cameraPos);
 
             scene.Draw();
         }
@@ -81,5 +72,6 @@ namespace net6test.samples
         private Matrix4x4 matV;
         private Matrix4x4 matM;
         private Scene scene;
+        private float v = 1;
     }
 }

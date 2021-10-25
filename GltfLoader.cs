@@ -1,5 +1,7 @@
 using GLES2;
 using System.Numerics;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace net6test
 {
@@ -43,12 +45,24 @@ namespace net6test
             var c = prim.Material?.FindChannel("BaseColor")?.Parameter;
             var mr = prim.Material?.FindChannel("MetallicRoughness")?.Parameter;
 
-            p.Material = new PbrMaterial 
-            {
-                 BaseColor = c.HasValue ? new Vector3(c.Value.X, c.Value.Y, c.Value.Z) : new Vector3(1,0,1),
-                 RoughnessFactor = mr.HasValue ? mr.Value.X : 0,
-                 MetallicFactor = mr.HasValue ? mr.Value.Y : 0
-            };
+            var bc = prim.Material?.FindChannel("BaseColor");
+            var img = bc.Value.Texture.PrimaryImage.Content;
+            if(img.IsPng){
+                var decode = Image.Load<Rgba32>(img.Content.Span);
+                var tex = GlUtil.CreateTexture2d(decode);
+                p.Material = new LightmapMaterial {
+                    Texture = tex
+                };
+            } else {
+                p.Material = new PbrMaterial 
+                {
+                    BaseColor = c.HasValue ? new Vector3(c.Value.X, c.Value.Y, c.Value.Z) : new Vector3(1,0,1),
+                    RoughnessFactor = mr.HasValue ? mr.Value.X : 0,
+                    MetallicFactor = mr.HasValue ? mr.Value.Y : 0
+                };
+            }
+
+
 
             return p;
         }
@@ -70,11 +84,29 @@ namespace net6test
                 {
                     var acc = kv.Value;
                     var type = mappings[kv.Key];
+                    var dimension = 0;
 
-                    if (acc.Dimensions == SharpGLTF.Schema2.DimensionType.VEC3 && acc.Encoding == SharpGLTF.Schema2.EncodingType.FLOAT)
+                    switch (acc.Dimensions)
                     {
-                        var desc = new VertexAttributeDescriptor(3, GL.FLOAT, 0, 0, acc.Normalized);
+                        case SharpGLTF.Schema2.DimensionType.VEC2:
+                            dimension = 2;
+                            break;
+                        case SharpGLTF.Schema2.DimensionType.VEC3:
+                            dimension = 3;
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                    if (dimension == 3 && acc.Encoding == SharpGLTF.Schema2.EncodingType.FLOAT)
+                    {
+                        var desc = new VertexAttributeDescriptor(dimension, GL.FLOAT, 0, 0, acc.Normalized);
                         yield return new VertexAttribute<Vector3>(type, acc.AsVector3Array().ToArray(), desc);
+                    }
+                    else if(dimension == 2 && acc.Encoding == SharpGLTF.Schema2.EncodingType.FLOAT)
+                    {
+                        var desc = new VertexAttributeDescriptor(dimension, GL.FLOAT, 0, 0, acc.Normalized);
+                        yield return new VertexAttribute<Vector2>(type, acc.AsVector2Array().ToArray(), desc);
                     }
                 }
             }
