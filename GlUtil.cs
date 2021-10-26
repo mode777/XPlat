@@ -2,6 +2,7 @@
 using System.Numerics;
 using System.Text;
 using GLES2;
+using NanoVGDotNet;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -28,6 +29,12 @@ namespace net6test
         public static void SendUniform(int location, Vector3 v3){
             unsafe {
                 GL.Uniform3fv(location, 1, &v3.X);
+            } 
+        }
+
+        public static void SendUniform(int location, NVGcolor c){
+            unsafe {
+                GL.Uniform4fv(location, 1, &c.r);
             } 
         }
 

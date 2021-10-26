@@ -1,6 +1,7 @@
 using System.Numerics;
 using System.Text;
 using GLES2;
+using NanoVGDotNet;
 
 namespace net6test
 {
@@ -59,6 +60,10 @@ namespace net6test
         public void SetUniform(int id, Vector3 v) => GlUtil.SendUniform(id, v);
         public void SetUniform(string name, Vector3 v) => SetUniform(_uniforms[name].Id, v);
         public void SetUniform(StandardUniform uniform, Vector3 v) => SetUniform(_standardUniforms[uniform].Id, v);
+
+        public void SetUniform(int id, NVGcolor v) => GlUtil.SendUniform(id, v);
+        public void SetUniform(string name, NVGcolor v) => SetUniform(_uniforms[name].Id, v);
+        public void SetUniform(StandardUniform uniform, NVGcolor v) => SetUniform(_standardUniforms[uniform].Id, v);
 
         public void SetUniform(int id, int v) => GlUtil.SendUniform(id, v);
         public void SetUniform(string name, int v) => SetUniform(_uniforms[name].Id, v);

@@ -1,4 +1,5 @@
 using GLES2;
+using NanoVGDotNet;
 using SDL2;
 using System.Numerics;
 
@@ -20,7 +21,7 @@ namespace net6test.samples
 
         public Scene LoadScene()
         {
-            var model = SharpGLTF.Schema2.ModelRoot.Load("assets/channel_test.glb");
+            var model = SharpGLTF.Schema2.ModelRoot.Load("assets/night.glb");
             return GltfLoader.LoadScene(model);
         }
 
@@ -32,7 +33,7 @@ namespace net6test.samples
             {
                 [StandardAttribute.Position] = "aPos",
                 [StandardAttribute.Normal] = "aNormal",
-                [StandardAttribute.Uv_1] = "aUv"
+                [StandardAttribute.Uv_0] = "aUv"
             }, new()
             {
                 [StandardUniform.ModelMatrix] = "model",
@@ -76,10 +77,17 @@ namespace net6test.samples
             matV = Matrix4x4.CreateLookAt(cameraPos, cameraTarget, new Vector3(0, 1, 0));
             shader.SetUniform(StandardUniform.ViewMatrix, ref matV);
 
-            var ticks = SDL.SDL_GetTicks() / 240.0f;
+            var ticks = SDL.SDL_GetTicks();
             var sinVal = (float v) => (float)((Math.Sin(v) + 1.0) / 2.0);
             lights = new Vector3(sinVal(ticks), sinVal(ticks + 30), sinVal(ticks + 15));
-            shader.SetUniform("lights", lights);
+            NVGcolor c = "#c4d2ff88";
+            c.a = sinVal(ticks / 500f);
+            NVGcolor c2 = "#ff441133";
+            c2.a = sinVal(ticks / 120) * 0.3f + 0.1f;
+            shader.SetUniform("lightColor0", c2);
+            shader.SetUniform("lightColor1", c);
+            shader.SetUniform("lightColor2", "#94f4ff22");
+            shader.SetUniform("ambient", "#050008");
 
             scene.Draw();
         }
