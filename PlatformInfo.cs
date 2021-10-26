@@ -1,3 +1,4 @@
+using SDL2;
 using System.Drawing;
 
 namespace net6test
@@ -14,8 +15,10 @@ namespace net6test
 
         public event EventHandler? OnClick;
         public event EventHandler? OnResize;
+        public event EventHandler<SDL.SDL_Keycode>? OnKeyUp;
 
         public void RaiseOnClick() => OnClick?.Invoke(this, null);
         public void RaiseOnResize() => OnResize?.Invoke(this, null);
+        public void RaiseOnKeyUp(SDL.SDL_Keycode sym) => OnKeyUp?.Invoke(this, sym);
     }
 }

@@ -97,6 +97,9 @@ namespace net6test
                 {
                     switch (@event.type)
                     {
+                        case SDL.SDL_EventType.SDL_KEYUP:
+                            platformInfo.RaiseOnKeyUp(@event.key.keysym.sym);
+                            break;
                         case SDL.SDL_EventType.SDL_WINDOWEVENT:
                             if (@event.window.windowEvent == SDL.SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED)
                                 UpdateWindow();

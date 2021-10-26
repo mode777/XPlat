@@ -16,10 +16,11 @@ namespace net6test.samples
         }
 
         float r = 0;
+        Vector3 lights = Vector3.Zero;
 
         public Scene LoadScene()
         {
-            var model = SharpGLTF.Schema2.ModelRoot.Load("assets/baked.glb");
+            var model = SharpGLTF.Schema2.ModelRoot.Load("assets/channel_test.glb");
             return GltfLoader.LoadScene(model);
         }
 
@@ -45,6 +46,16 @@ namespace net6test.samples
             GL.Enable(GL.CULL_FACE);
 
             scene = LoadScene();
+
+            platform.OnKeyUp += (s, k) =>
+            {
+                if (k == SDL.SDL_Keycode.SDLK_1)
+                    lights.X = lights.X > 0 ? 0 : 1;
+                if (k == SDL.SDL_Keycode.SDLK_2)
+                    lights.Y = lights.Y > 0 ? 0 : 1;
+                if (k == SDL.SDL_Keycode.SDLK_3)
+                    lights.Z = lights.Z > 0 ? 0 : 1;
+            };
         }
 
         public void Update()
@@ -64,6 +75,11 @@ namespace net6test.samples
             var cameraTarget = new Vector3(0, 0, 0);
             matV = Matrix4x4.CreateLookAt(cameraPos, cameraTarget, new Vector3(0, 1, 0));
             shader.SetUniform(StandardUniform.ViewMatrix, ref matV);
+
+            var ticks = SDL.SDL_GetTicks() / 240.0f;
+            var sinVal = (float v) => (float)((Math.Sin(v) + 1.0) / 2.0);
+            lights = new Vector3(sinVal(ticks), sinVal(ticks + 30), sinVal(ticks + 15));
+            shader.SetUniform("lights", lights);
 
             scene.Draw();
         }

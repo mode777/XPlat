@@ -13,7 +13,8 @@ namespace net6test
 
         event EventHandler OnClick;
         event EventHandler OnResize;
-        
+        public event EventHandler<SDL2.SDL.SDL_Keycode>? OnKeyUp;
+
         float SizeH(float val) => (val / 100f) * RendererSize.Width;
         float SizeV(float val) => (val / 100f) * RendererSize.Height;
         float PointSize(float val) => val * RetinaScale;
