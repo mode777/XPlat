@@ -2,10 +2,10 @@ using NanoVGDotNet;
 
 namespace net6test.UI
 {
-    public class GradientFileStyle : FillStyle {
+    public class PaintFillStyle : FillStyle {
         public NVGpaint Paint;
 
-        public GradientFileStyle(NVGpaint paint)
+        public PaintFillStyle(NVGpaint paint)
         {
             Paint = paint;
         }

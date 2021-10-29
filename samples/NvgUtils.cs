@@ -16,10 +16,10 @@ namespace net6test.samples
             NanoVG.nvgFillPaint(vg, shadowPaint);
             NanoVG.nvgFill(vg);
 
-            NanoVG.nvgBeginPath(vg);
-            NanoVG.nvgRoundedRect(vg, x,y, w,h, cornerRadius);
-            NanoVG.nvgFillColor(vg, NanoVG.nvgRGBA(255,255,255,255));
-            NanoVG.nvgFill(vg);
+            // NanoVG.nvgBeginPath(vg);
+            // NanoVG.nvgRoundedRect(vg, x,y, w,h, cornerRadius);
+            // NanoVG.nvgFillColor(vg, NanoVG.nvgRGBA(255,255,255,255));
+            // NanoVG.nvgFill(vg);
         }
         
     }
