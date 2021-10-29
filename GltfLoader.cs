@@ -46,13 +46,15 @@ namespace net6test
             var mr = prim.Material?.FindChannel("MetallicRoughness")?.Parameter;
 
             var bc = prim.Material?.FindChannel("BaseColor");
-            var img = bc.Value.Texture.PrimaryImage.Content;
-            if(img.IsPng){
-                var decode = Image.Load<Rgba32>(img.Content.Span);
-                var tex = GlUtil.CreateTexture2d(decode);
-                p.Material = new LightmapMaterial {
-                    Texture = tex
-                };
+            if(bc != null){
+                var img = bc.Value.Texture.PrimaryImage.Content;
+                if(img.IsPng){
+                    var decode = Image.Load<Rgba32>(img.Content.Span);
+                    var tex = GlUtil.CreateTexture2d(decode);
+                    p.Material = new LightmapMaterial {
+                        Texture = tex
+                    };
+                }    
             } else {
                 p.Material = new PbrMaterial 
                 {

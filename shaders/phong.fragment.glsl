@@ -1,37 +1,32 @@
-precision highp float;
+precision mediump float;
 
-varying vec3 wfn;
-varying vec3 vertPos; 
-
-uniform vec3 cameraPosition; 
-
-const vec3 lightDirection = vec3(0.0, -1.0, -1.0);
-const vec4 ambientColor = vec4(0.094, 0.0, 0.0, 1.0);
-const vec4 diffuseColor = vec4(0.5, 0.0, 0.0, 1.0);
-const vec4 specularColor = vec4(1.0, 1.0, 1.0, 1.0);
-const float shininess = 40.0;
-const vec4 lightColor = vec4(1.0, 1.0, 1.0, 1.0);
-
-vec3 blinnPhongBRDF(vec3 lightDir, vec3 viewDir, vec3 normal, vec3 phongDiffuseCol, vec3 phongSpecularCol, float phongShininess) {
-  vec3 color = phongDiffuseCol;
-  vec3 halfDir = normalize(viewDir + lightDir);
-  float specDot = max(dot(halfDir, normal), 0.0);
-  color += pow(specDot, phongShininess) * phongSpecularCol;
-  return color;
-}
-
-void main() {
-  vec3 lightDir = normalize(-lightDirection);
-  vec3 viewDir = normalize(cameraPosition - vertPos);
-  vec3 n = normalize(wfn);
-
-  vec3 luminance = ambientColor.rgb;
+varying vec3 Normal;  
+varying vec3 FragPos;  
   
-  float illuminance = dot(lightDir, n);
-  if(illuminance > 0.0) {
-    vec3 brdf = blinnPhongBRDF(lightDir, viewDir, n, diffuseColor.rgb, specularColor.rgb, shininess);
-    luminance += brdf * illuminance * lightColor.rgb;
-  }
+uniform vec3 lightPos; 
+uniform vec3 viewPos; 
+uniform vec4 lightColor;
+uniform vec4 objectColor;
 
-  gl_FragColor = vec4(luminance, 1.0);
-} 
+void main()
+{
+    // ambient
+    float ambientStrength = 0.2;
+    vec3 ambient = ambientStrength * lightColor.xyz;
+  	
+    // diffuse 
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(lightPos - FragPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor.xyz;
+    
+    // specular
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);  
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 0.5);
+    vec3 specular = specularStrength * spec * lightColor.xyz;  
+        
+    vec3 result = (ambient + diffuse + specular) * objectColor.xyz;
+    gl_FragColor = vec4(result, 1.0);
+}

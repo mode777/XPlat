@@ -36,7 +36,19 @@ namespace net6test
             node.Parent = null;
         }
 
-        public Node? Find(string name) => Name == name ? this : _children.Select(x => x.Find(name)).FirstOrDefault();
+        public Node? Find(string name)
+        {
+            if(Name == name){
+                return this;
+            }
+            foreach (var c in _children)
+            {
+                var res = c.Find(name);
+                if(res != null) 
+                    return res;
+            }
+            return null;
+        }
 
         public void AddComponent(Component comp)
         {
