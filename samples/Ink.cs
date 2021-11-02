@@ -13,11 +13,10 @@ namespace net6test.samples
     {
         private readonly InkService service;
         private NVGcontext vg;
+        private int img;
         private Story story;
         private Layout layout;
-        private Panel storyBox;
-        private Panel optionBox;
-        private TextNode text;
+        private Panel panel;
         private CoroutineRunner runner;
         private readonly IPlatformInfo platform;
         
@@ -34,29 +33,21 @@ namespace net6test.samples
             GlNanoVG.nvgCreateGL(ref vg, (int)NVGcreateFlags.NVG_ANTIALIAS |
                         (int)NVGcreateFlags.NVG_STENCIL_STROKES);
             vg.CreateFont("sans", "assets/Roboto-Regular.ttf");
+            vg.CreateFont("serif", "assets/Merriweather-Regular.ttf");
+            img = vg.CreateImage("assets/bamberg.png", 0);
             
-
-            story = service.LoadStory("assets/crimescene.ink");
+            story = service.LoadStory("assets/test.ink");
 
             layout = new Layout(vg);
-
-            storyBox = new Panel();
-            storyBox.Width = "66vw";
-            storyBox.Style.Fill = "#ffffff";
-            storyBox.Style.Shadow = new(0, 0, "5vh", "#00000088"); 
-            storyBox.Padding = "5vh";
-
-            optionBox = new Panel();
-            optionBox.X = "66vw";
-            optionBox.Width = "34vw";
-            optionBox.Padding = "5vh";
-            optionBox.Style.Fill = "#8899AA";
-
-            layout.Children.Add(optionBox);
-            layout.Children.Add(storyBox);
+            panel = new Panel();
+            panel.Style.Fill = "#000000aa";
+            panel.Padding = "3vh 6vh";
+            panel.Width = "33vw";
+            panel.X = "60vw";
+            panel.Spacing = "2vh";
+            panel.Style.Shadow = new Shadow(0,0,"1vh", "#000000");
+            layout.Children.Add(panel);
             layout.Arrange();
-
-            platform.OnResize += (s,args) => layout.Arrange();
 
             runner = new CoroutineRunner();
             runner.Run(StoryCoroutine());
@@ -78,43 +69,62 @@ namespace net6test.samples
             }
         }
 
+        TextNode CreateParagraphNode(string txt){
+            var n = new TextNode
+            {
+                Text = txt,
+                Font = "serif",
+                Size = "2.5vh"
+            };
+            n.Style.FontColor = "#ffffff00";
+            return n;
+        }
+
+        TextNode CreateOptionNode(int idx, string txt, Action<int> cb){
+            var n = new TextNode();
+            n.Font = "serif";
+            n.Size = "2.5vh";
+            n.Text = idx + " - " + txt;
+            n.Style.FontColor = "#ff220000";
+            n.HoverStyle.FontColor = "#ffffff";
+            n.TextAlign = NVGalign.NVG_ALIGN_LEFT;
+            n.OnClick += (s, args) => cb(idx);
+            return n;
+        }
+
         IEnumerator StoryCoroutine()
         {
             while(true){
 
                 if (story.canContinue)
                 {
-                    storyBox.Children.Clear();
-                    optionBox.Children.Clear();
+                    panel.Children.Clear();
                     while (story.canContinue)
                     {
-                        var n = new TextNode
-                        {
-                            Text = story.Continue(),
-                            Size = "5vh"
-                        };
-                        n.Style.FontColor = "#00000000";
-                        storyBox.Children.Add(n);
-                        layout.Arrange();
-                        yield return FadeInText(n, 60);
+                        var txt = story.Continue();
+                        if(!String.IsNullOrWhiteSpace(txt)){
+                            var n = CreateParagraphNode(txt);
+                            panel.Children.Add(n);
+                            yield return FadeInText(n, 60);
+                        }
                     }
                 }
-                if (story.currentChoices.Count > 0 && !optionBox.Children.Any())
+                if (story.currentChoices.Count > 0)
                 {
+                    var index = -1;
+                    var p = new Panel();
+                    p.Id = "optionPanel";
+                    panel.Children.Add(p);
                     foreach (var c in story.currentChoices)
                     {
-                        var n = new TextNode();
-                        n.Text = c.text;
-                        n.Style.FontColor = "#ffffff00";
-                        n.HoverStyle.FontColor = "#ffff00";
-                        n.TextAlign = NVGalign.NVG_ALIGN_CENTER;
-                        n.OnClick += (s, args) => {
-                            story.ChooseChoiceIndex(c.index);
-                        };
-                        optionBox.Children.Add(n);
-                        layout.Arrange();
+                        var n = CreateOptionNode(c.index, c.text, i => index = i);
+                        p.Children.Add(n);
                         yield return FadeInText(n, 15);
                     }
+                    while(index == -1){
+                        yield return null;
+                    }
+                    story.ChooseChoiceIndex(index);
                 }
                 yield return null;
             }
@@ -123,6 +133,7 @@ namespace net6test.samples
         public void Update()
         {
             runner.Update(0);
+            layout.Arrange();
             
             //text.UpdateBounds(platform);
             layout.Update();
@@ -134,6 +145,21 @@ namespace net6test.samples
             GL.ClearColor(0.5f, 0.5f, 0.5f, 1);
             GL.Clear(GL.COLOR_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
             
+            vg.BeginFrame(platform.RendererSize.Width, platform.RendererSize.Height, 1);
+
+            vg.BeginPath();
+            vg.Rect(0,0,(Quantity)"100vw", (Quantity)"100vh");
+            vg.FillColor("#F6D7A7");
+            vg.Fill();
+
+            vg.BeginPath();
+            vg.Rect(0,0,(Quantity)"100vw",(Quantity)"100vh");
+            var p = vg.ImagePattern((Quantity)"-10vw",(Quantity)"0vh",(Quantity)"111vw",(Quantity)"101vh",0,img,1);
+            vg.FillPaint(p);
+            vg.Fill();
+
+            vg.EndFrame();
+
             layout.Draw();
         }
     }

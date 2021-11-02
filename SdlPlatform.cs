@@ -122,7 +122,7 @@ namespace net6test
 
                 //t = 16-(t-SDL.SDL_GetTicks());
                 //if(t > 0) SDL.SDL_Delay(t);   
-                SDL.SDL_Delay(10);
+                SDL.SDL_Delay(16);
             }
         }
 

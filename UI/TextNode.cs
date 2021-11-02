@@ -34,19 +34,26 @@ namespace net6test.UI
                 AlignFlags = TextAlign
             };
         }
-        public override SizeF CalculateSize(UiContext ctx)
-        {            
-            ctx.Vg.FontFace(Font);
-            ctx.Vg.FontSize(Size);
-            var width = ctx.Width ?? ctx.MaxW ?? 0;
-            ctx.Vg.TextBoxBounds(ctx.X ?? 0,ctx.Y ?? 0, width, Text, bounds);
-            return new SizeF(width, bounds[3] - bounds[1]);
-        }
+        // public override SizeF CalculateSize(UiContext ctx)
+        // {            
+        //     ctx.Vg.FontFace(Font);
+        //     ctx.Vg.FontSize(Size);
+        //     var width = ctx.Width ?? ctx.MaxW ?? 0;
+        //     ctx.Vg.TextBoxBounds(ctx.X ?? 0,ctx.Y ?? 0, width, Text, bounds);
+        //     return new SizeF(width, bounds[3] - bounds[1]);
+        // }
 
         public override void Arrange(UiContext ctx)
         {
-            SetPixelSize(ctx.Width ?? 0, ctx.Height ?? 0);
             SetPixelPos(ctx.X ?? 0, ctx.Y ?? 0);
+
+            ctx.Vg.FontFace(Font);
+            ctx.Vg.FontSize(Size);
+            var width = ctx.MaxW ?? 0;
+            ctx.Vg.TextBoxBounds(ctx.X ?? 0,ctx.Y ?? 0, width, Text, bounds);
+            var height = bounds[3] - bounds[1];
+
+            SetPixelSize(width, height);
         }
 
         public override void Draw(NVGcontext vg)

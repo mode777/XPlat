@@ -40,8 +40,9 @@
 
 using System;
 using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
+//using System.Drawing;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 using FontStashDotNet;
 using System.Globalization;
@@ -49,8 +50,7 @@ using System.Globalization;
 namespace NanoVGDotNet
 {
 	public delegate int RenderCreateHandler(object uprt);
-	public delegate int RenderCreateTextureHandler(object uptr,int type,int w,int h,int imageFlags,byte[] data);
-	public delegate int RenderCreateTextureHandler2(object uptr,int type,int w,int h,int imageFlags,Bitmap bmp);
+	public delegate int RenderCreateTextureHandler(object uptr,int type,int w,int h,int imageFlags, Span<Rgba32> data);
 	public delegate void RenderViewportHandler(object uptr,int width,int height,float devicePixelRatio);
 	public delegate void RenderFlushHandler(object uptr,NVGcompositeOperationState compositeOperation);
 	public delegate void RenderFillHandler(object uptr,ref NVGpaint paint,ref NVGscissor scissor,float fringe,float[] bounds,NVGpath[] paths,int npaths);
@@ -3134,78 +3134,27 @@ namespace NanoVGDotNet
 			return  ms.ToArray();
 		}
 
-		static int nvgCreateImageRGBA(NVGcontext ctx, int w, int h, int imageFlags, byte[] data)
+		static int nvgCreateImageRGBA(NVGcontext ctx, int w, int h, int imageFlags, Span<Rgba32> data)
 		{
 			return ctx.params_.renderCreateTexture(ctx.params_.userPtr, (int)NVGtexture.NVG_TEXTURE_RGBA, w, h, imageFlags, data);
 		}
 
-		static int nvgCreateImageRGBA(ref NVGcontext ctx, int w, int h, int imageFlags, Bitmap bmp)
-		{
-			return ctx.params_.renderCreateTexture2(ctx.params_.userPtr, (int)NVGtexture.NVG_TEXTURE_RGBA, w, h, imageFlags, bmp);
-		}
-
-		/// <summary>
-		/// Convert a bitmap to a byte array
-		/// </summary>
-		/// <param name="bitmap">image to convert</param>
-		/// <returns>image as bytes</returns>
-		private static byte[] ConvertBitmap(Bitmap bitmap)
-		{
-			//Code excerpted from Microsoft Robotics Studio v1.5
-			BitmapData raw = null;  //used to get attributes of the image
-			byte[] rawImage = null; //the image as a byte[]
-
-			try
-			{
-				//Freeze the image in memory
-				raw = bitmap.LockBits(
-					new Rectangle(0, 0, (int)bitmap.Width, (int)bitmap.Height),
-					ImageLockMode.ReadOnly,
-					PixelFormat.Format24bppRgb
-				);
-
-				int size = raw.Height * raw.Stride;
-				rawImage = new byte[size];
-
-				//Copy the image into the byte[]
-				System.Runtime.InteropServices.Marshal.Copy(raw.Scan0, rawImage, 0, size);
-			}
-			finally
-			{
-				if (raw != null)
-				{
-					//Unfreeze the memory for the image
-					bitmap.UnlockBits(raw);
-				}
-			}
-			return rawImage;
-		}
 
 		public static int nvgCreateImage(NVGcontext ctx, string filename, int imageFlags)
 		{
 			//int w, h, n;
 			int image = 0;
 			//byte[] img;
-			Bitmap bmp = null;
+			Image<Rgba32> bmp = null;
 			//stbi_set_unpremultiply_on_load(1);
 			//stbi_convert_iphone_png_to_rgb(1);
 			//img = stbi_load(filename, &w, &h, &n, 4);
 			//Image loadedImg = Image.FromFile(filename);
 			//img = ImageToByteArray(loadedImg);
-			try
-			{
-				bmp = new Bitmap(filename);
+			bmp = Image.Load<Rgba32>(filename);
+			if(bmp.TryGetSinglePixelSpan(out var span)){
+				image = nvgCreateImageRGBA(ctx, bmp.Width, bmp.Height, imageFlags, span);
 			}
-			catch
-			{
-				//if (img == null)
-				{
-					//		printf("Failed to load %s - %s\n", filename, stbi_failure_reason());
-					return 0;
-				}
-			}
-			// TODO: FIX!
-			image = nvgCreateImageRGBA(ctx, bmp.Width, bmp.Height, imageFlags, null);
 			//stbi_image_free(img);
 			return image;
 		}
@@ -3300,7 +3249,6 @@ namespace NanoVGDotNet
 		public RenderCreateHandler renderCreate;
 		
 		public RenderCreateTextureHandler renderCreateTexture;
-		public RenderCreateTextureHandler2 renderCreateTexture2;
 		public RenderViewportHandler renderViewport;
 		public RenderFlushHandler renderFlush;
 		public RenderFillHandler renderFill;

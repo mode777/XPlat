@@ -9,6 +9,7 @@ namespace net6test.UI
     {
         private RectangleF bounds;
 
+        public string Id { get; set; }
         public ICollection<Element> Children { get; } = new List<Element>();
         public RectangleF Bounds { get => bounds; }
         public bool HasMouseOver { get; private set; }
@@ -41,11 +42,11 @@ namespace net6test.UI
 
         //protected abstract SizeF CalculateSize(UiContext ctx);
         //protected abstract PointF CalculatePos(UiContext ctx);
-        public abstract SizeF CalculateSize(UiContext ctx);
+        //public abstract SizeF CalculateSize(UiContext ctx);
         public abstract void Arrange(UiContext ctx);
         public virtual void Draw(NVGcontext vg)
         {
-            if(Debugger.IsAttached)
+            if(Layout.DrawDebugLines)
                 DrawDebugRect(vg);
             foreach (var c in Children)
             {

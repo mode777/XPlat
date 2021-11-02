@@ -3,14 +3,15 @@ namespace net6test
     public class RendererComponent : Component
     {
         public Mesh? Mesh { get; set; }
-        public Shader? Shader { get; set; } = Shader.Current;
+        //public Shader? shader { get; set; }
         public void Draw(){
-            if(Mesh != null && Shader != null)
+            var shader = Shader.Current;
+            if(Mesh != null && shader != null)
             {
-                Shader.Use(Shader);
+                Shader.Use(shader);
                 var mat = Node.Transform.GetMatrix();
-                Shader.SetUniform(StandardUniform.ModelMatrix, ref mat);
-                Mesh.DrawUsingShader(Shader);
+                shader.SetUniform(StandardUniform.ModelMatrix, ref mat);
+                Mesh.DrawUsingShader(shader);
             }
         }
     }

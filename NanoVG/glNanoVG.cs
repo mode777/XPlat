@@ -54,6 +54,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using GLES2;
+using SixLabors.ImageSharp.PixelFormats;
+
 
 namespace NanoVGDotNet
 {
@@ -491,67 +493,7 @@ namespace NanoVGDotNet
 			return glnvg__deleteTexture(gl, image);
 		}
 
-		static int glnvg__renderCreateTexture2(object uptr, int type, int w, int h, int imageFlags, Bitmap bmp)
-		{
-			GLNVGcontext gl = (GLNVGcontext)uptr;
-			GLNVGtexture tex;
-			glnvg__allocTexture(gl, out tex);
-
-			unsafe { fixed (uint* p = &tex.tex) { GL.GenTextures(1, p); } }
-			tex.width = w;
-			tex.height = h;
-			tex.type = type;
-			tex.flags = imageFlags;
-			glnvg__bindTexture(gl, tex.tex);
-
-			GL.PixelStorei(GL.UNPACK_ALIGNMENT, 1);
-
-			BitmapData data = bmp.LockBits(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height),
-				                  ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-		
-			// TODO: Fix
-			if (type == (int)NVGtexture.NVG_TEXTURE_RGBA)
-				unsafe { GL.TexImage2D(GL.TEXTURE_2D, 0, (int)GL.RGBA, (uint)w, (uint)h, 0,
-					GL.RGBA, GL.UNSIGNED_BYTE, data.Scan0.ToPointer()); }
-			else
-				//glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, w, h, 0, GL_RED, GL_UNSIGNED_BYTE, data);
-				unsafe { GL.TexImage2D(GL.TEXTURE_2D, 0, (int)GL.ALPHA, (uint)w, (uint)h, 0,
-					GL.LUMINANCE, GL.UNSIGNED_BYTE, data.Scan0.ToPointer()); }
-
-			bmp.UnlockBits(data);
-
-			if ((imageFlags & (int)NVGimageFlags.NVG_IMAGE_GENERATE_MIPMAPS) != 0)
-			{
-				GL.TexParameteri(GL.TEXTURE_2D,
-					GL.TEXTURE_MIN_FILTER, (int)GL.LINEAR_MIPMAP_LINEAR);
-			}
-			else
-			{
-				GL.TexParameteri(GL.TEXTURE_2D,
-					GL.TEXTURE_MIN_FILTER, (int)GL.LINEAR);
-			}
-			GL.TexParameteri(GL.TEXTURE_2D,
-				GL.TEXTURE_MAG_FILTER, (int)GL.LINEAR);
-
-			if ((imageFlags & (int)NVGimageFlags.NVG_IMAGE_REPEATX) != 0)
-				GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, (int)GL.REPEAT);
-			else
-				GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, (int)GL.CLAMP_TO_EDGE);
-
-			if ((imageFlags & (int)NVGimageFlags.NVG_IMAGE_REPEATY) != 0)
-				GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, (int)GL.REPEAT);
-			else
-				GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, (int)GL.CLAMP_TO_EDGE);
-
-			GL.PixelStorei(GL.UNPACK_ALIGNMENT, 4);
-
-			glnvg__checkError(gl, "create tex");
-			glnvg__bindTexture(gl, 0);
-
-			return tex.id;
-		}
-
-		static int glnvg__renderCreateTexture(object uptr, int type, int w, int h, int imageFlags, byte[] data)
+		static int glnvg__renderCreateTexture(object uptr, int type, int w, int h, int imageFlags, Span<Rgba32> data)
 		{
 			GLNVGcontext gl = (GLNVGcontext)uptr;
 			GLNVGtexture tex;
@@ -1440,7 +1382,6 @@ namespace NanoVGDotNet
 
 			params_.renderCreate = glnvg__renderCreate;
 			params_.renderCreateTexture = glnvg__renderCreateTexture;
-			params_.renderCreateTexture2 = glnvg__renderCreateTexture2;
 			params_.renderFlush = glnvg__renderFlush;
 			params_.renderFill = glnvg__renderFill;
 			params_.renderStroke = glnvg__renderStroke;

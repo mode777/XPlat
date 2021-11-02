@@ -5,6 +5,8 @@ namespace net6test.UI
 {
     public class Layout
     {
+        public static bool DrawDebugLines { get; set; } = false;
+
         private readonly NVGcontext vg;
 
         public ICollection<Element> Children { get; } = new List<Element>();

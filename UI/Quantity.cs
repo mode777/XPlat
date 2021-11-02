@@ -20,7 +20,7 @@ namespace net6test.UI
 
         public static implicit operator Quantity(string str)
         {
-            var split = Regex.Split(str, "([0-9\\.]+)([vhwpx%]*)");
+            var split = Regex.Split(str, "([\\-0-9\\.]+)([vhwpx%]*)");
             float val = float.Parse(split[1], NumberStyles.Float, CultureInfo.InvariantCulture);
             switch (split[2])
             {

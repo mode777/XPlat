@@ -1,4 +1,5 @@
 using GLES2;
+using NanoVGDotNet;
 using SDL2;
 using System.Numerics;
 
@@ -18,7 +19,7 @@ namespace net6test.samples
 
         public Scene LoadScene()
         {
-            var model = SharpGLTF.Schema2.ModelRoot.Load("assets/bg.glb");
+            var model = SharpGLTF.Schema2.ModelRoot.Load("assets/monkey.glb");
             return GltfLoader.LoadScene(model);
         }
 
@@ -34,18 +35,38 @@ namespace net6test.samples
                 [StandardUniform.ViewMatrix] = "view",
                 [StandardUniform.ProjectionMatrix] = "projection",
             });
+
+            scene = LoadScene();
+            model = scene.FindNode("Suzanne");
+
+            vg = new NVGcontext();
+            GlNanoVG.nvgCreateGL(ref vg, (int)NVGcreateFlags.NVG_ANTIALIAS |
+                        (int)NVGcreateFlags.NVG_STENCIL_STROKES);
+
+        }
+
+        public void Update(){
+            Draw3d();
+            Draw2d();
+        }
+
+        private void Draw2d(){
+            vg.BeginFrame(platform.RendererSize.Width, platform.RendererSize.Height, 1);
+            vg.BeginPath();
+            vg.Rect(20,20,800,1800);
+            vg.FillColor("#ff000088");
+            vg.Fill();
+            vg.EndFrame();
+        }
+
+        private void Draw3d()
+        {
+            GL.UseProgram(shader.Handle);
             Shader.Use(shader);
 
             GL.Enable(GL.DEPTH_TEST);
             GL.Enable(GL.CULL_FACE);
 
-            scene = LoadScene();
-            model = scene.FindNode("Plane");
-
-        }
-
-        public void Update()
-        {
             GL.ClearColor(0.5f, 0.5f, 0.5f, 1);
             GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 
@@ -61,14 +82,14 @@ namespace net6test.samples
             var m = platform.MousePosition;
             var mx = (m.X / (float)platform.RendererSize.Width) * 10.0f - 5.0f;
             var my = (m.Y / (float)platform.RendererSize.Height) * 10.0f - 5.0f;
-            shader.SetUniform("lightPos", new Vector3(my,2,-mx));
+            shader.SetUniform("lightPos", new Vector3(my,4,-mx));
             shader.SetUniform("lightColor", "#ffffff");
-            shader.SetUniform("objectColor", "#ff8800");
+            shader.SetUniform("objectColor", "#ffffff");
 
-            // float time = SDL.SDL_GetTicks() / 1000f;
-            // var scale = (float)Math.Sin(time) / 4 + 1;
-            // model.Transform.Scale = new Vector3(scale, scale, scale);
-            // model.Transform.Rotation = Quaternion.CreateFromYawPitchRoll(r += 0.01f, 0, r + (float)Math.PI);
+            float time = SDL.SDL_GetTicks() / 1000f;
+            var scale = (float)Math.Sin(time) / 4 + 1;
+            model.Transform.Scale = new Vector3(scale, scale, scale);
+            model.Transform.Rotation = Quaternion.CreateFromYawPitchRoll(r += 0.01f, 0, r + (float)Math.PI);
             matM = model.Transform.GetMatrix();
             //shader.SetUniform(StandardUniform.ModelMatrix, ref matM);
 
@@ -86,5 +107,6 @@ namespace net6test.samples
         private Matrix4x4 matM;
         private Scene scene;
         private Node model;
+        private NVGcontext vg;
     }
 }
