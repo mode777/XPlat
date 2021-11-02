@@ -120,9 +120,8 @@ namespace net6test
 
                 SDL.SDL_GL_SwapWindow(window);
 
-                //t = 16-(t-SDL.SDL_GetTicks());
-                //if(t > 0) SDL.SDL_Delay(t);   
-                SDL.SDL_Delay(16);
+                t = 16 - (t - SDL.SDL_GetTicks());
+                if (t > 0) SDL.SDL_Delay(t);
             }
         }
 
