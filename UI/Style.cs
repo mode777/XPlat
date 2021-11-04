@@ -25,7 +25,7 @@ namespace net6test.UI
         //private Thickness? padding;
         private NVGcolor? fontColor;
         private Shadow? fontShadow;
-
+        private ImageFillStrategy fillStrategy;
         private readonly Style? parent;
 
         public FillStyle? Fill { get => fill ?? parent?.Fill; set => fill = value; }
@@ -34,5 +34,6 @@ namespace net6test.UI
         //public Thickness? Padding { get => padding ?? parent?.Padding ?? Default.Padding; set => padding = value; }
         public NVGcolor? FontColor { get => fontColor ?? parent?.FontColor; set => fontColor = value; }
         public Shadow? FontShadow { get => fontShadow ?? parent?.FontShadow; set => fontShadow = value; }
+        public ImageFillStrategy? FillStrategy { get => fillStrategy ?? parent?.FillStrategy; set => fillStrategy = value; }
     }
 }

@@ -3,6 +3,7 @@ using NanoVGDotNet;
 
 namespace net6test.UI
 {
+
     public struct BoxDrawParams
     {
         public RectangleF Rect;

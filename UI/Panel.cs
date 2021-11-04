@@ -54,7 +54,7 @@ namespace net6test.UI
             contextCopy.Y = Bounds.Y + Padding.Top;
             contextCopy.X = Bounds.X + Padding.Left;
             contextCopy.MaxW = width - Padding.Right - Padding.Left;
-            contextCopy.MaxH = null;
+            contextCopy.MaxH = ((float?)Height) ?? ctx.MaxH;
 
             foreach (var c in Children)
             {

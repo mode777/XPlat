@@ -13,7 +13,8 @@ namespace net6test.samples
     {
         private readonly InkService service;
         private NVGcontext vg;
-        private int img;
+        private NvgImage img;
+        private int pot;
         private Story story;
         private Layout layout;
         private Panel panel;
@@ -34,19 +35,39 @@ namespace net6test.samples
                         (int)NVGcreateFlags.NVG_STENCIL_STROKES);
             vg.CreateFont("sans", "assets/Roboto-Regular.ttf");
             vg.CreateFont("serif", "assets/Merriweather-Regular.ttf");
-            img = vg.CreateImage("assets/bamberg.png", 0);
             
-            story = service.LoadStory("assets/test.ink");
+            story = service.LoadStory("assets/thinfishcy.ink");
 
             layout = new Layout(vg);
+
+            var bg = new ImageNode();
+            bg.Image = NvgImage.FromFile(vg, "assets/thinfishcy.jpeg");
+            bg.Style.FillStrategy = "cover";
+            layout.Children.Add(bg);
+
             panel = new Panel();
             panel.Style.Fill = "#000000aa";
-            panel.Padding = "3vh 6vh";
+            panel.Padding = "6vh 6vh";
             panel.Width = "33vw";
             panel.X = "60vw";
             panel.Spacing = "2vh";
             panel.Style.Shadow = new Shadow(0,0,"1vh", "#000000");
             layout.Children.Add(panel);
+
+            var chara = new Panel();
+            chara.Width = "20vh";
+            chara.Height = "20vh";
+            chara.X = "50vw";
+            chara.Y = "33vh";
+            chara.Style.Fill = "#000000";
+            chara.Style.Shadow = new Shadow(0,0,"2vh", "#000000");
+            var charaImg = new ImageNode();
+            charaImg.Image = NvgImage.FromFile(vg, "assets/ijon.jpeg");
+            charaImg.Style.FillStrategy = "cover";
+            chara.Children.Add(charaImg);
+            layout.Children.Add(chara);
+
+            
             layout.Arrange();
 
             runner = new CoroutineRunner();
@@ -144,21 +165,6 @@ namespace net6test.samples
         {
             GL.ClearColor(0.5f, 0.5f, 0.5f, 1);
             GL.Clear(GL.COLOR_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
-            
-            vg.BeginFrame(platform.RendererSize.Width, platform.RendererSize.Height, 1);
-
-            vg.BeginPath();
-            vg.Rect(0,0,(Quantity)"100vw", (Quantity)"100vh");
-            vg.FillColor("#F6D7A7");
-            vg.Fill();
-
-            vg.BeginPath();
-            vg.Rect(0,0,(Quantity)"100vw",(Quantity)"100vh");
-            var p = vg.ImagePattern((Quantity)"-10vw",(Quantity)"0vh",(Quantity)"111vw",(Quantity)"101vh",0,img,1);
-            vg.FillPaint(p);
-            vg.Fill();
-
-            vg.EndFrame();
 
             layout.Draw();
         }
