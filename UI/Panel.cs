@@ -62,9 +62,9 @@ namespace net6test.UI
                 contextCopy.Y += c.Bounds.Height + (((float?)Spacing) ?? 0);
             }
 
-            var height = ((float?)Height) ?? ctx.MaxH ?? (contextCopy.Y + (float)Padding.Bottom) ?? 0;
+            var height = ((float?)Height) ?? ctx.MaxH ?? (contextCopy.Y - Bounds.Y + (float)Padding.Bottom) ?? 0;
 
-            SetPixelSize(width, height - Bounds.Y);
+            SetPixelSize(width, height);
         }
 
         public override void Draw(NVGcontext vg)
