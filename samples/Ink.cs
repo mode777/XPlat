@@ -55,10 +55,11 @@ namespace net6test.samples
             layout.Children.Add(panel);
 
             var chara = new Panel();
+            chara.Id = "chara";
             chara.Width = "20vh";
             chara.Height = "20vh";
             chara.X = "50vw";
-            chara.Y = "33vh";
+            chara.Y = "20vh";
             chara.Style.Fill = "#000000";
             chara.Style.Shadow = new Shadow(0,0,"2vh", "#000000");
             var charaImg = new ImageNode();
