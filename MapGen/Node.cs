@@ -11,11 +11,13 @@ namespace net6test.MapGenerator
         public Rectangle Quad { get; }
         public Node Root { get; }
         public List<Connection> Connections { get; private set; } = new List<Connection>();
-        public IEnumerable<Node> Neighbours => Enumerable.Concat(Enumerable.Concat(NeighboursLeft, NeighboursRight), Enumerable.Concat(NeighboursUp, NeighboursDown));
+        public IEnumerable<Node> Neighbours => Connections.Select(x => x.B == this ? x.A : x.B);
+        //public IEnumerable<Node> Neighbours => Enumerable.Concat(Enumerable.Concat(NeighboursLeft, NeighboursRight), Enumerable.Concat(NeighboursUp, NeighboursDown));
         public List<Node> NeighboursUp { get; private set; } = new List<Node>();
         public List<Node> NeighboursDown { get; private set; } = new List<Node>();
         public List<Node> NeighboursLeft { get; private set; } = new List<Node>();
         public List<Node> NeighboursRight { get; private set; } = new List<Node>();
+        public bool IsEnabled { get; set; } = false;
 
 
         public Node(Rectangle box)
@@ -47,6 +49,8 @@ namespace net6test.MapGenerator
         }
 
         public void AddConnection(Connection c) => Connections.Add(c);
+        public void RemoveConnection(Connection c) => Connections.Remove(c);
+
         public Node LeafAt(int x, int y){
             if(!IsInside(x,y)) 
                 return null;

@@ -14,6 +14,7 @@ namespace net6test.MapGenerator
         public Node A { get; }
         public Node B { get; }
         public Point Pos { get; }
+        public bool IsDisabled { get; set; } = false;
     }
 
 
