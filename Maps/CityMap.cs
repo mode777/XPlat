@@ -163,7 +163,7 @@ namespace net6test.Maps
                         vg.LineTo(item[0], item[1]);
                     }
                 }
-                vg.FillColor("#ffffff44");
+                vg.FillColor("#00000044");
                 vg.Fill();
             }
         }

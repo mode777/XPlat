@@ -11,6 +11,7 @@ namespace net6test.samples
         private NVGcontext vg;
         private int font;
         private CityMap map;
+        private Layout layout;
         private readonly IPlatformInfo platform;
         private float r = 0;
 
@@ -29,6 +30,15 @@ namespace net6test.samples
 
             var json = GeoJson.Load("assets/thinfishcy.json");
             map = new CityMap(json as FeatureCollection);
+
+            layout = new Layout(vg);
+
+            var bg = new ImageNode();
+            bg.Image = NvgImage.FromFile(vg, "assets/thinfishcy.jpeg");
+            bg.Style.FillStrategy = "cover";
+            layout.Children.Add(bg);           
+
+            layout.Arrange();
         }
 
         public void Update()
@@ -36,16 +46,20 @@ namespace net6test.samples
             GL.ClearColor(0, 0, 0, 1);
             GL.Clear(GL.COLOR_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
 
+            layout.Arrange();
+            layout.Update();
+            layout.Draw();
+
             vg.BeginFrame(platform.RendererSize.Width, platform.RendererSize.Height, 1);
 
-
-            vg.Translate((Quantity)"50vw", (Quantity)"50vh");
+            vg.Translate((Quantity)"70vw", (Quantity)"60vh");
             vg.Scale(1.75f, 1.75f);
-            vg.Rotate(r += 0.001f);
+            vg.Rotate(2);
 
             map.Draw(vg);
 
             vg.EndFrame();
+
         }
     }
 }

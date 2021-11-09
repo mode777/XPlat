@@ -63,17 +63,23 @@ namespace net6test.samples
                 for (int x = 0; x < mg.Map.W; x++)
                 {
                     var elm = mg.Map[x, y];
-                    if (elm == LevelElement.Floor || elm == LevelElement.Door)
-                    {
-                        vg.BeginPath();
-                        vg.Rect(x, y, 1, 1);
-                        var currentNode = mg.Root.LeafAt(x, y);
-                        var floorCol = mg.IsOnCriticalPath(currentNode) ? "#ffffff" : "#888888";
-                        if (currentNode == mg.StartRoom) floorCol = "#00ff00";
-                        if (currentNode == mg.EndRoom) floorCol = "#ff0000";
-                        vg.FillColor(elm == LevelElement.Floor ? floorCol : "#ff0000");
+                   
+                    vg.BeginPath();
+                    vg.Rect(x, y, 1, 1);
+                    var currentNode = mg.Root.LeafAt(x, y);
+                    var col = mg.IsOnCriticalPath(currentNode) ? "#ffffff" : "#888888";
+                    if (currentNode == mg.StartRoom) col = "#00ff00";
+                    if (currentNode == mg.EndRoom) col = "#ff0000";
+                    if (elm == LevelElement.Door) col = "#ff0000";
+                    if (elm == LevelElement.POI) col = "#ffff00";
+                    if (elm == LevelElement.Blocked) col = "#00ffff";
+                    if (elm == LevelElement.Hole) col = "#0000ff";
+
+                    vg.FillColor(col);
+                    
+                    if(elm != LevelElement.Wall)
                         vg.Fill();
-                    }
+                    
                 }
             }
 

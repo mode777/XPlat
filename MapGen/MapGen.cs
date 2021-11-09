@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -6,7 +8,10 @@ namespace net6test.MapGenerator
     public enum LevelElement {
         Floor,
         Wall,
-        Door
+        Door,
+        POI,
+        Blocked,
+        Hole
     }
 
     public class MapGen
@@ -18,7 +23,6 @@ namespace net6test.MapGenerator
             H = h;
             Threshold = threshold;
             this.Root = new Node(new Rectangle(0,0,w,h));
-            this.Map = new LevelMap(w,h);
             Generate();
         }
 
@@ -27,8 +31,9 @@ namespace net6test.MapGenerator
         public int H { get; }
         public int Threshold { get; }
         public Node Root { get; }
-        public LevelMap Map { get; }
+        public LevelMap Map { get; private set; }
         public List<Node> Rooms { get; private set; } = new List<Node>();
+        public IEnumerable<Node> ActiveRooms => Rooms.Where(x => x.IsEnabled); 
         public Node StartRoom { get; private set; }
         public Node EndRoom { get; private set; }
         public HashSet<Node> CriticalPath { get; private set; }
@@ -82,7 +87,6 @@ namespace net6test.MapGenerator
                     continue;
                 var coords = new Point(n.Quad.X, start + ProdGen.Size(range, 1) + 1);
                 var conn = new Connection(n, nl, coords);
-                Map[conn.Pos.X, conn.Pos.Y] = LevelElement.Door;
                 n.AddConnection(conn);
                 nl.AddConnection(conn);
                 //connLeft.Add(coords);
@@ -96,7 +100,6 @@ namespace net6test.MapGenerator
                     continue;
                 var coords = new Point(start + ProdGen.Size(range, 1) + 1, n.Quad.Y);
                 var conn = new Connection(n, nu, coords);
-                Map[conn.Pos.X, conn.Pos.Y] = LevelElement.Door;
                 n.AddConnection(conn);
                 nu.AddConnection(conn);
             }
@@ -105,11 +108,12 @@ namespace net6test.MapGenerator
 
         private void GenerateRooms()
         {
-            var roomGen = new RoomGen(ProdGen, Map);
-            foreach (var r in Rooms)
+            var roomGen = new RoomGen(ProdGen, W, H);
+            foreach (var r in ActiveRooms)
             {
                 roomGen.Generate(r);
             }
+            Map = roomGen.Map;
         }
 
         private void Split(Node n){

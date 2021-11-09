@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace net6test.MapGenerator
 {
@@ -11,12 +13,14 @@ namespace net6test.MapGenerator
         public Rectangle Quad { get; }
         public Node Root { get; }
         public List<Connection> Connections { get; private set; } = new List<Connection>();
+        public IEnumerable<Connection> ActiveConnections => Connections.Where(c => c.A.IsEnabled && c.B.IsEnabled && !c.IsDisabled);
         public IEnumerable<Node> Neighbours => Connections.Select(x => x.B == this ? x.A : x.B);
         //public IEnumerable<Node> Neighbours => Enumerable.Concat(Enumerable.Concat(NeighboursLeft, NeighboursRight), Enumerable.Concat(NeighboursUp, NeighboursDown));
         public List<Node> NeighboursUp { get; private set; } = new List<Node>();
         public List<Node> NeighboursDown { get; private set; } = new List<Node>();
         public List<Node> NeighboursLeft { get; private set; } = new List<Node>();
         public List<Node> NeighboursRight { get; private set; } = new List<Node>();
+        public List<Point> POIs { get; } = new List<Point>();
         public bool IsEnabled { get; set; } = false;
 
 

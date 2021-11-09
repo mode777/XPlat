@@ -16,7 +16,7 @@ namespace net_gles2
     {
         public static void Main(string[] args)
         {
-            RunSdlApp<MapGenSample>(args, s => s.AddTransient<InkService>());
+            RunSdlApp<Map>(args, s => s.AddTransient<InkService>());
         }
 
         public static void RunSdlApp<T>(string[] args, Action<IServiceCollection>? addServices = null) where T : class, ISdlApp =>
