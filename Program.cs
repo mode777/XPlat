@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using NanoVGDotNet;
+using net6test.WorldGenerator;
 
 namespace net_gles2
 {
@@ -16,7 +17,7 @@ namespace net_gles2
     {
         public static void Main(string[] args)
         {
-            RunSdlApp<Map>(args, s => s.AddTransient<InkService>());
+            RunSdlApp<WorldGenApp>(args, s => s.AddTransient<InkService>());
         }
 
         public static void RunSdlApp<T>(string[] args, Action<IServiceCollection>? addServices = null) where T : class, ISdlApp =>
