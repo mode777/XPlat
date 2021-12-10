@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace VoronoiLib.Structures
 {
-    public class FortuneSite
+    public class FortuneSite : IPoint
     {
         public double X { get; }
         public double Y { get; }
@@ -45,5 +45,11 @@ namespace VoronoiLib.Structures
         // {
         //     return X.GetHashCode () ^ Y.GetHashCode ();
         // }
+    }
+
+    public interface IPoint
+    {
+        double X { get; }
+        double Y { get; }
     }
 }

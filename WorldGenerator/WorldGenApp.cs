@@ -30,7 +30,8 @@ namespace net6test.WorldGenerator
                 Size = new Vector2(platform.WindowSize.Width, platform.WindowSize.Height),
                 DrawingScale = platform.RetinaScale,
                 PointsJitter = 0.5f,
-                GridSize = new Vector2(12)
+                GridSize = new Vector2(8),
+                WaterThreshold = 0.5f
             });
             this.map.Generate();
 

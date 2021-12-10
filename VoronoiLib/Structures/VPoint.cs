@@ -1,6 +1,6 @@
 ﻿namespace VoronoiLib.Structures
 {
-    public class VPoint : IEquatable<VPoint>
+    public class VPoint : IEquatable<VPoint>, IPoint
     {
         public double X { get; }
         public double Y { get; }
@@ -17,4 +17,6 @@
             return X == other.X && Y == other.Y;
         }
     }
+
+
 }
