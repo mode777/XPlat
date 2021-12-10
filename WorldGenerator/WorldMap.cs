@@ -53,7 +53,7 @@ namespace net6test.WorldGenerator
         public List<VPoint> Points { get; set; }
         public NVGcolor Color { get; set; }
 
-        public bool isComplete => Points[0].Equals(Points.Last());
+        public bool isComplete => Points[0].Equals(Points.Last()) && Points.Count > 3;
         public int Dot => (int)MathF.Sign(Vector2.Dot(
             new Vector2((float)Points[0].X - (float)Site.X, (float)Points[0].Y - (float)Site.Y),
             new Vector2((float)Points[1].X - (float)Site.X, (float)Points[1].Y - (float)Site.Y)
@@ -150,18 +150,35 @@ namespace net6test.WorldGenerator
         }
 
         public void Draw(NVGcontext vg, float cellIdx){
+
             var s = param.DrawingScale;
-            vg.StrokeColor("#00ff00");
-            vg.StrokeWidth(s);
-            foreach (var e in edges)
+            foreach (var c in cells)
             {
+                if (!c.isComplete) continue;
                 vg.BeginPath();
-                vg.MoveTo((float)e.Start.X*s, (float)e.Start.Y*s);
-                vg.LineTo((float)e.End.X*s, (float)e.End.Y*s);
+                vg.MoveTo((float)c.Points[0].X * s, (float)c.Points[0].Y * s);
+
+                for (int i = 1; i < c.Points.Count - 1; i++)
+                {
+                    vg.LineTo((float)c.Points[i].X * s, (float)c.Points[i].Y * s);
+                }
+
                 vg.ClosePath();
-                vg.StrokeColor("#00ff00");
-                vg.Stroke();
+                vg.FillColor(c.Color);
+                vg.Fill();
             }
+
+            //vg.StrokeColor("#00ff00");
+            //vg.StrokeWidth(s);
+            //foreach (var e in edges)
+            //{
+            //    vg.BeginPath();
+            //    vg.MoveTo((float)e.Start.X*s, (float)e.Start.Y*s);
+            //    vg.LineTo((float)e.End.X*s, (float)e.End.Y*s);
+            //    vg.ClosePath();
+            //    vg.StrokeColor("#00ff00");
+            //    vg.Stroke();
+            //}
             // foreach (var c in cells)
             // {
             //     if(!c.isComplete) continue;
@@ -180,22 +197,26 @@ namespace net6test.WorldGenerator
 
             // }
 
+            
+
             //foreach(var c in cells)
             //{
-                var c = cells[(int)cellIdx];
-                //if(!c.isComplete) return;
-                //vg.BeginPath();
-                for (int i = 0; i < c.Points.Count-1; i++)
-                {
-                    vg.FontSize(s*20);
-                    vg.FontFace("sans");
-                    vg.FillColor(c.Color);
-                    vg.Text((float)c.Points[i].X*s, (float)c.Points[i].Y*s, i.ToString());
-                    //vg.Rect((float)c.Points[i].X*s, (float)c.Points[i].Y*s, 4*s,4*s);
-                }
-                //vg.FillColor(c.Color);
-                //vg.Fill();
-            //}
+            //    var c = cells[(int)cellIdx];
+            //    //if(!c.isComplete) return;
+
+
+
+            //for (int i = 0; i < c.Points.Count-1; i++)
+            //    {
+            //        vg.FontSize(s*20);
+            //        vg.FontFace("sans");
+            //        vg.FillColor(c.Color);
+            //        vg.Text((float)c.Points[i].X*s, (float)c.Points[i].Y*s, i.ToString());
+            //        //vg.Rect((float)c.Points[i].X*s, (float)c.Points[i].Y*s, 4*s,4*s);
+            //    }
+            //    //vg.FillColor(c.Color);
+            //    //vg.Fill();
+            ////}
 
             // foreach (var p in points)
             // {
