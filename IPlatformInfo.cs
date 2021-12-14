@@ -13,6 +13,11 @@ namespace net6test
 
         event EventHandler OnClick;
         event EventHandler OnResize;
+        // event EventHandler MouseMove;
+        // event EventHandler TextInput;
+
+
+
         public event EventHandler<SDL2.SDL.SDL_Keycode>? OnKeyUp;
 
         float SizeH(float val) => (val / 100f) * RendererSize.Width;

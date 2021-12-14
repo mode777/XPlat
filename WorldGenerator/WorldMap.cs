@@ -119,7 +119,6 @@ namespace net6test.WorldGenerator
             {
                 edge.Left.Cell.Add(edge);
                 edge.Right.Cell.Add(edge);
-                
             }
 
             this.cells = new List<WorldCell>();

@@ -3158,6 +3158,16 @@ namespace NanoVGDotNet
 			//stbi_image_free(img);
 			return image;
 		}
+
+		public static bool nvgIsImageIcon (int value)
+        {
+            return (1024 > value);
+        }
+
+        public static bool nvgIsFontIcon (int value)
+        {
+            return (1024 <= value);
+        }
 	}
 
 	#region Auxiliary-classes-structs
