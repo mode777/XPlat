@@ -10,9 +10,10 @@ namespace net6test
             try
             {
                 var sdl = host.Services.GetRequiredService<SdlPlatform>();
-                sdl.Init();
+                var app = host.Services.GetRequiredService<ISdlApp>();
+                sdl.Init(app);
                 host.StartAsync(token).GetAwaiter().GetResult();
-                sdl.Run();
+                sdl.Run(app);
                 host.StopAsync(CancellationToken.None);
             }
             finally

@@ -1,6 +1,7 @@
 using System.Numerics;
 using GLES2;
 using NanoVGDotNet;
+using static SDL2.SDL;
 
 namespace net6test.NanoGuiPort
 {
@@ -12,13 +13,15 @@ namespace net6test.NanoGuiPort
         private bool redraw;
         private float lastInteraction;
         private List<Widget> focusPath = new List<Widget>();
+        private readonly ISdlPlatformEvents events;
 
         public Vector2 FramebufferSize => new Vector2(Platform.RendererSize.Width, Platform.RendererSize.Height);
         public float PixelRatio => Platform.RetinaScale;
 
-        public Screen(IPlatformInfo platform) : base(null)
+        public Screen(IPlatformInfo platform, ISdlPlatformEvents events) : base(null)
         {
             this.Platform = platform;
+            this.events = events;
             Background = "#555555";
             Size = new Vector2(platform.WindowSize.Width, platform.WindowSize.Height);
         }
@@ -35,10 +38,27 @@ namespace net6test.NanoGuiPort
 
             Theme = new Theme(NvgContext);
 
+            RegisterEventCallbacks();
+
             /// Fixes retina display-related font rendering issue (#185)
             vg.BeginFrame((int)Size.X, (int)Size.Y, PixelRatio);
             vg.EndFrame();
         }
+
+        private void RegisterEventCallbacks()
+        {
+            events.Subscribe(SDL_EventType.SDL_MOUSEMOTION, OnMouseMoveHandler);
+            events.Subscribe(SDL_EventType.SDL_MOUSEBUTTONUP, OnMouseHandler);
+            events.Subscribe(SDL_EventType.SDL_MOUSEBUTTONDOWN, OnMouseHandler);
+            events.Subscribe(SDL_EventType.SDL_KEYDOWN, OnKeyHandler);
+            events.Subscribe(SDL_EventType.SDL_KEYUP, OnKeyHandler);
+            events.Subscribe(SDL_EventType.SDL_TEXTINPUT, OnTextHandler);
+            events.Subscribe(SDL_EventType.SDL_DROPFILE, OnDropHandler);
+            events.Subscribe(SDL_EventType.SDL_MOUSEWHEEL, OnScrollHandler);
+            events.Subscribe(SDL_EventType.SDL_WINDOWEVENT, OnWindowHandler);
+        }
+
+        // TODO: Unsubscribe!
 
         public virtual void Update()
         {
@@ -203,8 +223,44 @@ namespace net6test.NanoGuiPort
             this.PerformLayout(NvgContext);
         }
 
+        private void OnMouseMoveHandler(SDL_EventType type, ref SDL_Event ev){
 
+        }
 
+        private void OnMouseHandler(SDL_EventType type, ref SDL_Event ev){
+            
+        }
+
+        private void OnKeyHandler(SDL_EventType type, ref SDL_Event ev){
+            
+        }
+
+        private void OnTextHandler(SDL_EventType type, ref SDL_Event ev){
+            
+        }
+
+        private void OnDropHandler(SDL_EventType type, ref SDL_Event ev){
+            
+        }
+        private void OnScrollHandler(SDL_EventType type, ref SDL_Event ev){
+            
+        }
+
+        private void OnWindowHandler(SDL_EventType type, ref SDL_Event ev){
+            if(ev.window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED){
+
+            } else if(ev.window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED){
+
+            } else if(ev.window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST){
+
+            }
+        }
+
+        private void OnFocusHandler(SDL_EventType type, ref SDL_Event ev){
+            
+        }
+
+        
 
     }
 }

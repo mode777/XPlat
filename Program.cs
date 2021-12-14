@@ -31,6 +31,8 @@ namespace net_gles2
                     services.AddSingleton<IPlatformInfo>(pi);
                     services.AddSingleton<PlatformInfo>(pi);
                     addServices?.Invoke(services);
+
+                    services.AddSingleton<ISdlPlatformEvents>(x => x.GetRequiredService<SdlPlatform>());
                     
                 }).Build().RunSdlApp();
     }

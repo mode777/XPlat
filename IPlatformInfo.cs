@@ -2,6 +2,7 @@ using System.Drawing;
 
 namespace net6test
 {
+
     public interface IPlatformInfo
     {
         public static IPlatformInfo Default {  get; internal set; }
@@ -9,7 +10,7 @@ namespace net6test
         Size WindowSize { get; }
         Point MousePosition { get; }
         bool MouseClicked { get; }
-        public float RetinaScale { get; }
+        float RetinaScale { get; }
 
         event EventHandler OnClick;
         event EventHandler OnResize;
@@ -18,7 +19,7 @@ namespace net6test
 
 
 
-        public event EventHandler<SDL2.SDL.SDL_Keycode>? OnKeyUp;
+        event EventHandler<SDL2.SDL.SDL_Keycode>? OnKeyUp;
 
         float SizeH(float val) => (val / 100f) * RendererSize.Width;
         float SizeV(float val) => (val / 100f) * RendererSize.Height;
