@@ -7,9 +7,9 @@ namespace net6test.samples
 
     public class Pbr : ISdlApp
     {
-        private readonly IPlatformInfo platform;
+        private readonly IPlatform platform;
 
-        public Pbr(IPlatformInfo platform)
+        public Pbr(IPlatform platform)
         {
             this.platform = platform;
 

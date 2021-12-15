@@ -10,9 +10,9 @@ namespace net6test.samples
     {
         private NVGcontext vg;
         private MapGen mg;
-        private readonly IPlatformInfo platform;
+        private readonly IPlatform platform;
 
-        public MapGenSample(IPlatformInfo platform)
+        public MapGenSample(IPlatform platform)
         {
             this.platform = platform;
 

@@ -5,5 +5,7 @@ namespace net6test.NanoGuiPort
         public Window(Widget parent, string title) : base(parent)
         {
         }
+
+        public bool Modal { get; internal set; }
     }
 }

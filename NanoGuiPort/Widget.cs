@@ -222,7 +222,7 @@ namespace net6test.NanoGuiPort
             return false;
         }
 
-        public virtual bool KeyboardEvent(int keycode, int scancode, int action, int modifiers)
+        public virtual bool KeyboardEvent(int keycode, int scancode, int action, bool repeat, int modifiers)
         {
             return false;
         }

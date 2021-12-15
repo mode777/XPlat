@@ -19,10 +19,10 @@ namespace net6test.samples
         private Layout layout;
         private Panel panel;
         private CoroutineRunner runner;
-        private readonly IPlatformInfo platform;
+        private readonly IPlatform platform;
         
 
-        public InkApp(InkService service, IPlatformInfo platform)
+        public InkApp(InkService service, IPlatform platform)
         {
             this.platform = platform;
             this.service = service;

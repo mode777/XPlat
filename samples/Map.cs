@@ -12,10 +12,10 @@ namespace net6test.samples
         private int font;
         private CityMap map;
         private Layout layout;
-        private readonly IPlatformInfo platform;
+        private readonly IPlatform platform;
         private float r = 0;
 
-        public Map(IPlatformInfo platform)
+        public Map(IPlatform platform)
         {
             this.platform = platform;
         }

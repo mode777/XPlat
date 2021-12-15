@@ -8,9 +8,9 @@ namespace net6test.samples
 
     public class Lightmap : ISdlApp
     {
-        private readonly IPlatformInfo platform;
+        private readonly IPlatform platform;
 
-        public Lightmap(IPlatformInfo platform)
+        public Lightmap(IPlatform platform)
         {
             this.platform = platform;
 
@@ -48,15 +48,15 @@ namespace net6test.samples
 
             scene = LoadScene();
 
-            platform.OnKeyUp += (s, k) =>
-            {
-                if (k == SDL.SDL_Keycode.SDLK_1)
-                    lights.X = lights.X > 0 ? 0 : 1;
-                if (k == SDL.SDL_Keycode.SDLK_2)
-                    lights.Y = lights.Y > 0 ? 0 : 1;
-                if (k == SDL.SDL_Keycode.SDLK_3)
-                    lights.Z = lights.Z > 0 ? 0 : 1;
-            };
+            //platform.OnKeyUp += (s, k) =>
+            //{
+            //    if (k == SDL.SDL_Keycode.SDLK_1)
+            //        lights.X = lights.X > 0 ? 0 : 1;
+            //    if (k == SDL.SDL_Keycode.SDLK_2)
+            //        lights.Y = lights.Y > 0 ? 0 : 1;
+            //    if (k == SDL.SDL_Keycode.SDLK_3)
+            //        lights.Z = lights.Z > 0 ? 0 : 1;
+            //};
         }
 
         public void Update()

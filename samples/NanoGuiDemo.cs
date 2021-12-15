@@ -13,9 +13,9 @@ namespace net6test.samples
         private int img;
         private float fsize = 12;
         private Widget screen;
-        private readonly IPlatformInfo platform;
+        private readonly IPlatform platform;
 
-        public NanoGuiDemo(IPlatformInfo platform)
+        public NanoGuiDemo(IPlatform platform)
         {
             this.platform = platform;
 

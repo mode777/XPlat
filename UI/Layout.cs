@@ -25,8 +25,8 @@ namespace net6test.UI
                     Vg = vg,
                     MinW = 0,
                     MinH = 0,
-                    MaxW = IPlatformInfo.Default.RendererSize.Width,
-                    MaxH = IPlatformInfo.Default.RendererSize.Height                    
+                    MaxW = 0,/*IPlatform.Default.RendererSize.Width*/
+                    MaxH = 0 /*IPlatform.Default.RendererSize.Height*/                    
                 };
                 c.Arrange(ctx);
             }
@@ -42,13 +42,13 @@ namespace net6test.UI
 
         public void Draw()
         {
-            var size = IPlatformInfo.Default.RendererSize;
-            vg.BeginFrame(size.Width, size.Height, 1);
-            foreach (var c in Children)
-            {
-                c.Draw(vg);
-            }
-            vg.EndFrame();
+            //var size = IPlatform.Default.RendererSize;
+            //vg.BeginFrame(size.Width, size.Height, 1);
+            //foreach (var c in Children)
+            //{
+            //    c.Draw(vg);
+            //}
+            //vg.EndFrame();
         }
 
     }

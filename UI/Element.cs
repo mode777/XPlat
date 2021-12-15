@@ -28,10 +28,10 @@ namespace net6test.UI
         }
 
         public virtual void Update(NVGcontext ctx)
-        {            
-            var m = IPlatformInfo.Default.MousePosition;
-            HasMouseOver = bounds.Contains(m);
-            if (HasMouseOver && IPlatformInfo.Default.MouseClicked)
+        {
+            //var m = IPlatform.Default.MousePosition;
+            HasMouseOver = false;/*bounds.Contains(m);*/
+            if (HasMouseOver && false /*IPlatformInfo.Default.MouseClicked*/)
                 OnClick?.Invoke(this, null);
 
             foreach (var c in Children)

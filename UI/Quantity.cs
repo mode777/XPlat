@@ -47,18 +47,19 @@ namespace net6test.UI
 
         public float ToPixels() 
         {
-            var p = IPlatformInfo.Default;
-            switch (Unit)
-            {
-                case Unit.Point:
-                    return Value * p.RetinaScale;
-                case Unit.ViewportWidth:
-                    return (Value / 100f) * p.RendererSize.Width;
-                case Unit.ViewportHeight:
-                    return (Value / 100f) * p.RendererSize.Height;
-                default:
-                    throw new Exception("Unknown unit");
-            }
+            return 0;
+            //var p = IPlatform.Default;
+            //switch (Unit)
+            //{
+            //    case Unit.Point:
+            //        return Value * p.RetinaScale;
+            //    case Unit.ViewportWidth:
+            //        return (Value / 100f) * p.RendererSize.Width;
+            //    case Unit.ViewportHeight:
+            //        return (Value / 100f) * p.RendererSize.Height;
+            //    default:
+            //        throw new Exception("Unknown unit");
+            //}
 }
     }
 }

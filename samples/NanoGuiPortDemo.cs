@@ -13,7 +13,7 @@ namespace net6test.samples
         private readonly ILogger<NanoGuiPortDemo> logger;
         private readonly ISdlPlatformEvents events;
 
-        public NanoGuiPortDemo(ILogger<NanoGuiPortDemo> logger, ISdlPlatformEvents events, IPlatformInfo info) : base(info)
+        public NanoGuiPortDemo(ILogger<NanoGuiPortDemo> logger, ISdlPlatformEvents events, IPlatform info) : base(info, events)
         {
             this.logger = logger;
             this.events = events;

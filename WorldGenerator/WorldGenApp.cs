@@ -10,9 +10,9 @@ namespace net6test.WorldGenerator
     {
         private NVGcontext vg;
         private WorldMap map;
-        private readonly IPlatformInfo platform;
+        private readonly IPlatform platform;
 
-        public WorldGenApp(IPlatformInfo platform)
+        public WorldGenApp(IPlatform platform)
         {
             this.platform = platform;
 

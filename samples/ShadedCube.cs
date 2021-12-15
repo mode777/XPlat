@@ -8,9 +8,9 @@ namespace net6test.samples
 
     public class ShadedCube : ISdlApp
     {
-        private readonly IPlatformInfo platform;
+        private readonly IPlatform platform;
 
-        public ShadedCube(IPlatformInfo platform)
+        public ShadedCube(IPlatform platform)
         {
             this.platform = platform;
 

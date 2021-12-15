@@ -13,9 +13,9 @@ namespace net6test.samples
         private Layout layout;
         private Panel panel;
         private float fsize = 12;
-        private readonly IPlatformInfo platform;
+        private readonly IPlatform platform;
 
-        public Nvg(IPlatformInfo platform)
+        public Nvg(IPlatform platform)
         {
             this.platform = platform;
 

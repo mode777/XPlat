@@ -26,13 +26,10 @@ namespace net_gles2
                 {
                     services.AddSingleton<SdlPlatform>();
                     services.AddSingleton<ISdlApp, T>();
-                    var pi = new PlatformInfo();
-                    IPlatformInfo.Default = pi;
-                    services.AddSingleton<IPlatformInfo>(pi);
-                    services.AddSingleton<PlatformInfo>(pi);
                     addServices?.Invoke(services);
 
                     services.AddSingleton<ISdlPlatformEvents>(x => x.GetRequiredService<SdlPlatform>());
+                    services.AddSingleton<IPlatform>(x => x.GetRequiredService<SdlPlatform>());
                     
                 }).Build().RunSdlApp();
     }
