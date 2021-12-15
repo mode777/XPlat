@@ -48,7 +48,7 @@ namespace net6test
             lifetime.ApplicationStopping.Register(() => isRunning = false);
         }
 
-        public void Init(ISdlApp app)
+        public void Init()
         {
             SDL.SDL_Init(SDL.SDL_INIT_EVERYTHING);
             logger.LogInformation("SDL initialized");
@@ -72,9 +72,6 @@ namespace net6test
 
             UpdateWindow();
             UpdateMouse();
-
-            app.Init();
-            logger.LogInformation("App initialized");
             isRunning = true;
         }
 
@@ -99,25 +96,28 @@ namespace net6test
 
         public void Run(ISdlApp app)
         {
+            app.Init();
+            logger.LogInformation("App initialized");
             while (isRunning)
             {
                 var t = SDL.SDL_GetTicks();
 
-                UpdateWindow();
-                UpdateMouse();
-
                 while (SDL.SDL_PollEvent(out @event) == 1)
                 {
-                    OnEvent?.Invoke(@event.type, ref @event);
-                    handlers[(int)@event.type]?.Invoke(@event.type, ref @event);
 
                     switch (@event.type)
                     {
                         case SDL.SDL_EventType.SDL_QUIT:
                             logger.LogInformation("Received SDL_QUIT");
                             return;
+                        case SDL.SDL_EventType.SDL_WINDOWEVENT:
+                            UpdateWindow();
+                            break;
                     }
+                    OnEvent?.Invoke(@event.type, ref @event);
+                    handlers[(int)@event.type]?.Invoke(@event.type, ref @event);
                 }
+                UpdateMouse();
 
                 GL.Viewport(0, 0, (uint)RendererSize.Width, (uint)RendererSize.Height);
 

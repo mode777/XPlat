@@ -273,7 +273,7 @@ namespace net6test.NanoGuiPort
         }
 
         protected float IconScale => Theme?.IconScale * IconExtraScale ?? 1;
-        private bool mouseFocus;
+        protected bool mouseFocus;
         private Theme? theme;
         private float fontSize;
     }

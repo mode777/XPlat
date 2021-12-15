@@ -18,19 +18,15 @@ namespace net6test.samples
             this.logger = logger;
             this.events = events;
 
-            events.Subscribe(SDL_EventType.SDL_MOUSEMOTION, MouseMove);
-
             var window = new Window(this, "Button demo");
               window.Position = new Vector2(15,15);
+              //window.Position = new Vector2(0,0);
+              //window.Size = new Vector2(1200,720);
               //window.Layout = new GroupLayout();
 
               //new Label(window, "Push buttons", "sans-bold");
 
             PerformLayout();
-        }
-
-        public void MouseMove(SDL_EventType type, ref SDL_Event ev){
-            logger.LogInformation($"Mouse move dx: {ev.motion.xrel} dy: {ev.motion.yrel}");
         }
 
     }

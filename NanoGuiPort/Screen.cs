@@ -17,6 +17,11 @@ namespace net6test.NanoGuiPort
         private bool dragActive;
         private bool processEvents = true;
         private Widget? dragWidget;
+        public event EventHandler<Vector2> OnResize;
+
+        public Vector2 MousePos => new Vector2(Platform.MousePosition.X, Platform.MousePosition.Y);
+
+        private NVGcontext nvgContext;
 
         public Vector2 FramebufferSize => new Vector2(Platform.RendererSize.Width, Platform.RendererSize.Height);
         public float PixelRatio => Platform.RetinaScale;
@@ -27,20 +32,22 @@ namespace net6test.NanoGuiPort
             this.events = events;
             Background = "#555555";
             Size = new Vector2(platform.WindowSize.Width, platform.WindowSize.Height);
+            nvgContext = new NVGcontext();
+
+            Initialize();
         }
 
-        // TODO: Implement dispose
-        public virtual void Init()
+        private void Initialize()
         {
-            var vg = NvgContext = new NVGcontext();
-            GlNanoVG.nvgCreateGL(ref vg, (int)NVGcreateFlags.NVG_ANTIALIAS |
+            GlNanoVG.nvgCreateGL(ref nvgContext, (int)NVGcreateFlags.NVG_ANTIALIAS |
                         (int)NVGcreateFlags.NVG_STENCIL_STROKES);
 
+            var vg = nvgContext;
             vg.CreateFont("sans", "assets/Roboto-Regular.ttf");
             vg.CreateFont("sans-bold", "assets/Roboto-Bold.ttf");
             vg.CreateFont("icons", "assets/entypo.ttf");
 
-            Theme = new Theme(NvgContext);
+            Theme = new Theme(nvgContext);
 
             RegisterEventCallbacks();
 
@@ -49,6 +56,11 @@ namespace net6test.NanoGuiPort
             vg.EndFrame();
 
             Platform.AutoSwap = false;
+        }
+
+        // TODO: Implement dispose
+        public virtual void Init()
+        {
         }
 
         private void RegisterEventCallbacks()
@@ -68,13 +80,69 @@ namespace net6test.NanoGuiPort
 
         public virtual void Update()
         {
-
-
+            DrawAll();
         }
 
         internal void UpdateFocus(Widget? widget)
         {
-            throw new NotImplementedException();
+            foreach (var w in focusPath)
+            {
+                if(!w.Focused) continue;
+                w.FocusEvent(false);
+            }
+            focusPath.Clear();
+            Window? window = null;
+            while(widget != null){
+                focusPath.Add(widget);
+                if(widget is Window win){
+                    window = win;
+                }
+                widget = widget.Parent;
+            }
+            foreach (var it in focusPath)
+            {
+                it.FocusEvent(true);
+            }
+
+            if(window != null)
+                MoveWindowToFront(window);
+        }
+
+        public void MoveWindowToFront(Window window)
+        {
+            Children.Remove(window);
+            Children.Add(window);
+            var changed = false;
+            do {
+                var baseIndex = Children.IndexOf(window);
+                changed = false;
+                for (int i = 0; i < Children.Count; i++)
+                {
+                    var pw = Children[i] as Popup;
+                    if(pw != null && pw.ParentWindow == window && i < baseIndex){
+                        MoveWindowToFront(pw);
+                        changed = true;
+                        break;
+                    }
+                }
+            } while(changed);
+        }
+
+        public void DisposeWindow(Window window){
+            if(focusPath.Contains(window)) focusPath.Clear();
+            if(dragWidget == window){
+                dragWidget = null;
+                dragActive = false;
+            }
+            RemoveChild(window);
+        }
+
+        public void CenterWindow(Window window){
+            if(window.Size == Vector2.Zero){
+                window.Size = window.PreferredSize(nvgContext);
+                window.PerformLayout(nvgContext);
+            }
+            window.Position = Size - window.Size / 2f;
         }
 
         void Redraw()
@@ -122,7 +190,7 @@ namespace net6test.NanoGuiPort
 
         internal void DrawWidgets()
         {
-            var vg = NvgContext;
+            var vg = nvgContext;
 
             vg.BeginFrame((int)Size.X, (int)Size.Y, PixelRatio);
 
@@ -229,24 +297,21 @@ namespace net6test.NanoGuiPort
         {
             OnResize?.Invoke(this, size);
             redraw = true;
-            DrawAll();
             return true;
         }
 
-        public event EventHandler<Vector2> OnResize;
-
-        public Vector2 MousePos => new Vector2(Platform.MousePosition.X, Platform.MousePosition.Y);
-
-        public NVGcontext NvgContext { get; set; }
-
         public bool TooltipFadeInProgress()
         {
-            throw new NotImplementedException();
+            var elapsed = Time.RunningTime - lastInteraction;
+            if(elapsed < 0.25f || elapsed > 1.25f) return false;
+
+            var widget = FindWidget(MousePos);
+            return string.IsNullOrEmpty(widget?.Tooltip ?? string.Empty); 
         }
 
         public void PerformLayout()
         {
-            this.PerformLayout(NvgContext);
+            this.PerformLayout(nvgContext);
         }
 
         private void OnMouseMoveHandler(SDL_EventType type, ref SDL_Event ev)
@@ -361,13 +426,15 @@ namespace net6test.NanoGuiPort
         {
             if (ev.window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED)
             {
+                lastInteraction = Time.RunningTime;
 
+                ResizeEvent(Size);
             }
-            else if (ev.window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED || 
-                ev.window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST)
-            {
+            // else if (ev.window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED || 
+            //     ev.window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST)
+            // {
 
-            }
+            // }
             
         }
     }
