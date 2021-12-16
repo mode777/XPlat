@@ -4,6 +4,7 @@ using SDL2;
 
 namespace net6test.NanoGuiPort
 {
+
     public class Window : Widget, IDisposable
     {
         protected bool drag;
@@ -52,6 +53,57 @@ namespace net6test.NanoGuiPort
             vg.FillColor(mouseFocus ? Theme.WindowFillFocused : Theme.WindowFillUnfocused);
             
             vg.Fill();
+
+            var shadowPaint = vg.BoxGradient(Position.X, Position.Y, Size.X, Size.Y, cr * 2, ds * 2, Theme.DropShadow, Theme.Transparent);
+
+            vg.Save();
+            vg.ResetScissor();
+            vg.BeginPath();
+            vg.Rect(Position.X - ds, Position.Y - ds, Size.X + 2 * ds, Size.Y + 2 * ds);
+            vg.RoundedRect(Position.X, Position.Y, Size.X, Size.Y, cr);
+            vg.PathWinding((int)NVGsolidity.NVG_HOLE);
+            vg.FillPaint(shadowPaint);
+            vg.Fill();
+            vg.Restore();
+
+            if (!String.IsNullOrEmpty(Title))
+            {
+                var headerPaint = vg.LinearGradient(Position.X, Position.Y, Position.X, Position.Y + hh, Theme.WindowHeaderGradientTop, Theme.WindowHeaderGradientBottom);
+
+                vg.BeginPath();
+                vg.RoundedRect(Position.X, Position.Y, Size.X, hh, cr);
+
+                vg.FillPaint(headerPaint);
+                vg.Fill();
+
+                vg.BeginPath();
+                vg.RoundedRect(Position.Y, Size.X, Size.X, hh, cr);
+                vg.StrokeColor(Theme.WindowHeaderSepTop);
+
+                vg.Save();
+                vg.IntersectScissor(Position.X, Position.Y, Size.X, 0.5f);
+                vg.Stroke();
+                vg.Restore();
+
+                vg.BeginPath();
+                vg.MoveTo(Position.X + 0.5f, Position.Y + hh - 1.5f);
+                vg.LineTo(Position.X + Size.X - 0.5f, Position.Y + hh - 1.5f);
+                vg.StrokeColor(Theme.WindowHeaderSepBot);
+                vg.Stroke();
+
+                vg.FontSize(18);
+                vg.FontFace("sans-bold");
+                vg.TextAlign((int)NVGalign.NVG_ALIGN_CENTER | (int)NVGalign.NVG_ALIGN_MIDDLE);
+
+                vg.FontBlur(2);
+                vg.FillColor(Theme.DropShadow);
+                vg.Text(Position.X + Size.X / 2, Position.Y + hh / 2, Title);
+                vg.FontBlur(0);
+                vg.FillColor(Focused ? Theme.WindowTitleFocused : Theme.WindowTitleUnfocused);
+                vg.Text(Position.X + Size.X / 2, Position.Y + hh / 2 - 1, Title);
+
+                vg.Restore();
+            }
 
             vg.Restore();
 

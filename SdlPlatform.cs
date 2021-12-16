@@ -110,7 +110,7 @@ namespace net6test
                         case SDL.SDL_EventType.SDL_QUIT:
                             logger.LogInformation("Received SDL_QUIT");
                             return;
-                        case SDL.SDL_EventType.SDL_WINDOWEVENT:
+                        case SDL.SDL_EventType.SDL_WINDOWEVENT:                            
                             UpdateWindow();
                             break;
                     }

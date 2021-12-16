@@ -7,7 +7,7 @@ namespace net6test.NanoGuiPort
     {
         public Widget? Parent { get; set; }
         public Layout? Layout { get; set; }
-        public Theme? Theme
+        public virtual Theme? Theme
         {
             get => theme;
             set

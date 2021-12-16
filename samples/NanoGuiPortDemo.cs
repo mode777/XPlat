@@ -12,22 +12,39 @@ namespace net6test.samples
     {
         private readonly ILogger<NanoGuiPortDemo> logger;
         private readonly ISdlPlatformEvents events;
+        private readonly Window window;
 
         public NanoGuiPortDemo(ILogger<NanoGuiPortDemo> logger, ISdlPlatformEvents events, IPlatform info) : base(info, events)
         {
             this.logger = logger;
             this.events = events;
 
-            var window = new Window(this, "Button demo");
-              window.Position = new Vector2(15,15);
+            this.window = new Window(this, "Button demo");
+            window.Position = new Vector2(15,15);
               //window.Position = new Vector2(0,0);
               //window.Size = new Vector2(1200,720);
               //window.Layout = new GroupLayout();
 
-              //new Label(window, "Push buttons", "sans-bold");
+            //new Label(window, "Push buttons", "sans-bold");
 
             PerformLayout();
         }
 
+
+        public override void Update()
+        {
+            window.Title = ((int)Time.RunningTime).ToString();
+            base.Update();
+        }
+
+        public override void DrawContents()
+        {
+            base.DrawContents();
+            var vg = nvgContext;
+            vg.BeginPath();
+            vg.Circle(Platform.MousePosition.X, Platform.MousePosition.Y, 2);
+            vg.FillColor("#ff0000");
+            vg.Fill();
+        }
     }
 }

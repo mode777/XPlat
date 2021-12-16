@@ -21,7 +21,7 @@ namespace net6test.NanoGuiPort
 
         public Vector2 MousePos => new Vector2(Platform.MousePosition.X, Platform.MousePosition.Y);
 
-        private NVGcontext nvgContext;
+        protected NVGcontext nvgContext;
 
         public Vector2 FramebufferSize => new Vector2(Platform.RendererSize.Width, Platform.RendererSize.Height);
         public float PixelRatio => Platform.RetinaScale;
@@ -155,15 +155,15 @@ namespace net6test.NanoGuiPort
 
         public virtual void DrawAll()
         {
-            if (this.redraw)
-            {
+            //if (this.redraw)
+            //{
                 redraw = false;
 
                 DrawSetup();
                 DrawContents();
                 DrawWidgets();
                 DrawTeardown();
-            }
+            //}
         }
 
         public virtual void Clear()
@@ -334,7 +334,7 @@ namespace net6test.NanoGuiPort
             }
             else
             {
-               ret = dragWidget.MouseDragEvent(p - dragWidget.Parent?.AbsolutePosition ?? Vector2.Zero, p - MousePos, ev.motion.state, 0); 
+               ret = dragWidget.MouseDragEvent(p - dragWidget.Parent?.AbsolutePosition ?? Vector2.Zero, new Vector2(ev.motion.xrel, ev.motion.yrel), ev.motion.state, 0); 
             }
 
             if (!ret) ret = MouseMotionEvent(p, p - MousePos, ev.motion.state, 0);
@@ -370,7 +370,7 @@ namespace net6test.NanoGuiPort
 
             var btn12 = ev.button.button == SDL_BUTTON_LEFT || ev.button.button == SDL_BUTTON_RIGHT;
 
-            if(dragActive && type == SDL_EventType.SDL_MOUSEBUTTONDOWN && btn12)
+            if(!dragActive && type == SDL_EventType.SDL_MOUSEBUTTONDOWN && btn12)
             {
                 dragWidget = FindWidget(MousePos);
                 if(dragWidget == this) dragWidget = null;
@@ -424,18 +424,20 @@ namespace net6test.NanoGuiPort
 
         private void OnWindowHandler(SDL_EventType type, ref SDL_Event ev)
         {
+
             if (ev.window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_SIZE_CHANGED)
             {
                 lastInteraction = Time.RunningTime;
 
                 ResizeEvent(Size);
+
             }
             // else if (ev.window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_GAINED || 
             //     ev.window.windowEvent == SDL_WindowEventID.SDL_WINDOWEVENT_FOCUS_LOST)
             // {
 
             // }
-            
+
         }
     }
 }
