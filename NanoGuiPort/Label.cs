@@ -34,7 +34,7 @@ namespace net6test.NanoGuiPort
             }
         }
 
-        public string Caption { get; }
+        public string Caption { get; set; }
 
         public override Vector2 PreferredSize(NVGcontext vg)
         {

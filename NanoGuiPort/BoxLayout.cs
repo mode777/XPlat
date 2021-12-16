@@ -1,6 +1,9 @@
+using System.Numerics;
+using NanoVGDotNet;
+
 namespace net6test.NanoGuiPort
 {
-    internal class BoxLayout : Layout
+    public class BoxLayout : Layout
     {
         private Orientation horizontal;
         private Alignment middle;
@@ -13,6 +16,16 @@ namespace net6test.NanoGuiPort
             this.middle = middle;
             this.v1 = v1;
             this.v2 = v2;
+        }
+
+        public override void PerformLayout(NVGcontext ctx, Widget widget)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Vector2 PreferredSize(NVGcontext ctx, Widget widget)
+        {
+            throw new NotImplementedException();
         }
     }
 }

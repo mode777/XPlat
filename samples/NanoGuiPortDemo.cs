@@ -13,19 +13,24 @@ namespace net6test.samples
         private readonly ILogger<NanoGuiPortDemo> logger;
         private readonly ISdlPlatformEvents events;
         private readonly Window window;
+        private Label label;
+        private Label label1;
+        private Label label2;
 
         public NanoGuiPortDemo(ILogger<NanoGuiPortDemo> logger, ISdlPlatformEvents events, IPlatform info) : base(info, events)
         {
             this.logger = logger;
             this.events = events;
 
-            this.window = new Window(this, "Button demo");
+            this.window = new Window(this, "Metrics Panel");
             window.Position = new Vector2(15,15);
               //window.Position = new Vector2(0,0);
-              //window.Size = new Vector2(1200,720);
-              //window.Layout = new GroupLayout();
+            //window.Size = new Vector2(300,300);
+            window.FixedWidth = 300;
+            window.Layout = new GroupLayout();
 
-            //new Label(window, "Push buttons", "sans-bold");
+            this.label1 = new Label(window, "", "sans-bold");
+            this.label2 = new Label(window, "", "sans-bold");
 
             PerformLayout();
         }
@@ -33,7 +38,8 @@ namespace net6test.samples
 
         public override void Update()
         {
-            window.Title = ((int)Time.RunningTime).ToString();
+            label1.Caption = "Mouse Position " + MousePos.ToString();
+            label2.Caption = "Runtime(s) " + ((int)Time.RunningTime).ToString();
             base.Update();
         }
 

@@ -79,7 +79,7 @@ namespace net6test
         {
             int w, h;
             SDL.SDL_GetMouseState(out w, out h);
-            MousePosition = new Point((int)(w * RetinaScale), (int)(h * RetinaScale));
+            MousePosition = new Point(w, h);
         }
 
         private void UpdateWindow()
