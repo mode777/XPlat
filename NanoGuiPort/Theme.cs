@@ -32,6 +32,7 @@ namespace net6test.NanoGuiPort
         public NVGcolor BorderLight { get; set; } = NanoVG.nvgRGBA(92,92,92,255);
         public NVGcolor WindowTitleFocused { get; set; } = NanoVG.nvgRGBA(255, 255, 255, 190);
         public NVGcolor WindowTitleUnfocused { get; set; } = NanoVG.nvgRGBA(220, 220, 220, 160);
-        public NVGcolor TextColor { get; internal set; } = NanoVG.nvgRGBA(255, 255, 255, 160);
+        public NVGcolor TextColor { get; set; } = NanoVG.nvgRGBA(255, 255, 255, 160);
+        public float ButtonFontSize { get; set; } = 20;
     }
 }

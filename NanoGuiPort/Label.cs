@@ -7,6 +7,7 @@ namespace net6test.NanoGuiPort
     {
         public NVGcolor Color { get; set; }
         public string Font { get; set; }
+        
 
         public Label(Widget? parent, string caption, string font = "sans-bold", float fontSize = 0) : base(parent)
         {
@@ -42,16 +43,17 @@ namespace net6test.NanoGuiPort
 
             vg.FontFace(Font);
             vg.FontSize(FontSize);
+            var bounds = new float[4];
             if(FixedSize != Vector2.Zero)
             {
-                var bounds = new float[4];
                 vg.TextAlign((int)NVGalign.NVG_ALIGN_LEFT | (int)NVGalign.NVG_ALIGN_TOP);
                 vg.TextBoxBounds(Position.X, Position.Y, FixedSize.X, Caption, bounds);
                 return new Vector2(FixedSize.X, bounds[3] - bounds[1]);
             } else
             {
                 vg.TextAlign((int)NVGalign.NVG_ALIGN_LEFT | (int)NVGalign.NVG_ALIGN_MIDDLE);
-                return new Vector2(vg.TextBounds(0, 0, Caption, null) + 2, FontSize);
+                vg.TextBounds(0, 0, Caption, bounds);
+                return new Vector2(bounds[2]-bounds[0] + 2, bounds[3] - bounds[1]);
             }
         }
 

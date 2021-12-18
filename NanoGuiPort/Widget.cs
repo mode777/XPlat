@@ -260,6 +260,12 @@ namespace net6test.NanoGuiPort
 
         public virtual void Draw(NVGcontext vg)
         {
+            //vg.StrokeColor("#ff0000");
+            //vg.BeginPath();
+            //vg.Rect(Position.X, Position.Y, Width, Height);
+            //vg.StrokeWidth(2);
+            //vg.Stroke();
+
             if(Children.Count == 0) return;
 
             vg.Translate(Position.X, Position.Y);

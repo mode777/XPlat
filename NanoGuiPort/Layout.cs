@@ -48,7 +48,7 @@ namespace net6test.NanoGuiPort
                 var ps = new Vector2(availableWidth - (indentCur ? GroupIndent : 0), c.PreferredSize(ctx).Y);
                 var fs = c.FixedSize;
                 
-                var targetSize = new Vector2(fs.X==0 ? fs.X : ps.X, fs.Y==0 ? fs.Y : ps.Y);
+                var targetSize = new Vector2(fs.X==0 ? ps.X : fs.X, fs.Y==0 ? ps.Y : fs.Y);
 
                 c.Position = new Vector2(Margin + (indentCur ? GroupIndent: 0), height);
                 c.Size = targetSize;
@@ -80,7 +80,7 @@ namespace net6test.NanoGuiPort
                 
                 var ps = c.PreferredSize(ctx);
                 var fs = c.FixedSize;
-                var targetSize = new Vector2(fs.X==0 ? fs.X : ps.X, fs.Y==0 ? fs.Y : ps.Y);
+                var targetSize = new Vector2(fs.X==0 ? ps.X : fs.X, fs.Y==0 ? ps.Y : fs.Y);
 
                 bool indentCur = indent && label == null;
                 height += targetSize.Y;
