@@ -26,6 +26,8 @@ namespace net6test.NanoGuiPort
         public NVGcolor ButtonGradientBotFocused { get; set; } = NanoVG.nvgRGBA(48, 48, 48, 255);
         public NVGcolor ButtonGradientTopUnfocused { get; set; } = NanoVG.nvgRGBA(74, 74, 74, 255);
         public NVGcolor ButtonGradientBotUnfocused { get; set; } = NanoVG.nvgRGBA(58, 58, 58, 255);
+        public NVGcolor ButtonGradientTopPushed { get; set; } = NanoVG.nvgRGBA(41, 41, 41, 255);
+        public NVGcolor ButtonGradientBotPushed { get; set; } = NanoVG.nvgRGBA(29, 29, 29, 255);
         public NVGcolor WindowHeaderSepTop => BorderLight;
         public NVGcolor WindowHeaderSepBot => BorderDark;
         public NVGcolor BorderDark { get; set; } = NanoVG.nvgRGBA(29,29,29,255);
@@ -34,5 +36,8 @@ namespace net6test.NanoGuiPort
         public NVGcolor WindowTitleUnfocused { get; set; } = NanoVG.nvgRGBA(220, 220, 220, 160);
         public NVGcolor TextColor { get; set; } = NanoVG.nvgRGBA(255, 255, 255, 160);
         public float ButtonFontSize { get; set; } = 20;
+        public float ButtonCornerRadius { get; internal set; } = 2;
+        public NVGcolor DisabledTextColor { get; internal set; } = NanoVG.nvgRGBA(255,255,255,80);
+        public NVGcolor TextColorShadow { get; internal set; } = NanoVG.nvgRGBA(0,0,0,160);
     }
 }

@@ -7,6 +7,7 @@ namespace net6test.NanoGuiPort
     {
         public Widget? Parent { get; set; }
         public Layout? Layout { get; set; }
+        public bool MouseFocus => mouseFocus;
         public virtual Theme? Theme
         {
             get => theme;
@@ -199,6 +200,7 @@ namespace net6test.NanoGuiPort
 
         public virtual bool MouseEnterEvent(Vector2 p, bool enter)
         {
+
             mouseFocus = enter;
             return false;
         }

@@ -45,7 +45,7 @@ namespace net6test.NanoGuiPort
             var vg = nvgContext;
             vg.CreateFont("sans", "assets/Roboto-Regular.ttf");
             vg.CreateFont("sans-bold", "assets/Roboto-Bold.ttf");
-            vg.CreateFont("icons", "assets/entypo.ttf");
+            vg.CreateFont("icons", "assets/FontAwesome-Solid.ttf");
 
             Theme = new Theme(nvgContext);
 
@@ -337,7 +337,7 @@ namespace net6test.NanoGuiPort
                ret = dragWidget.MouseDragEvent(p - dragWidget.Parent?.AbsolutePosition ?? Vector2.Zero, new Vector2(ev.motion.xrel, ev.motion.yrel), ev.motion.state, 0); 
             }
 
-            if (!ret) ret = MouseMotionEvent(p, p - MousePos, ev.motion.state, 0);
+            if (!ret) ret = MouseMotionEvent(p, new Vector2(ev.motion.xrel, ev.motion.yrel), ev.motion.state, 0);
 
             redraw = redraw ? true : ret;
         }
