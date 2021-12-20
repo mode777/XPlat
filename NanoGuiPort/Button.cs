@@ -5,6 +5,7 @@ using SDL2;
 namespace net6test.NanoGuiPort
 {
 
+
     [Flags]
     public enum ButtonFlags
     {
@@ -17,8 +18,8 @@ namespace net6test.NanoGuiPort
 
     public enum IconPosition {
         Left,
-        Right,
         LeftCentered,
+        Right,
         RightCentered
     }
 
@@ -30,6 +31,7 @@ namespace net6test.NanoGuiPort
             Icon = icon;
             Flags = ButtonFlags.NormalButton;
             ButtonGroup = new List<Button>();
+            IconPosition = IconPosition.LeftCentered;
         }
 
         public string Caption { get; set; }
@@ -165,6 +167,7 @@ namespace net6test.NanoGuiPort
                 var c = BackgroundColor;
                 c.a = 1;
                 vg.FillColor(c);
+                vg.Fill();
                 if(Pushed){
                     gradTop.a = gradBot.a = 0.8f;
                 } else {
@@ -195,7 +198,7 @@ namespace net6test.NanoGuiPort
             vg.FontFace("sans-bold");
             float tw = vg.TextBounds(0,0,Caption, null);
 
-            var center = Position + Size * 0.5f;
+            var center = Position + (Size * 0.5f);
             var textPos = new Vector2(center.X - tw * 0.5f, center.Y -1);
             var textColor = TextColor.a == 0 ? Theme.TextColor : TextColor;
             if(!Enabled) textColor = Theme.DisabledTextColor;

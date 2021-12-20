@@ -47,7 +47,20 @@ namespace net6test.samples
             };
             b.OnChange += (s,a) => b.Caption = a ? "On" : "Off";
 
+            new Label(window, "Radio buttons", "sans-bold");
+            new Button(window, "Radio button 1") { Flags = ButtonFlags.RadioButton };
+            new Button(window, "Radio button 2") { Flags = ButtonFlags.RadioButton };
 
+            new Label(window, "A tool palette", "sans-bold");
+            var tools = new Widget(window) { Layout = new BoxLayout(Orientation.Horizontal, Alignment.Middle, 0, 6) };
+            new ToolButton(tools, (int)Icons.FA_CLOUD);
+            new ToolButton(tools, (int)Icons.FA_FAST_FORWARD);
+            new ToolButton(tools, (int)Icons.FA_COMPASS);
+            new ToolButton(tools, (int)Icons.FA_UTENSILS);
+
+            new Label(window, "Popup buttons", "sans-bold");
+            PopupButton popupBtn = new PopupButton(window, "Popup", (int)Icons.FA_FLASK);
+            
             
             UpdateValues();
             PerformLayout();

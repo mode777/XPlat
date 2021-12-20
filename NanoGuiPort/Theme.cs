@@ -39,5 +39,7 @@ namespace net6test.NanoGuiPort
         public float ButtonCornerRadius { get; internal set; } = 2;
         public NVGcolor DisabledTextColor { get; internal set; } = NanoVG.nvgRGBA(255,255,255,80);
         public NVGcolor TextColorShadow { get; internal set; } = NanoVG.nvgRGBA(0,0,0,160);
+        public int PopupChevronRightIcon { get; internal set; } = (int)Icons.FA_CHEVRON_RIGHT;
+        public int PopupChevronLeftIcon { get; internal set; } = (int)Icons.FA_CHEVRON_LEFT;
     }
 }
