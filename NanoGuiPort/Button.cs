@@ -5,7 +5,6 @@ using SDL2;
 namespace net6test.NanoGuiPort
 {
 
-
     [Flags]
     public enum ButtonFlags
     {

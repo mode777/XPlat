@@ -268,6 +268,10 @@ namespace net6test.NanoGuiPort
             //vg.StrokeWidth(2);
             //vg.Stroke();
 
+            DrawChildren(vg);
+        }
+
+        protected virtual void DrawChildren(NVGcontext vg){
             if(Children.Count == 0) return;
 
             vg.Translate(Position.X, Position.Y);

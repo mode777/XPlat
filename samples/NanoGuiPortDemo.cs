@@ -60,6 +60,30 @@ namespace net6test.samples
 
             new Label(window, "Popup buttons", "sans-bold");
             PopupButton popupBtn = new PopupButton(window, "Popup", (int)Icons.FA_FLASK);
+            var popup = popupBtn.Popup;
+            popup.Layout = new GroupLayout();
+            new Label(popup, "Arbitrary widgets can be placed here");
+            new Checkbox(popup, "A check box");
+
+            popupBtn = new PopupButton(popup, "Recursive Popup", (int)Icons.FA_CHART_PIE);
+            var popupRight = popupBtn.Popup;
+            popupRight.Layout = new GroupLayout();
+            new Checkbox(popupRight, "Another checkbox");
+
+            popupBtn = new PopupButton(popup, "Recursive popup", (int)Icons.FA_DNA);
+            popupBtn.SetSide(PopupSide.Left);
+            var popupLeft = popupBtn.Popup;
+            popupLeft.Layout = new GroupLayout();
+            new Checkbox(popupLeft, "Another checkbox");
+
+            window = new Window(this, "Basic Widgets");
+            window.Position = new Vector2(200, 15);
+            window.Layout = new GroupLayout();
+
+            new Label(window, "Message dialog", "sans-bold");
+            tools = new Widget(window);
+            tools.Layout = new BoxLayout(Orientation.Horizontal, Alignment.Middle, 0, 6);
+            b = new Button(tools, "Info");
             
             
             UpdateValues();

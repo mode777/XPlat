@@ -176,7 +176,7 @@ namespace net6test.NanoGuiPort
             }
         }
 
-        protected virtual void RefreshRelativePlacement()
+        public virtual void RefreshRelativePlacement()
         {
             /* Overridden in \ref Popup */
         }

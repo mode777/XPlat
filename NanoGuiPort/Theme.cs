@@ -41,5 +41,10 @@ namespace net6test.NanoGuiPort
         public NVGcolor TextColorShadow { get; internal set; } = NanoVG.nvgRGBA(0,0,0,160);
         public int PopupChevronRightIcon { get; internal set; } = (int)Icons.FA_CHEVRON_RIGHT;
         public int PopupChevronLeftIcon { get; internal set; } = (int)Icons.FA_CHEVRON_LEFT;
+        public NVGcolor WindowPopup { get; internal set; } = NanoVG.nvgRGBA(50,50,50,255);
+        public NVGcolor WindowPopupTransparent { get; internal set; } = NanoVG.nvgRGBA(50,50,50,0);
+        public NVGcolor IconColor => TextColor;
+
+        public int CheckBoxIcon { get; internal set; } = (int)Icons.FA_CHECK;
     }
 }
