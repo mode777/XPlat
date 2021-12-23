@@ -70,6 +70,7 @@ namespace net6test.NanoGuiPort
         public bool HasFontSize => FontSize > 0;
         public float IconExtraScale { get; set; }
         public Cursor Cursor { get; set; }
+        public string Id { get; set; }
         public Widget(Widget? parent)
         {
             Visible = true;

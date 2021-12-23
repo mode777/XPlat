@@ -84,8 +84,14 @@ namespace net6test.samples
             tools = new Widget(window);
             tools.Layout = new BoxLayout(Orientation.Horizontal, Alignment.Middle, 0, 6);
             b = new Button(tools, "Info");
-            
-            
+            b.OnPush += (s,a) => {
+                var dlg = new MessageDialog(this, MessageDialogType.Information, "Title", "This is an infomation message");
+            };
+            b = new Button(tools, "Warn");
+            b.OnPush += (s,a) => new MessageDialog(this, MessageDialogType.Warning, "Title", "This is a wanring message");
+            b = new Button(tools, "Ask");
+            b.OnPush += (s,a) => new MessageDialog(this, MessageDialogType.Question, "Title", "This is a question message", "Yes", "No", true);
+
             UpdateValues();
             PerformLayout();
         }

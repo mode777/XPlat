@@ -19,7 +19,7 @@ namespace net6test.NanoGuiPort
         public float Spacing { get; set; }
 
         public override void PerformLayout(NVGcontext ctx, Widget widget)
-        {
+        { 
             var fsW = widget.FixedSize;
             var containerSize = new Vector2(
                 fsW.X == 0 ? widget.Width : fsW.X,
@@ -73,6 +73,7 @@ namespace net6test.NanoGuiPort
 
                 w.Position = pos;
                 w.Size = targetSize;
+                w.PerformLayout(ctx);
                 position += targetSize.Component(axis1);
             }
 

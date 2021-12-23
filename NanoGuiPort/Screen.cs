@@ -142,7 +142,7 @@ namespace net6test.NanoGuiPort
                 window.Size = window.PreferredSize(nvgContext);
                 window.PerformLayout(nvgContext);
             }
-            window.Position = Size - window.Size / 2f;
+            window.Position = (Size - window.Size) / 2f;
         }
 
         void Redraw()

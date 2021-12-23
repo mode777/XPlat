@@ -37,7 +37,8 @@ namespace net6test.NanoGuiPort
 
         public void Center()
         {
-            Screen?.CenterWindow(this);
+            var screen = Screen;
+            screen?.CenterWindow(this);
         }
 
         public override void Draw(NVGcontext vg)
