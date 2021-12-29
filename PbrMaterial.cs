@@ -3,6 +3,7 @@ using System.Numerics;
 
 namespace net6test
 {
+
     public class LightmapMaterial : Material
     {
         public uint Texture { get; set; }

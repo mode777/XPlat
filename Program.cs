@@ -17,7 +17,7 @@ namespace net_gles2
     {
         public static void Main(string[] args)
         {
-            RunSdlApp<NanoGuiPortDemo>(args, s => s.AddTransient<InkService>());
+            RunSdlApp<Voxels>(args, s => s.AddTransient<InkService>());
         }
 
         public static void RunSdlApp<T>(string[] args, Action<IServiceCollection>? addServices = null) where T : class, ISdlApp =>

@@ -6,11 +6,11 @@ using System.Numerics;
 namespace net6test.samples
 {
 
-    public class ShadedCube : ISdlApp
+    public class GltfLoading : ISdlApp
     {
         private readonly IPlatform platform;
 
-        public ShadedCube(IPlatform platform)
+        public GltfLoading(IPlatform platform)
         {
             this.platform = platform;
 
