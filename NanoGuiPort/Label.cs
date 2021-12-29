@@ -3,6 +3,7 @@ using NanoVGDotNet;
 
 namespace net6test.NanoGuiPort
 {
+
     public class Label : Widget
     {
         public NVGcolor Color { get; set; }

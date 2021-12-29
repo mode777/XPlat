@@ -92,6 +92,22 @@ namespace net6test.samples
             b = new Button(tools, "Ask");
             b.OnPush += (s,a) => new MessageDialog(this, MessageDialogType.Question, "Title", "This is a question message", "Yes", "No", true);
 
+            new Label(window, "Image Panel & scroll panel", "sans-bold");
+            var imagePanelBtn = new PopupButton(window, "Image Panel", (int)Icons.FA_IMAGES);
+            popup = imagePanelBtn.Popup;
+            var vScroll = new VScrollPanel(popup);
+            var imgPanel = new ImagePanel(vScroll);
+            var icons = Directory.EnumerateFiles("assets/icons")
+                .Where(x => Path.GetExtension(x) == ".png")
+                .Select(x => nvgContext.CreateImage(x, 0))
+                .ToList();
+            imgPanel.Images.AddRange(icons);
+            
+            // ...
+            popup.FixedSize = new Vector2(245, 150);
+
+            
+
             UpdateValues();
             PerformLayout();
         }
