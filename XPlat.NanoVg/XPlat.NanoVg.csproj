@@ -12,6 +12,14 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="assets\Roboto-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="assets\Roboto-Regular.ttf">
+      <LogicalName>Roboto-Regular.ttf</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\XPlat.Core\XPlat.Core.csproj" />
   </ItemGroup>
 </Project>

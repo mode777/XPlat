@@ -1,6 +1,7 @@
 
 
 using System;
+using System.IO;
 
 namespace XPlat.NanoVg
 {
@@ -34,6 +35,7 @@ namespace XPlat.NanoVg
         public static int AddFallbackFontId(this NVGcontext ctx, int baseFont, int fallbackFont) => NanoVgApi.nvgAddFallbackFontId(ctx, baseFont, fallbackFont);
         public static void BeginFrame(this NVGcontext ctx, int windowWidth, int windowHeight, float devicePixelRatio) => NanoVgApi.nvgBeginFrame(ctx, windowWidth, windowHeight, devicePixelRatio);
         public static int CreateFont(this NVGcontext ctx, String internalFontName, String fileName) => NanoVgApi.nvgCreateFont(ctx, internalFontName, fileName);
+        public static int CreateFont(this NVGcontext ctx, String internalFontName, Stream stream) => NanoVgApi.nvgCreateFont(ctx, internalFontName, stream);
         //public static byte[] ImageTobyteArray(Image imageIn) => NanoVG.nvgImageTobyteArray(imageIn);
         public static int CreateImage(this NVGcontext ctx, String filename, int imageFlags) => NanoVgApi.nvgCreateImage(ctx, filename, imageFlags);
         public static void FontSize(this NVGcontext ctx, float size) => NanoVgApi.nvgFontSize(ctx, size);

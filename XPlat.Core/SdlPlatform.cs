@@ -126,8 +126,6 @@ namespace XPlat.Core
 
                 app.Update();
 
-                //logger.LogInformation("wait: " + left);
-
                 if (AutoSwap)
                     SwapBuffers();
                 

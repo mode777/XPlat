@@ -8,3 +8,4 @@ XPlatApp.RunSdl<EngineXmlApp>(args);
 //XPlatApp.RunSdl<MinimalApp>(args);
 //XPlatApp.RunSdl<GltfApp>(args);
 //XPlatApp.RunSdl<MinimalApp>(args);
+//XPlatApp.RunSdl<GuiApp>(args);

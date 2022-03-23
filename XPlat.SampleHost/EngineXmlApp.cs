@@ -89,10 +89,8 @@ namespace XPlat.SampleHost
         public SceneVisualizer(IPlatform platform)
         {
             this.platform = platform;
-            this.vg = new NVGcontext();
-            GlNanoVG.nvgCreateGL(ref vg, (int)NVGcreateFlags.NVG_ANTIALIAS |
-                        (int)NVGcreateFlags.NVG_STENCIL_STROKES);
-            vg.CreateFont("sans", "assets/Roboto-Regular.ttf");
+            this.vg = NVGcontext.CreateGl(NVGcreateFlags.NVG_ANTIALIAS |
+                        NVGcreateFlags.NVG_STENCIL_STROKES);
         }
 
         public void Draw(Scene scene)

@@ -1464,6 +1464,7 @@ namespace XPlat.NanoVg
             for (j = 0; j < cache.npaths; j++)
             {
                 path = cache.paths[j];
+                
                 pts = cache.points;
                 ipts = path.first;
 
@@ -3220,6 +3221,11 @@ namespace XPlat.NanoVg
             return FontStashApi.fonsAddFont(ctx.fs, internalFontName, fileName);
         }
 
+        public static int nvgCreateFont(NVGcontext ctx, string internalFontName, Stream stream)
+        {
+            return FontStashApi.fonsAddFont(ctx.fs, internalFontName, stream);
+        }
+
         //public static byte[] ImageToByteArray(System.Drawing.Image imageIn)
         //{
         //	MemoryStream ms = new MemoryStream();
@@ -3367,6 +3373,14 @@ namespace XPlat.NanoVg
 
     public class NVGcontext
     {
+        public static NVGcontext CreateGl(NVGcreateFlags flags)
+        {
+            var vg = new NVGcontext();
+            GlNanoVG.nvgCreateGL(ref vg, (int)flags);
+            vg.CreateFont("sans", XPlat.Core.Resource.LoadResource<NVGcontext>("Roboto-Regular.ttf"));
+            return vg;
+        }
+
         public NVGparams params_;
         public float[] commands;
         public int ccommands;
@@ -3389,7 +3403,7 @@ namespace XPlat.NanoVg
         public int strokeTriCount;
         public int textTriCount;
 
-        public NVGcontext()
+        internal NVGcontext()
         {
             states = new NVGstate[NanoVgApi.NVG_MAX_STATES];
             for (int cont = 0; cont < states.Length; cont++)

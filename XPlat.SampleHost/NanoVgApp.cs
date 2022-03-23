@@ -15,9 +15,7 @@ public class NanoVgApp : ISdlApp
 
     public void Init()
     {
-        this.vg = new NVGcontext();
-        GlNanoVG.nvgCreateGL(ref vg, (int)NVGcreateFlags.NVG_ANTIALIAS |
-                        (int)NVGcreateFlags.NVG_STENCIL_STROKES);
+        this.vg = NVGcontext.CreateGl(NVGcreateFlags.NVG_ANTIALIAS | NVGcreateFlags.NVG_STENCIL_STROKES);
     }
 
     public void Update()

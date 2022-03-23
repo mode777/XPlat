@@ -35,15 +35,15 @@ namespace XPlat.NanoGui
             this.events = events;
             Background = "#555555";
             Size = platform.WindowSize;
-            nvgContext = new NVGcontext();
+            nvgContext = null;
 
             Initialize();
         }
 
         private void Initialize()
         {
-            GlNanoVG.nvgCreateGL(ref nvgContext, (int)NVGcreateFlags.NVG_ANTIALIAS |
-                        (int)NVGcreateFlags.NVG_STENCIL_STROKES);
+            nvgContext = NVGcontext.CreateGl(NVGcreateFlags.NVG_ANTIALIAS |
+                        NVGcreateFlags.NVG_STENCIL_STROKES);
 
             var vg = nvgContext;
             vg.CreateFont("sans", "assets/Roboto-Regular.ttf");

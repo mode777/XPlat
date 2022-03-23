@@ -162,6 +162,17 @@ namespace XPlat.FontStash
 			return fonsAddFontMem(stash, name, data, dataSize, 1);
 		}
 
+		public static int fonsAddFont(FONScontext stash, string name, Stream stream)
+		{
+			using(var sr = new BinaryReader(stream))
+            {
+				byte[] data = sr.ReadBytes((int)stream.Length);
+				uint dataSize = (uint)data.Length;
+
+				return fonsAddFontMem(stash, name, data, dataSize, 1);
+            }
+		}
+
 		public static FONScontext fonsCreateInternal(ref FONSparams fparams)
 		{
 			FONScontext stash = new FONScontext();

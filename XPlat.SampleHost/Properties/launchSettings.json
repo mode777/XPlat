@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "XPlat.SampleHost": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\UserData\\z002f2au\\Documents\\repos\\XPlat\\XPlat.SampleHost"
+    }
+  }
+}

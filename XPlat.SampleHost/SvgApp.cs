@@ -17,9 +17,8 @@ public class SvgApp : ISdlApp
 
     public void Init()
     {
-        this.vg = new NVGcontext();
-        GlNanoVG.nvgCreateGL(ref vg, (int)NVGcreateFlags.NVG_ANTIALIAS |
-                        (int)NVGcreateFlags.NVG_STENCIL_STROKES);
+        this.vg = NVGcontext.CreateGl(NVGcreateFlags.NVG_ANTIALIAS |
+                        NVGcreateFlags.NVG_STENCIL_STROKES);
 
         this.svg = SvgImage.Load("assets/Ghostscript_Tiger.svg");
     }
