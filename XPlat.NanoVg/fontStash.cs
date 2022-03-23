@@ -541,7 +541,7 @@ namespace XPlat.FontStash
 				if (String.Compare(s.fonts[i].name, name, true) == 0)
 					return i;
 			}
-			return FONS_INVALID;
+			throw new InvalidOperationException("Font " + name + " not found");
 		}
 
 		public static byte[] fonsGetTextureData(FONScontext stash, ref int width, ref int height)

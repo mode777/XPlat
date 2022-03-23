@@ -200,10 +200,10 @@ namespace XPlat.Gui
 
         public virtual void Draw(NVGcontext vg)
         {
-            vg.StrokeColor("#0f0");
+            vg.StrokeColor("#0f08");
             vg.BeginPath();
             vg.Rect(Position.X, Position.Y, Width, Height);
-            vg.StrokeWidth(2);
+            vg.StrokeWidth(1);
             vg.Stroke();
 
             DrawChildren(vg);

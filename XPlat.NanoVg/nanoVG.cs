@@ -3378,6 +3378,8 @@ namespace XPlat.NanoVg
             var vg = new NVGcontext();
             GlNanoVG.nvgCreateGL(ref vg, (int)flags);
             vg.CreateFont("sans", XPlat.Core.Resource.LoadResource<NVGcontext>("Roboto-Regular.ttf"));
+            vg.CreateFont("sans-bold", XPlat.Core.Resource.LoadResource<NVGcontext>("Roboto-Bold.ttf"));
+            vg.CreateFont("icons", XPlat.Core.Resource.LoadResource<NVGcontext>("FontAwesome-Solid.ttf"));
             return vg;
         }
 

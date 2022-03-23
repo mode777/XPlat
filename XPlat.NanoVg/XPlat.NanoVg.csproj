@@ -18,6 +18,12 @@
     <EmbeddedResource Include="assets\Roboto-Regular.ttf">
       <LogicalName>Roboto-Regular.ttf</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="assets\Roboto-Bold.ttf">
+      <LogicalName>Roboto-Bold.ttf</LogicalName>
+    </EmbeddedResource>
+        <EmbeddedResource Include="assets\FontAwesome-Solid.ttf">
+      <LogicalName>FontAwesome-Solid.ttf</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XPlat.Core\XPlat.Core.csproj" />
