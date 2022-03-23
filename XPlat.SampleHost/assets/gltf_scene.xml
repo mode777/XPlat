@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<scene version="1.0">
+    <import assembly="XPlat.SampleHost" />
+    <node src="test_scene.glb">
+        <node name="Icosphere">
+            <components>
+                <xsample-cube/>
+            </components>
+        </node>
+        <node name="Suzanne" rotate="-45,45,0" />
+    </node>
+</scene>

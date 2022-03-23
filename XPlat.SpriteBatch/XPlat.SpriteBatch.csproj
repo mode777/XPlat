@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XPlat.Core\XPlat.Core.csproj" />
+    <ProjectReference Include="..\XPlat.Graphics\XPlat.Graphics.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="shader/fragment.glsl" />
+    <None Remove="shader/vertex.glsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="shader/fragment.glsl">
+      <LogicalName>fragment.glsl</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="shader/vertex.glsl">
+      <LogicalName>vertex.glsl</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

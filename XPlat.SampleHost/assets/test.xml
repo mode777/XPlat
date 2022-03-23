@@ -1,0 +1,17 @@
+ <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+ <component name="dropown">
+    <stack dir="h">
+        <stack dir="v">
+            <label icon="[IconChildren]" visible="[IconChildren]"/>            
+        </stack>
+        <stack dir="v" height="*" >
+            <stack dir="h">
+                <label icon="[IconElement]" />
+                <label text="[Title]" />
+            </stack>
+            <stack dir="v">
+                <children />
+            </stack>
+        </stack>
+    </stack>
+ </component>

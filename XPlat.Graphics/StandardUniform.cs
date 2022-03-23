@@ -1,0 +1,34 @@
+namespace XPlat.Graphics
+{
+    public enum Uniform 
+    {
+        ProjectionMatrix = 1,
+        ViewMatrix,
+        ModelMatrix,
+        AlbedoTexture,
+        LightmapTexture,
+        ViewportSize,
+        TextureSize,
+        NormalMatrix,
+        CameraPositon,
+        PointLight_Pos_0,
+        PointLight_Pos_1,
+        PointLight_Pos_2,
+        PointLight_Pos_3,
+        PointLight_Col_0,
+        PointLight_Col_1,
+        PointLight_Col_2,
+        PointLight_Col_3,
+        PointLight_Range_0,
+        PointLight_Range_1,
+        PointLight_Range_2,
+        PointLight_Range_3,
+        PointLight_Int_0,
+        PointLight_Int_1,
+        PointLight_Int_2,
+        PointLight_Int_3,
+        DirLight_Dir,
+        DirLight_Col,
+        DirLight_Int,
+    }
+}

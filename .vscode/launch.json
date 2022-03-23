@@ -5,13 +5,24 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": "Run SampleHost",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/net6.0/net6test.dll",
+            "program": "${workspaceFolder}/XPlat.SampleHost/bin/Debug/net6.0/XPlat.SampleHost.dll",
             "args": [],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/XPlat.SampleHost",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
+            "name": "Run SampleHost Release",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build_release",
+            "program": "${workspaceFolder}/XPlat.SampleHost/bin/Debug/net6.0/XPlat.SampleHost.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/XPlat.SampleHost",
             "stopAtEntry": false,
             "console": "internalConsole"
         }

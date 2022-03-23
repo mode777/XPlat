@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>10.0</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XPlat.Core\XPlat.Core.csproj" />
+    <ProjectReference Include="..\XPlat.NanoVg\XPlat.NanoVg.csproj" />
+    <ProjectReference Include="..\XPlat.NanoGui\XPlat.NanoGui.csproj" />
+    <ProjectReference Include="..\XPlat.Graphics\XPlat.Graphics.csproj" />
+    <ProjectReference Include="..\XPlat.SpriteBatch\XPlat.SpriteBatch.csproj" />
+    <ProjectReference Include="..\XPlat.Svg\XPlat.Svg.csproj" />
+    <ProjectReference Include="..\XPlat.Engine\XPlat.Engine.csproj" />
+    <ProjectReference Include="..\XPlat.Gltf\XPlat.Gltf.csproj" />
+    <ProjectReference Include="..\XPlat.Gui\XPlat.Gui.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="assets\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="assets\" />
+  </ItemGroup>
+</Project>

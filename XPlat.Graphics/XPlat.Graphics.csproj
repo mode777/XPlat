@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XPlat.Core\XPlat.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="shader/phong.fragment.glsl">
+      <LogicalName>phong.fragment.glsl</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="shader/phong.vertex.glsl">
+      <LogicalName>phong.vertex.glsl</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

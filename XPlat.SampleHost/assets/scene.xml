@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<scene version="1.0">
+    <import assembly="XPlat.SampleHost" />
+    <node name="root">
+        <node src="test_scene.glb:Camera" />
+        <!-- <node name="Camera" tag="camera" translate="0,3,-5" rotate="-20,180,0">
+            <components>
+                <camera />
+                <xsample-cube />
+            </components>
+        </node> -->
+        <node src="test_scene.glb:Suzanne">
+            <components>
+                <xsample-cube />
+            </components>
+        </node>
+        <!-- <node src="test_scene.glb:Cube" translate="2, 1, 3">
+            <components>
+                <xsample-cube />
+            </components>
+        </node> -->
+        <node src="test_scene.glb:Plane" />
+        <node src="test_scene.glb:Light">
+            <!-- <node name="Light_Orientation">
+                <components>
+                    <light color="0.8,1,0.7"/>
+                </components>
+            </node> -->
+        </node>
+    </node>
+</scene>

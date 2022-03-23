@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\XPlat.Core\XPlat.Core.csproj" />
+    <ProjectReference Include="..\XPlat.Graphics\XPlat.Graphics.csproj" />
+    <ProjectReference Include="..\XPlat.Gltf\XPlat.Gltf.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>
