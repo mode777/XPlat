@@ -2,7 +2,7 @@
  <component name="dropown">
     <stack dir="h">
         <stack dir="v">
-            <label icon="[IconChildren]" visible="[IconChildren]"/>            
+            <label icon="[IconChildren]" visible="[IconChildren]" click="Expand"/>            
         </stack>
         <stack dir="v" height="*" >
             <stack dir="h">

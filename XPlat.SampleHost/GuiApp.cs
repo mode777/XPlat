@@ -13,20 +13,18 @@ namespace XPlat.SampleHost
 {
     internal class GuiApp : ISdlApp
     {
-        private readonly IPlatform platform;
-        private NVGcontext vg;
-        private Stack stack;
+        private GuiContainer container;
 
-        public GuiApp(IPlatform platform)
+        public GuiApp(IPlatform platform, ISdlPlatformEvents events)
         {
-            this.platform = platform;
+            var vg = NVGcontext.CreateGl(NVGcreateFlags.NVG_ANTIALIAS | NVGcreateFlags.NVG_STENCIL_STROKES);
+
+            this.container = new GuiContainer(platform, events, vg);
         }
 
         public void Init()
         {
-            this.vg = NVGcontext.CreateGl(NVGcreateFlags.NVG_ANTIALIAS | NVGcreateFlags.NVG_STENCIL_STROKES);
-
-            this.stack = new Stack{Direction = Direction.Vertical};
+            var stack = new Stack{Direction = Direction.Vertical};
             
             var stack2 = new Stack(stack){Direction = Direction.Horizontal};
             new Label(stack2){Icon = Icon.FA_STAR};
@@ -36,12 +34,13 @@ namespace XPlat.SampleHost
 
             new Label(stack4){Icon = Icon.FA_CUBE};
             new Label(stack4){Text = "My Larger Label"};
+
+            container.Root = stack;
         }
 
         public void Update()
         {
-            stack.PerformLayout(vg);
-
+            container.PerformLayout();
             Render();
         }
 
@@ -50,11 +49,7 @@ namespace XPlat.SampleHost
             GL.ClearColor(0.5f, 0.5f, 0.5f, 1);
             GL.Clear(GL.COLOR_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
 
-            vg.BeginFrame((int)platform.WindowSize.X, (int)platform.WindowSize.Y, platform.RetinaScale);
-
-            stack.Draw(vg);
-
-            vg.EndFrame();
+            container.Draw();
         }
     }
 }

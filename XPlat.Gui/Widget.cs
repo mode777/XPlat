@@ -99,40 +99,32 @@ namespace XPlat.Gui
 
         public virtual bool MouseButtonEvent(Vector2 p, int button, bool down, int modifiers)
         {
-            foreach (var child in Children)
-            {
-                if (child.Visible && child.Contains(p - Position) &&
-                    child.MouseButtonEvent(p - Position, button, down, modifiers))
-                    return true;
+            if(Visible && Contains(p)){
+                foreach (var child in Children)
+                {
+                    if (child.MouseButtonEvent(p - Position, button, down, modifiers))
+                        return true;
+                }
             }
-            if (button == (int)MouseButton.Left && down && !Focused)
-                RequestFocus();
 
             return false;
         }
 
         public virtual bool MouseMotionEvent(Vector2 p, Vector2 rel, int button, int modifiers)
         {
+            if(!Visible) return false;
+
             bool handled = false;
+
+            var contained = Contains(p);
+            var prevContained = Contains(p - rel);
+
+            if (contained != prevContained)
+                handled = handled ? true : MouseEnterEvent(p, contained);
 
             foreach (var child in Children)
             {
-                if (!child.Visible) continue;
-
-                var contained = child.Contains(p - Position);
-                var prevContained = child.Contains(p - Position - rel);
-
-                if (contained != prevContained)
-                {
-                    var hchild = child.MouseEnterEvent(p, contained);
-                    handled = handled ? true : hchild;
-                }
-
-                if (contained || prevContained)
-                {
-                    var hchild = child.MouseMotionEvent(p - Position, rel, button, modifiers);
-                    handled = handled ? true : hchild;
-                }
+                handled = handled ? true : child.MouseMotionEvent(p - Position, rel, button, modifiers);
             }
 
             return handled;
@@ -145,22 +137,22 @@ namespace XPlat.Gui
 
         public virtual bool MouseEnterEvent(Vector2 p, bool enter)
         {
-
             mouseFocus = enter;
             return false;
         }
 
         public virtual bool ScrollEvent(Vector2 p, Vector2 rel)
         {
-            foreach (var child in Children)
-            {
-                if (!child.Visible)
+            if(!Visible) return false;
+
+            if(Contains(p)){
+                foreach (var child in Children)
                 {
-                    continue;
+                    if(child.ScrollEvent(p - Position, rel))
+                        return true;
                 }
-                if (child.Contains(p - Position) && child.ScrollEvent(p - Position, rel))
-                    return true;
             }
+
             return false;
         }
 

@@ -55,7 +55,7 @@ namespace XPlat.Gui
                 vg.FontSize(18);
             }
 
-            vg.FillColor("#000");
+            vg.FillColor(MouseFocus ? "#fff" : "#000");
             if (FixedSize != Vector2.Zero)
             {
                 vg.TextAlign((int)NVGalign.NVG_ALIGN_LEFT | (int)NVGalign.NVG_ALIGN_TOP);
