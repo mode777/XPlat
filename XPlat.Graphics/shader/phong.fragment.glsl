@@ -50,6 +50,8 @@ uniform PointLight uPointLights[NR_POINT_LIGHTS];
 
 //uniform Material material;
 const vec3 uAmbientColor = vec3(0.3);
+uniform float uRoughness;
+uniform float uMetallic;
 uniform sampler2D uTexture;
 
 // function prototypes
@@ -115,24 +117,25 @@ vec3 CalcPointLight(vec4 tex, PointLight light, vec3 normal, vec3 fragPos, vec3 
     // specular shading
     //vec3 reflectDir = reflect(-lightDir, normal);
     vec3 halfwayDir = normalize(lightDir + viewDir);  
-    float spec = pow(max(dot(normal, halfwayDir), 0.0), 32.0);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), pow(2.0, (1.0 - uRoughness) * 8.0));
     //float spec = pow(max(dot(viewDir, reflectDir), 0.0), /*material.shininess*/32.0);
     
     // attenuation
     float distance = length(light.position - fragPos);
     //float attenuation = max( min( 1.0 - pow(distance / light.range, 4.0), 1.0), 0.0) / (distance * distance);
-    float attenuation = 1.0 / (1.0 + 0.2 * pow(distance,2.0));
+    float attenuation = 0.3 / (1.0 + 0.005 * pow(distance,2.0));
     //float attenuation = max( min( 1.0 - pow(distance / light.range, 2.0), 1.0), 0.0);
     //clamp(1.0 - dist*dist/(radius*radius), 0.0, 1.0);
     //float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
     
     // combine results
-    vec3 frag = vec3(tex) * light.color;
+    //vec3 frag = vec3(tex) * light.color;
     //vec3 frag = vec3(texture2D(uTexture, vUv)) * vec3(1.0,1.0,1.0) * 10.0 * attenuation;
 
     //vec3 ambient = light.ambient * frag;
-    vec3 diffuse = diff * frag * light.intensity;
-    vec3 specular = 0.5 * spec * light.color * light.intensity;
+
+    vec3 diffuse = (0.2 + (1.0-uMetallic)*0.8) * diff * tex.xyz * light.color * light.intensity /* * (uRoughness * light.color)*/;
+    vec3 specular = ((1.1 - uRoughness)*0.9) * spec * mix(light.color, tex.xyz * 3.0, uMetallic * 0.5) * light.intensity;
 
     return attenuation * (diffuse + specular);
 }

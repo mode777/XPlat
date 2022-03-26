@@ -76,7 +76,7 @@ namespace XPlat.SampleHost
         {
             v.Y = Time.RunningTime * 50;
             Node.Transform.RotationDeg = v;
-            Node.Transform.Translation += new Vector3(0, 0, -0.01f);
+            //Node.Transform.Translation += new Vector3(0, 0, -0.01f);
         }
 
     }

@@ -9,7 +9,7 @@ public class Graphics3dApp : ISdlApp
 
     private Shader shader;
     private Primitive primitive;
-    private TextureMaterial texture;
+    private PhongMaterial texture;
     private Camera3d camera;
     private Transform3d transform;
     private PointLight light;
@@ -30,7 +30,7 @@ public class Graphics3dApp : ISdlApp
             new VertexAttribute<float>(XPlat.Graphics.Attribute.Uv_0, uvs, VertexAttributeDescriptor.Vec2f),
         }, new VertexIndices(indices));
 
-        this.texture = new TextureMaterial(new Texture("assets/bricks.jpeg"), Uniform.AlbedoTexture);
+        this.texture = new PhongMaterial(new Texture("assets/bricks.jpeg"), Uniform.AlbedoTexture);
 
         this.primitive.Material = this.texture;
         this.camera = new Camera3d {

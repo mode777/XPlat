@@ -23,6 +23,8 @@ namespace XPlat.Graphics
                     [Uniform.NormalMatrix] = "uNormal",
                     [Uniform.AlbedoTexture] = "uTexture",
                     [Uniform.CameraPositon] = "uViewPos",
+                    [Uniform.Material_Metallic] = "uMetallic",
+                    [Uniform.Material_Roughness] = "uRoughness",
                     [Uniform.PointLight_Pos_0] = "uPointLights[0].position",
                     [Uniform.PointLight_Col_0] = "uPointLights[0].color",
                     [Uniform.PointLight_Range_0] = "uPointLights[0].range",

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<scene version="1.0">
+    <import assembly="XPlat.SampleHost" />
+    <node src="test_scene_2.glb">
+        <node name="Suzanne"><components><xsample-cube/></components></node>
+        <node name="Suzanne.001"><components><xsample-cube/></components></node>
+        <node name="Suzanne.002"><components><xsample-cube/></components></node>
+    </node>
+</scene>

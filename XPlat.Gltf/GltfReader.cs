@@ -192,9 +192,20 @@ namespace XPlat.Gltf
         }
 
         private XPlat.Graphics.Material CreateMaterial(Material mat){
-            var img = mat.FindChannel("BaseColor")?.Texture.PrimaryImage.Content;
-            var decode = Image.Load<Rgba32>(img.Value.Content.Span);
-            return new TextureMaterial(new Graphics.Texture(decode));
+            Image<Rgba32> pixels = null;
+            var baseColor = mat.FindChannel("BaseColor").Value;
+            var metallicRoughness = mat.FindChannel("MetallicRoughness").Value;
+            var img = baseColor.Texture?.PrimaryImage.Content;
+            if(img != null){
+                pixels = Image.Load<Rgba32>(img.Value.Content.Span);
+            } else {
+                var p = baseColor.Parameter;
+                pixels = new Image<Rgba32>(1,1,new Rgba32(p.X, p.Y, p.Z, p.W));
+            }
+            return new PhongMaterial(new Graphics.Texture(pixels)){
+                Metallic = metallicRoughness.Parameter.X,
+                Roughness = metallicRoughness.Parameter.Y
+            };
         }
 
         public bool HasLight => node.PunctualLight != null;

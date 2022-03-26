@@ -7,10 +7,10 @@ using XPlat.Core;
 namespace XPlat.Graphics
 {
 
-    public class TextureMaterial : Material
+    public class PhongMaterial : Material
     {
         private readonly Texture texture;
-        public TextureMaterial(Texture texture, Uniform uniform = Uniform.AlbedoTexture)
+        public PhongMaterial(Texture texture, Uniform uniform = Uniform.AlbedoTexture)
         {
             this.texture = texture;
             Uniform = uniform;
@@ -18,6 +18,8 @@ namespace XPlat.Graphics
 
 
         public Uniform Uniform { get; set; }
+        public float Metallic { get; set; } = 0;
+        public float Roughness { get; set; } = 0.8f;
 
 
 
@@ -26,6 +28,9 @@ namespace XPlat.Graphics
             GL.ActiveTexture(GL.TEXTURE0);
             GL.BindTexture(GL.TEXTURE_2D, texture.Handle);
             shader.SetUniform(Uniform, 0);
+
+            shader.SetUniform(Uniform.Material_Metallic, Metallic);
+            shader.SetUniform(Uniform.Material_Roughness, Roughness);
         }
     }
 }

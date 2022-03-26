@@ -2,11 +2,11 @@
 <scene version="1.0">
     <import assembly="XPlat.SampleHost" />
     <node src="test_scene.glb">
-        <node name="Icosphere">
+        <node name="Suzanne">
             <components>
                 <xsample-cube/>
             </components>
         </node>
-        <node name="Suzanne" rotate="-45,45,0" />
+        <!-- <node name="Suzanne" rotate="-45,45,0" /> -->
     </node>
 </scene>

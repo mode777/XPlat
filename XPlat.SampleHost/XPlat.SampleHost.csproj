@@ -26,6 +26,7 @@
     <ProjectReference Include="..\XPlat.Engine\XPlat.Engine.csproj" />
     <ProjectReference Include="..\XPlat.Gltf\XPlat.Gltf.csproj" />
     <ProjectReference Include="..\XPlat.Gui\XPlat.Gui.csproj" />
+    <ProjectReference Include="..\XPlat.Lightmapper\XPlat.Lightmapper.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="assets\" />

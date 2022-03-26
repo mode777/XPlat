@@ -11,6 +11,8 @@ namespace XPlat.Graphics
         TextureSize,
         NormalMatrix,
         CameraPositon,
+        Material_Metallic,
+        Material_Roughness,
         PointLight_Pos_0,
         PointLight_Pos_1,
         PointLight_Pos_2,

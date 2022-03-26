@@ -15,7 +15,7 @@ public class LightsApp : ISdlApp
 
     private Shader shader;
     private Primitive primitive;
-    private TextureMaterial texture;
+    private PhongMaterial texture;
     private Camera3d camera;
     private Transform3d transform;
     private PointLight light;
