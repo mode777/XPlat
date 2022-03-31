@@ -23,19 +23,6 @@ namespace XPlat.Engine
 
         public Transform3d Transform { get; set; } = new Transform3d();
 
-        public Transform3d GetGlobalTransform()
-        {
-            var t = Transform;
-            var gm = Matrix4x4.Identity;
-            while (t != null)
-            {
-                var m = t.GetMatrix();
-                gm *= m;
-                t = Parent?.Transform;
-            }
-            return new Transform3d(gm);
-        }
-
         public Node? Parent { get; private set; }
         public string Tag { get; set; }
 

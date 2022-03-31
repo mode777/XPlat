@@ -22,7 +22,8 @@ namespace XPlat.Engine
         // }
 
         private void SetupLua(){
-            this.LuaHost = new LuaHost();
+            LuaHost = new LuaHost();
+            LuaHost.ImportNamespace(nameof(XPlat)+ "." + nameof(Core));
 
             //LuaHost.SetGlobal("Time", Time.);
         }

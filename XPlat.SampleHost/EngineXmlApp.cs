@@ -72,37 +72,36 @@ namespace XPlat.SampleHost
 
         public override void Update()
         {
-            var t = Node.GetGlobalTransform();
 
-            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_w)){
+            if(Input.IsKeyDown(Key.W)){
                 Node.Transform.Translation -= (Node.Transform.Forward * 0.1f);
             }
-            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_s)){
+            if(Input.IsKeyDown(Key.S)){
                 Node.Transform.Translation += (Node.Transform.Forward * 0.1f);
             }
-            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_d)){
+            if(Input.IsKeyDown(Key.D)){
                 Node.Transform.Translation += (Node.Transform.Right * 0.1f);
             }
-            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_a)){
+            if(Input.IsKeyDown(Key.A)){
                 Node.Transform.Translation -= (Node.Transform.Right * 0.1f);
             }
 
-            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_LEFT)){
-                r += new Vector3(0,1,0);
-                Node.Transform.RotateDeg(r);
-            }
-            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_RIGHT)){
-                r += new Vector3(0,-1,0);
-                Node.Transform.RotateDeg(r);
-            }
-            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_UP)){
-                r += new Vector3(1,0,0);
-                Node.Transform.RotateDeg(r);
-            }
-            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_DOWN)){
-                r += new Vector3(-1,0,0);
-                Node.Transform.RotateDeg(r);
-            }
+            //if(Input.IsKeyDown(Key.LEFT)){
+            //    r += new Vector3(0,1,0);
+            //    Node.Transform.RotateDeg(r);
+            //}
+            //if(Input.IsKeyDown(Key.RIGHT)){
+            //    r += new Vector3(0,-1,0);
+            //    Node.Transform.RotateDeg(r);
+            //}
+            //if(Input.IsKeyDown(Key.UP)){
+            //    r += new Vector3(1,0,0);
+            //    Node.Transform.RotateDeg(r);
+            //}
+            //if(Input.IsKeyDown(Key.DOWN)){
+            //    r += new Vector3(-1,0,0);
+            //    Node.Transform.RotateDeg(r);
+            //}
 
 
         }

@@ -11,6 +11,7 @@ public class LuaApp : ISdlApp
     private LuaScript script;
     private FileSystemWatcher watcher;
     private NVGcontext vg;
+    private bool reload;
     private readonly IPlatform platform;
     private readonly ILogger<LuaApp> logger;
 
@@ -22,6 +23,7 @@ public class LuaApp : ISdlApp
     }
 
     private void LoadScript(){
+        reload = false;
         script.Load(File.ReadAllText("assets/myscript.lua"), vg);
     }
 
@@ -33,11 +35,14 @@ public class LuaApp : ISdlApp
         this.script.OnError += (s,e) => logger.LogError(e.Message);
         this.watcher = new FileSystemWatcher("assets");
         watcher.Filter = "myscript.lua";
-        watcher.NotifyFilter = NotifyFilters.LastWrite;
-        watcher.Changed += (s, args) =>
-        {
-            LoadScript();
-        };
+        watcher.NotifyFilter = NotifyFilters.LastWrite
+                | NotifyFilters.LastAccess
+                | NotifyFilters.Attributes
+                | NotifyFilters.Size
+                | NotifyFilters.CreationTime
+                | NotifyFilters.DirectoryName
+                | NotifyFilters.FileName;
+        watcher.Changed += (s, args) => reload = true;
 
         this.vg = NVGcontext.CreateGl();
         LoadScript();
@@ -47,6 +52,8 @@ public class LuaApp : ISdlApp
 
     public void Update()
     {
+        if (reload) LoadScript();
+
         GL.ClearColor(1, 0, 0, 1);
         GL.Clear(GL.COLOR_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
         
