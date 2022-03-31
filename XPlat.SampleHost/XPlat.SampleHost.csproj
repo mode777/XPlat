@@ -27,6 +27,7 @@
     <ProjectReference Include="..\XPlat.Gltf\XPlat.Gltf.csproj" />
     <ProjectReference Include="..\XPlat.Gui\XPlat.Gui.csproj" />
     <ProjectReference Include="..\XPlat.Lightmapper\XPlat.Lightmapper.csproj" />
+    <ProjectReference Include="..\XPlat.Lua\XPlat.LuaScripting.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="assets\" />

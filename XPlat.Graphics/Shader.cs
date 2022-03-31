@@ -14,7 +14,7 @@ namespace XPlat.Graphics
         {
             if(Current != shader)
             {
-                GL.UseProgram(shader.Handle);
+                GL.UseProgram(shader.GlProgram.Handle);
                 Current = shader;
             }
         }
@@ -28,7 +28,7 @@ namespace XPlat.Graphics
             public int Id { get; set; }
         }
 
-        public uint Handle { get; }
+        public GlProgramHandle GlProgram { get; }
         private readonly Dictionary<string, ShaderProperty> _uniforms = new();
         private readonly Dictionary<string, ShaderProperty> _attributes = new();
         private readonly Dictionary<Attribute, ShaderProperty> _standardAttributes = new();
@@ -37,7 +37,7 @@ namespace XPlat.Graphics
 
         public Shader(string vertex_source, string fragment_source, Dictionary<Attribute, string> attributes = null, Dictionary<Uniform, string> uniforms = null)
         {
-            Handle = GlUtil.CreateProgram(vertex_source, fragment_source);
+            GlProgram = GlUtil.CreateProgram(vertex_source, fragment_source);
             CollectInfo();
             if(attributes != null) {
                 foreach (var kv in attributes)
@@ -145,12 +145,12 @@ namespace XPlat.Graphics
             uint length;
 
             int numAttributes;
-            GL.GetProgramiv(Handle, GL.ACTIVE_ATTRIBUTES, out numAttributes);
+            GL.GetProgramiv(GlProgram.Handle, GL.ACTIVE_ATTRIBUTES, out numAttributes);
 
             for (int i = 0; i < numAttributes; i++)
             {
                 uint size, type;
-                GL.GetActiveAttrib(Handle, (uint)i, (uint)sb.Capacity, out length, out size, out type, sb);
+                GL.GetActiveAttrib(GlProgram.Handle, (uint)i, (uint)sb.Capacity, out length, out size, out type, sb);
                 _attributes.Add(sb.ToString(), new ShaderProperty{
                     Id = i,
                     Size = (int)size,
@@ -161,12 +161,12 @@ namespace XPlat.Graphics
             }
 
             int numUniforms;
-            GL.GetProgramiv(Handle, GL.ACTIVE_UNIFORMS, out numUniforms);
+            GL.GetProgramiv(GlProgram.Handle, GL.ACTIVE_UNIFORMS, out numUniforms);
 
             for (int i = 0; i < numUniforms; i++)
             {
                 uint size, type;
-                GL.GetActiveUniform(Handle, (uint)i, (uint)sb.Capacity, out length, out size, out type, sb);
+                GL.GetActiveUniform(GlProgram.Handle, (uint)i, (uint)sb.Capacity, out length, out size, out type, sb);
                 _uniforms.Add(sb.ToString(), new ShaderProperty{
                     Id = i,
                     Size = (int)size,
@@ -183,13 +183,8 @@ namespace XPlat.Graphics
             {
                 if (disposing)
                 {
-                    // TODO: dispose managed state (managed objects)
+                    GlProgram.Dispose();
                 }
-
-                UnmanagedQueue.DeletePrograms.Enqueue(Handle);
-                //GlUtil.DeleteProgram(Handle);
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
                 disposedValue = true;
             }
         }

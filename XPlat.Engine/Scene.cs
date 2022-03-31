@@ -4,8 +4,10 @@ using XPlat.Engine.Serialization;
 namespace XPlat.Engine
 {
     [SceneElement("scene")]
-    public class Scene : ISceneElement
+    public class Scene : ISceneElement, IDisposable
     {
+        private bool disposedValue;
+
         public Scene()
         {
             RootNode = new Node();
@@ -30,6 +32,25 @@ namespace XPlat.Engine
             }
             var rootEl = el.Element("node") ?? throw new InvalidDataException("A scene needs a root note element");
             RootNode = (Node)reader.ReadElement(rootEl);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    RootNode.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

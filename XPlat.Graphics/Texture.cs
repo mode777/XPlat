@@ -14,7 +14,7 @@ namespace XPlat.Graphics
         GraphicsPixel
     }
 
-    public class Texture : IDisposable
+    public class Texture
     {
         private bool disposedValue;
 
@@ -23,7 +23,7 @@ namespace XPlat.Graphics
         public Texture(Image<Rgba32> image, TextureUsage usage = TextureUsage.Graphics3d)
         {
             Size = new Vector2(image.Width, image.Height);
-            Handle = GlUtil.CreateTexture2d(image);
+            GlTexture = GlUtil.CreateTexture2d(image);
             SetProperties(usage);
         }
 
@@ -55,37 +55,8 @@ namespace XPlat.Graphics
             }
         }
 
-        public uint Handle { get; }
+        public GlTextureHandle GlTexture { get; }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    // TODO: dispose managed state (managed objects)
-                }
-
-                UnmanagedQueue.DeleteTextures.Enqueue(Handle);
-                //GlUtil.DeleteTexture(Handle);
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                disposedValue = true;
-            }
-        }
-
-        // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        ~Texture()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: false);
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
+        
     }
 }

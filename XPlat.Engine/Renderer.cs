@@ -22,7 +22,7 @@ namespace XPlat.Engine
         public void Render(Scene scene){
             lightId = LightId.Light_0;
 
-            GL.UseProgram(shader.Handle);
+            GL.UseProgram(shader.GlProgram.Handle);
 
             GL.Enable(GL.DEPTH_TEST);
             GL.Enable(GL.CULL_FACE);
@@ -39,7 +39,7 @@ namespace XPlat.Engine
         private void Visit(Node node, ref Matrix4x4 model){
 
             var transform = node.Transform;
-            var currentModel = transform == null ? model : transform.GetMatrix() * model;
+            var currentModel = (transform == null || transform.IsIdentity) ? model : transform.GetMatrix() * model;
 
             foreach(var c in node.Components){
                 switch(c){
@@ -63,6 +63,7 @@ namespace XPlat.Engine
 
         private void ApplyCamera(Camera3d cam, ref Matrix4x4 model)
         {
+            var transform = new Transform3d(model);
             cam.Ratio = platform.WindowSize.X / platform.WindowSize.Y;
 
             cam.ApplyToShader(shader, ref model);

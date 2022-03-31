@@ -25,8 +25,9 @@ namespace XPlat.Graphics
         {
             var position = Vector3.Transform(Positon, transform);
             var target = Vector3.Transform(Target, transform);  
+            //var up = Vector3.Transform(Vector3.UnitY, transform);
 
-            UpdateMatrix(position, target);
+            UpdateMatrix(position, target, Vector3.UnitY);
             Shader.Use(shader);
             shader.SetUniform(Uniform.ProjectionMatrix, ref matProj);
             shader.SetUniform(Uniform.ViewMatrix, ref matView);
@@ -35,16 +36,16 @@ namespace XPlat.Graphics
 
         public async void ApplyToShader(Shader shader)
         {
-            UpdateMatrix(Positon, Target);
+            UpdateMatrix(Positon, Target, Vector3.UnitY);
             Shader.Use(shader);
             shader.SetUniform(Uniform.ProjectionMatrix, ref matProj);
             shader.SetUniform(Uniform.ViewMatrix, ref matView);
             shader.SetUniform(Uniform.CameraPositon, Positon);
         }
 
-        private void UpdateMatrix(Vector3 position, Vector3 target)
+        private void UpdateMatrix(Vector3 position, Vector3 target, Vector3 up)
         {
-            matView = Matrix4x4.CreateLookAt(position, target, Vector3.UnitY);
+            matView = Matrix4x4.CreateLookAt(position, target, up);
             matProj = Matrix4x4.CreatePerspectiveFieldOfView(Fov, Ratio, NearPlane, FarPlane);
         }
     }

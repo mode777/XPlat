@@ -9,12 +9,25 @@ namespace XPlat.Engine
 {
 
     [SceneElement("node")]
-    public class Node : ISceneElement 
+    public class Node : ISceneElement, IDisposable 
     {
         public string? Name { get; set; }
         private List<Node> _children = new();
         private List<Component> _components = new();
+        private bool disposedValue;
+
         public Transform3d Transform { get; set; } = new Transform3d();
+
+        public Transform3d GetGlobalTransform(){
+            var t = Transform;
+            var gm = Matrix4x4.Identity;
+            while(t != null){
+                var m = t.GetMatrix();
+                gm *= m;
+                t = Parent?.Transform;
+            }
+            return new Transform3d(gm);
+        }
 
         public Node? Parent { get; private set; }
         public string Tag { get; set; }
@@ -147,7 +160,7 @@ namespace XPlat.Engine
             if(el.TryGetAttribute("name", out var name)) Name = name;
             if(el.TryGetAttribute("tag", out var tag)) Tag = tag;
             if(el.TryGetAttribute("translate", out var translate)) Transform.Translation = translate.Vector3();
-            if(el.TryGetAttribute("rotate", out var rotate)) Transform.RotationDeg = rotate.Vector3();
+            if(el.TryGetAttribute("rotate", out var rotate)) Transform.RotateDeg(rotate.Vector3());
             
             if(el.TryGetAttribute("scale", out var scale)) Transform.Scale = scale.Vector3();
 
@@ -176,6 +189,31 @@ namespace XPlat.Engine
             }
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    foreach (var c in this.Components)
+                    {
+                        c.Dispose();
+                    }
+                    foreach (var c in Children)
+                    {
+                        c.Dispose();
+                    }
+                }
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }
 

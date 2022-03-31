@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using XPlat.Core;
 
 namespace XPlat.Graphics
@@ -7,8 +8,10 @@ namespace XPlat.Graphics
     {
         public PhongShader()
             : base(
-                Resource.LoadResourceString<PhongShader>("phong.vertex.glsl"), 
-                Resource.LoadResourceString<PhongShader>("phong.fragment.glsl"),
+                File.ReadAllText("shader/phong.vertex.glsl"),
+                File.ReadAllText("shader/phong.fragment.glsl"),
+                //Resource.LoadResourceString<PhongShader>("phong.vertex.glsl"), 
+                //Resource.LoadResourceString<PhongShader>("phong.fragment.glsl"),
                 new Dictionary<Attribute, string>
                 {
                     [Attribute.Position] = "aPos",

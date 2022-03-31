@@ -4,14 +4,14 @@ using XPlat.Core;
 
 namespace XPlat.Graphics
 {
-    public class VertexAttribute : IDisposable
+    public class VertexAttribute
     {
         private readonly Attribute _type;
-        private readonly uint _glBuffer;
+        private readonly GlBufferHandle _glBuffer;
         private readonly VertexAttributeDescriptor _descriptor;
         private bool disposedValue;
 
-        public VertexAttribute(Attribute type, uint glBuffer, VertexAttributeDescriptor descriptor){
+        public VertexAttribute(Attribute type, GlBufferHandle glBuffer, VertexAttributeDescriptor descriptor){
             this._type = type;
             this._glBuffer = glBuffer;
             this._descriptor = descriptor;
@@ -19,33 +19,8 @@ namespace XPlat.Graphics
 
         public void EnableOnShader(Shader shader){
             if(!shader.HasAttribute(_type)) return;
-            GL.BindBuffer(GL.ARRAY_BUFFER, _glBuffer);
+            GL.BindBuffer(GL.ARRAY_BUFFER, _glBuffer.Handle);
             shader.EnableAttribute(_type, _descriptor);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                UnmanagedQueue.DeleteBuffers.Enqueue(_glBuffer);
-                //GlUtil.DeleteBuffer(_glBuffer);
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                disposedValue = true;
-            }
-        }
-
-        ~VertexAttribute()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: false);
-        }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 

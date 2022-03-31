@@ -26,7 +26,7 @@ namespace XPlat.Graphics
         public void ApplyToShader(Shader shader)
         {
             GL.ActiveTexture(GL.TEXTURE0);
-            GL.BindTexture(GL.TEXTURE_2D, texture.Handle);
+            GL.BindTexture(GL.TEXTURE_2D, texture.GlTexture.Handle);
             shader.SetUniform(Uniform, 0);
 
             shader.SetUniform(Uniform.Material_Metallic, Metallic);

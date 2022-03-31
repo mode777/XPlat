@@ -17,7 +17,6 @@ namespace XPlat.SampleHost
         public SpriteBatchApp(IPlatform platform)
         {
             this.platform = platform;
-
         }
 
         public void Init()

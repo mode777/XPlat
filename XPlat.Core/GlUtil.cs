@@ -52,7 +52,7 @@ namespace XPlat.Core
         //    } 
         //}
 
-        public static uint CreateBuffer<T>(uint buffer_type, T[] data, uint usageHint = GL.STATIC_DRAW) where T : unmanaged {
+        public static GlBufferHandle CreateBuffer<T>(uint buffer_type, T[] data, uint usageHint = GL.STATIC_DRAW) where T : unmanaged {
             uint[] buffer = new uint[1];
             unsafe{ 
                 fixed(uint* p = buffer){
@@ -63,7 +63,7 @@ namespace XPlat.Core
                     GL.BufferData(buffer_type, (uint)(sizeof(T)*data.Length), p, usageHint);
                 }
             }
-            return buffer[0];            
+            return new GlBufferHandle(buffer[0]);            
         }
 
         public static void DeleteBuffer(uint buffer){
@@ -77,28 +77,25 @@ namespace XPlat.Core
         }
 
         public static void DeleteTexture(uint texture){
-            uint[] textures = new uint[] { texture };
             unsafe {
-                fixed(uint* p = textures){
-                    GL.DeleteTextures(1, p);
-                }
+                GL.DeleteTextures(1, &texture);
             }
         }
 
-        public static void UpdateBuffer<T>(uint buffer, uint bufferType, T[] data, int size = -1, int offset = -1) where T : unmanaged
+        public static void UpdateBuffer<T>(GlBufferHandle buffer, uint bufferType, T[] data, int size = -1, int offset = -1) where T : unmanaged
         {
             unsafe
             {
                 fixed(void* p = data)
                 {
-                    GL.BindBuffer(bufferType, buffer);
+                    GL.BindBuffer(bufferType, buffer.Handle);
                     GL.BufferSubData(bufferType, (uint)(sizeof(T) * (offset == -1 ? 0 : offset)), (uint)(sizeof(T) * (size == -1 ? 0 : size)), p);
                 }
 
             }
         }
 
-        public static uint CreateProgram(string vertex_src, string fragment_src){
+        public static GlProgramHandle CreateProgram(string vertex_src, string fragment_src){
             var vshader = CreateShader(GL.VERTEX_SHADER, vertex_src);
             var fshader = CreateShader(GL.FRAGMENT_SHADER, fragment_src);
 
@@ -120,7 +117,7 @@ namespace XPlat.Core
                 throw new Exception("Link program error: " + sb.ToString(0, (int)length));
             }
   
-            return program;
+            return new GlProgramHandle(program);
         }
 
         private static uint CreateShader(uint shader_type, string shader_src)
@@ -147,7 +144,7 @@ namespace XPlat.Core
             return shader;
         }
 
-        public static uint CreateTexture2d(Image<Rgba32> image)
+        public static GlTextureHandle CreateTexture2d(Image<Rgba32> image)
         {
             unsafe
             {
@@ -166,7 +163,7 @@ namespace XPlat.Core
                 {
                     throw new Exception("Cannot access image pixels");
                 }
-                return tex;
+                return new GlTextureHandle(tex);
             }
         }
     }

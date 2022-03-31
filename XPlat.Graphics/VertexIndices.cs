@@ -7,7 +7,7 @@ namespace XPlat.Graphics
     public class VertexIndices : IDisposable
     {
         private readonly ushort[] _data;
-        private readonly uint _glBuffer;
+        private readonly GlBufferHandle _glBuffer;
         private bool disposedValue;
 
         public uint ElementsCount { get; set; }
@@ -20,7 +20,7 @@ namespace XPlat.Graphics
         }
 
         public void DrawWithShader(Shader shader, int count = -1, int offset = -1){
-            GL.BindBuffer(GL.ELEMENT_ARRAY_BUFFER, _glBuffer);
+            GL.BindBuffer(GL.ELEMENT_ARRAY_BUFFER, _glBuffer.Handle);
             GL.DrawElements(GL.TRIANGLES, count == -1 ? ElementsCount : (uint)count, GL.UNSIGNED_SHORT, offset == -1 ? IntPtr.Zero : (IntPtr)offset);
         }
 
@@ -30,11 +30,8 @@ namespace XPlat.Graphics
             {
                 if (disposing)
                 {
+                    _glBuffer.Dispose();
                 }
-
-                UnmanagedQueue.DeleteBuffers.Enqueue(_glBuffer);
-                //GlUtil.DeleteBuffer(_glBuffer);
-                // TODO: set large fields to null
                 disposedValue = true;
             }
         }

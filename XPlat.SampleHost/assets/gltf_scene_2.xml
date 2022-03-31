@@ -2,6 +2,16 @@
 <scene version="1.0">
     <import assembly="XPlat.SampleHost" />
     <node src="test_scene_2.glb">
+        <node name="Camera">
+            <node name="Camera_Orientation">
+                <components>
+                    <xsample-control/>
+                </components>
+            </node>
+        </node>
+        <node name="Light">
+            <!-- <components><xsample-control/></components> -->
+        </node>
         <node name="Suzanne"><components><xsample-cube/></components></node>
         <node name="Suzanne.001"><components><xsample-cube/></components></node>
         <node name="Suzanne.002"><components><xsample-cube/></components></node>

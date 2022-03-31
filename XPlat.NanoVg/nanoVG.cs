@@ -3373,7 +3373,7 @@ namespace XPlat.NanoVg
 
     public class NVGcontext
     {
-        public static NVGcontext CreateGl(NVGcreateFlags flags)
+        public static NVGcontext CreateGl(NVGcreateFlags flags = NVGcreateFlags.NVG_ANTIALIAS | NVGcreateFlags.NVG_STENCIL_STROKES)
         {
             var vg = new NVGcontext();
             GlNanoVG.nvgCreateGL(ref vg, (int)flags);
@@ -3412,6 +3412,73 @@ namespace XPlat.NanoVg
                 states[cont] = new NVGstate();
             fontImages = new int[NanoVgApi.NVG_MAX_FONTIMAGES];
         }
+
+        public void StrokeColor(NVGcolor color) => NanoVgApi.nvgStrokeColor(this, color);
+        public void StrokeColor(string color) => NanoVgApi.nvgStrokeColor(this, (NVGcolor)color);
+        public void StrokeWidth(float width) => NanoVgApi.nvgStrokeWidth(this, width);
+        public void TransformScale(float[] t, float sx, float sy) => NanoVgApi.nvgTransformScale(t, sx, sy);
+        public int TransformInverse(float[] inv, float[] t) => NanoVgApi.nvgTransformInverse(inv, t);
+        public void Fill() => NanoVgApi.nvgFill(this);
+        public void Rect(float x, float y, float w, float h) => NanoVgApi.nvgRect(this, x, y, w, h);
+        public void Arc(float cx, float cy, float r, float a0, float a1, int dir) => NanoVgApi.nvgArc(this, cx, cy, r, a0, a1, dir);
+        public void RoundedRect(float x, float y, float w, float h, float r) => NanoVgApi.nvgRoundedRect(this, x, y, w, h, r);
+        public NVGpaint LinearGradient(float sx, float sy, float ex, float ey, NVGcolor icol, NVGcolor ocol) => NanoVgApi.nvgLinearGradient(this, sx, sy, ex, ey, icol, ocol);
+        public NVGpaint LinearGradient(float sx, float sy, float ex, float ey, string icol, string ocol) => NanoVgApi.nvgLinearGradient(this, sx, sy, ex, ey, (NVGcolor)icol, (NVGcolor)ocol);
+        public NVGpaint RadialGradient(float cx, float cy, float inr, float outr, NVGcolor icol, NVGcolor ocol) => NanoVgApi.nvgRadialGradient(this, cx, cy, inr, outr, icol, ocol);
+        public NVGpaint RadialGradient(float cx, float cy, float inr, float outr, string icol, string ocol) => NanoVgApi.nvgRadialGradient(this, cx, cy, inr, outr, (NVGcolor)icol, (NVGcolor)ocol);
+        public void Ellipse(float cx, float cy, float rx, float ry) => NanoVgApi.nvgEllipse(this, cx, cy, rx, ry);
+        public void Circle(float cx, float cy, float r) => NanoVgApi.nvgCircle(this, cx, cy, r);
+        public int TextGlyphPositions(float x, float y, String string_, NVGglyphPosition[] positions, int maxPositions) => NanoVgApi.nvgTextGlyphPositions(this, x, y, string_, positions, maxPositions);
+        public void TextBox(float x, float y, float breakRowWidth, String string_) => NanoVgApi.nvgTextBox(this, x, y, breakRowWidth, string_);
+        public void TextBoxBounds(float x, float y, float breakRowWidth, String string_, float[] bounds) => NanoVgApi.nvgTextBoxBounds(this, x, y, breakRowWidth, string_, bounds);
+        public float TextBounds(float x, float y, String string_, float[] bounds) => NanoVgApi.nvgTextBounds(this, x, y, string_, bounds);
+        public void TextMetrics(ref float ascender, ref float descender, ref float lineh) => NanoVgApi.nvgTextMetrics(this, ref ascender, ref descender, ref lineh);
+        public int TextBreakLines(String string_, float breakRowWidth, NVGtextRow[] rows, int maxRows) => NanoVgApi.nvgTextBreakLines(this, string_, breakRowWidth, rows, maxRows);
+        public void TextLineHeight(float lineHeight) => NanoVgApi.nvgTextLineHeight(this, lineHeight);
+        public void TextAlign(int align) => NanoVgApi.nvgTextAlign(this, align);
+        public void ImageSize(int image, ref int w, ref int h) => NanoVgApi.nvgImageSize(this, image, ref w, ref h);
+        public NVGpaint ImagePattern(float cx, float cy, float w, float h, float angle, int image, float alpha) => NanoVgApi.nvgImagePattern(this, cx, cy, w, h, angle, image, alpha);
+        public float Text(float x, float y, String string_) => NanoVgApi.nvgText(this, x, y, string_);
+        public void GlobalAlpha(float alpha) => NanoVgApi.nvgGlobalAlpha(this, alpha);
+        public NVGcolor HSLA(float h, float s, float l, byte a) => NanoVgApi.nvgHSLA(h, s, l, a);
+        public int AddFallbackFontId(int baseFont, int fallbackFont) => NanoVgApi.nvgAddFallbackFontId(this, baseFont, fallbackFont);
+        public void BeginFrame(int windowWidth, int windowHeight, float devicePixelRatio) => NanoVgApi.nvgBeginFrame(this, windowWidth, windowHeight, devicePixelRatio);
+        public int CreateFont(String internalFontName, String fileName) => NanoVgApi.nvgCreateFont(this, internalFontName, fileName);
+        public int CreateFont(String internalFontName, Stream stream) => NanoVgApi.nvgCreateFont(this, internalFontName, stream);
+        //public byte[] ImageTobyteArray(Image imageIn) => NanoVG.nvgImageTobyteArray(imageIn);
+        public int CreateImage(String filename, int imageFlags) => NanoVgApi.nvgCreateImage(this, filename, imageFlags);
+        public void FontSize(float size) => NanoVgApi.nvgFontSize(this, size);
+        public void FontBlur(float blur) => NanoVgApi.nvgFontBlur(this, blur);
+        public void FontFace(String font) => NanoVgApi.nvgFontFace(this, font);
+        public NVGcolor RGBA(byte r, byte g, byte b, byte a) => NanoVgApi.nvgRGBA(r, g, b, a);
+        public NVGpaint BoxGradient(float x, float y, float w, float h, float r, float f, NVGcolor icol, NVGcolor ocol) => NanoVgApi.nvgBoxGradient(this, x, y, w, h, r, f, icol, ocol);
+        public NVGpaint BoxGradient(float x, float y, float w, float h, float r, float f, string icol, string ocol) => NanoVgApi.nvgBoxGradient(this, x, y, w, h, r, f, (NVGcolor)icol, (NVGcolor)ocol);
+        public void ClosePath() => NanoVgApi.nvgClosePath(this);
+        public void PathWinding(int dir) => NanoVgApi.nvgPathWinding(this, dir);
+        public void Stroke() => NanoVgApi.nvgStroke(this);
+        public void Save() => NanoVgApi.nvgSave(this);
+        public void Restore() => NanoVgApi.nvgRestore(this);
+        public float DegToRad(float deg) => NanoVgApi.nvgDegToRad(deg);
+        public void Scissor(float x, float y, float w, float h) => NanoVgApi.nvgScissor(this, x, y, w, h);
+        public void IntersectScissor(float x, float y, float w, float h) => NanoVgApi.nvgIntersectScissor(this, x, y, w, h);
+        public void ResetScissor() => NanoVgApi.nvgResetScissor(this);
+        public void Rotate(float angle) => NanoVgApi.nvgRotate(this, angle);
+        public void Scale(float x, float y) => NanoVgApi.nvgScale(this, x, y);
+        public void Translate(float x, float y) => NanoVgApi.nvgTranslate(this, x, y);
+        public void DeleteImage(int image) => NanoVgApi.nvgDeleteImage(this, image);
+        public void EndFrame() => NanoVgApi.nvgEndFrame(this);
+        public void BeginPath() => NanoVgApi.nvgBeginPath(this);
+        public void TransformMultiply(float[] t, float[] s) => NanoVgApi.nvgTransformMultiply(t, s);
+        public void LineJoin(int join) => NanoVgApi.nvgLineJoin(this, join);
+        public void MoveTo(float x, float y) => NanoVgApi.nvgMoveTo(this, x, y);
+        public void BezierTo(float c1x, float c1y, float c2x, float c2y, float x, float y) => NanoVgApi.nvgBezierTo(this, c1x, c1y, c2x, c2y, x, y);
+        public void QuadTo(float cx, float cy, float x, float y) => NanoVgApi.nvgQuadTo(this, cx, cy, x, y);
+        public void ArcTo(float x1, float y1, float x2, float y2, float radius) => NanoVgApi.nvgArcTo(this, x1, y1, x2, y2, radius);
+        public void LineTo(float x, float y) => NanoVgApi.nvgLineTo(this, x, y);
+        public void LineCap(int cap) => NanoVgApi.nvgLineCap(this, cap);
+        public void FillPaint(NVGpaint paint) => NanoVgApi.nvgFillPaint(this, paint);
+        public void FillColor(NVGcolor color) => NanoVgApi.nvgFillColor(this, color);
+        public void FillColor(string color) => NanoVgApi.nvgFillColor(this, (NVGcolor)color);
     }
 
     public struct NVGcompositeOperationState

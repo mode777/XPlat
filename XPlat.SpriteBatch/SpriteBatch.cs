@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -48,7 +49,7 @@ namespace XPlat.Graphics
         public Texture Texture;
     }
 
-    public class SpriteBatch
+    public class SpriteBatch : IDisposable
     {
         static readonly VertexAttributeDescriptor PositionDescriptor;
         static readonly VertexAttributeDescriptor UvDescriptor;
@@ -69,7 +70,7 @@ namespace XPlat.Graphics
             this.Capacity = capacity;
             this.data = new Quad[Capacity];
             this.drawCalls = new List<DrawCall>();
-            this.buffer = GlUtil.CreateBuffer(GL.ARRAY_BUFFER, this.data, GL.STREAM_DRAW);
+            this.glBuffer = GlUtil.CreateBuffer(GL.ARRAY_BUFFER, this.data, GL.STREAM_DRAW);
             var indices = new ushort[capacity * 6];
             for (int i = 0; i < capacity; i++)
             {
@@ -85,9 +86,9 @@ namespace XPlat.Graphics
             var idx = new VertexIndices(indices);
             this.primitive = new Primitive(new VertexAttribute[]
             {
-                new VertexAttribute(Attribute.Position, buffer, PositionDescriptor),
-                new VertexAttribute(Attribute.Uv_0, buffer, UvDescriptor),
-                new VertexAttribute(Attribute.Color, buffer, ColorDescriptor),
+                new VertexAttribute(Attribute.Position, glBuffer, PositionDescriptor),
+                new VertexAttribute(Attribute.Uv_0, glBuffer, UvDescriptor),
+                new VertexAttribute(Attribute.Color, glBuffer, ColorDescriptor),
             }, idx);
         }
 
@@ -105,7 +106,7 @@ namespace XPlat.Graphics
 
         private readonly Quad[] data;
         private readonly List<DrawCall> drawCalls;
-        private readonly uint buffer;
+        private readonly GlBufferHandle glBuffer;
         private readonly Primitive primitive;
 
         public void SetTexture(Texture material)
@@ -122,6 +123,7 @@ namespace XPlat.Graphics
             currentSource = source;
         }
         private Color color = new Color { A = 255, R = 255, G = 255, B = 255 };
+        private bool disposedValue;
 
         public void SetColor(Color color)
         {
@@ -244,7 +246,7 @@ namespace XPlat.Graphics
         {
             AddCall();
 
-            GlUtil.UpdateBuffer(buffer, GL.ARRAY_BUFFER, this.data, Count);
+            GlUtil.UpdateBuffer(glBuffer, GL.ARRAY_BUFFER, this.data, Count);
 
             var shader = SpriteBatchShader.Singleton;
             Shader.Use(shader);
@@ -255,14 +257,30 @@ namespace XPlat.Graphics
             foreach (var call in drawCalls)
             {
                 shader.SetUniform(Uniform.TextureSize, call.Texture.Size);
-                GL.BindTexture(GL.TEXTURE_2D, call.Texture.Handle);
+                GL.BindTexture(GL.TEXTURE_2D, call.Texture.GlTexture.Handle);
                 primitive.DrawWithShader(shader, call.Size * 6, call.Start * 6 * 2);
             }
 
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    glBuffer.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
 
-
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }
 

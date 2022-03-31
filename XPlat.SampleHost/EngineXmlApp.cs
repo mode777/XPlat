@@ -41,13 +41,14 @@ namespace XPlat.SampleHost
 
         private void LoadScene()
         {
-            scene = SceneReader.Load("assets/gltf_scene.xml");
+            renderer = new Renderer(platform);
+            if(scene != null) scene.Dispose();
+            scene = SceneReader.Load("assets/gltf_scene_2.xml");
             scene.Init();
         }
 
         public void Init()
         {
-            renderer = new Renderer(platform);
             LoadScene();
         }
 
@@ -56,6 +57,54 @@ namespace XPlat.SampleHost
             scene.Update();
             renderer.Render(scene);
             sceneViz.Draw(scene);
+        }
+    }
+
+    [SceneElement("xsample-control")]
+    public class ControlComponent : Behaviour
+    {
+        private Vector3 r;
+
+        public override void Init()
+        {
+            this.r = Node.Transform.RotationDeg;
+        }
+
+        public override void Update()
+        {
+            var t = Node.GetGlobalTransform();
+
+            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_w)){
+                Node.Transform.Translation -= (Node.Transform.Forward * 0.1f);
+            }
+            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_s)){
+                Node.Transform.Translation += (Node.Transform.Forward * 0.1f);
+            }
+            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_d)){
+                Node.Transform.Translation += (Node.Transform.Right * 0.1f);
+            }
+            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_a)){
+                Node.Transform.Translation -= (Node.Transform.Right * 0.1f);
+            }
+
+            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_LEFT)){
+                r += new Vector3(0,1,0);
+                Node.Transform.RotateDeg(r);
+            }
+            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_RIGHT)){
+                r += new Vector3(0,-1,0);
+                Node.Transform.RotateDeg(r);
+            }
+            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_UP)){
+                r += new Vector3(1,0,0);
+                Node.Transform.RotateDeg(r);
+            }
+            if(Input.IsKeyDown(SDL.SDL_Keycode.SDLK_DOWN)){
+                r += new Vector3(-1,0,0);
+                Node.Transform.RotateDeg(r);
+            }
+
+
         }
     }
 
@@ -75,7 +124,7 @@ namespace XPlat.SampleHost
         public override void Update()
         {
             v.Y = Time.RunningTime * 50;
-            Node.Transform.RotationDeg = v;
+            Node.Transform.RotateDeg(v);
             //Node.Transform.Translation += new Vector3(0, 0, -0.01f);
         }
 
