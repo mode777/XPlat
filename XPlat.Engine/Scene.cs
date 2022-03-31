@@ -1,5 +1,7 @@
 using System.Xml.Linq;
+using XPlat.Core;
 using XPlat.Engine.Serialization;
+using XPlat.LuaScripting;
 
 namespace XPlat.Engine
 {
@@ -11,6 +13,18 @@ namespace XPlat.Engine
         public Scene()
         {
             RootNode = new Node();
+            RootNode.Scene = this;
+            SetupLua();
+        }
+
+        // private class LuaTime {
+            
+        // }
+
+        private void SetupLua(){
+            this.LuaHost = new LuaHost();
+
+            //LuaHost.SetGlobal("Time", Time.);
         }
 
         public Node FindNode(string name) => RootNode.Find(name);
@@ -18,9 +32,10 @@ namespace XPlat.Engine
         public Scene(Node rootNode) 
         {
             this.RootNode = rootNode;
-               
         }
+
         public Node RootNode { get; private set; }
+        public LuaHost LuaHost { get; private set; }
 
         public void Init() => RootNode.Init();
         public void Update() => RootNode.Update();
@@ -31,7 +46,7 @@ namespace XPlat.Engine
                 reader.ReadElement(i);
             }
             var rootEl = el.Element("node") ?? throw new InvalidDataException("A scene needs a root note element");
-            RootNode = (Node)reader.ReadElement(rootEl);
+            RootNode.Parse(rootEl, reader);
         }
 
         protected virtual void Dispose(bool disposing)

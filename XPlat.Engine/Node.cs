@@ -9,19 +9,26 @@ namespace XPlat.Engine
 {
 
     [SceneElement("node")]
-    public class Node : ISceneElement, IDisposable 
+    public class Node : ISceneElement, IDisposable
     {
         public string? Name { get; set; }
         private List<Node> _children = new();
         private List<Component> _components = new();
         private bool disposedValue;
+        private Scene scene;
+
+        public Scene Scene {
+            get => scene ?? Parent?.Scene;
+            internal set => scene = value; }
 
         public Transform3d Transform { get; set; } = new Transform3d();
 
-        public Transform3d GetGlobalTransform(){
+        public Transform3d GetGlobalTransform()
+        {
             var t = Transform;
             var gm = Matrix4x4.Identity;
-            while(t != null){
+            while (t != null)
+            {
                 var m = t.GetMatrix();
                 gm *= m;
                 t = Parent?.Transform;
@@ -34,8 +41,8 @@ namespace XPlat.Engine
 
         internal void Init()
         {
-            foreach(var c in GetComponents<Behaviour>().Where(x => x.IsEnabled)) c.Init();
-            foreach(var c in _children) c.Init();
+            foreach (var c in GetComponents<Behaviour>().Where(x => x.IsEnabled)) c.Init();
+            foreach (var c in _children) c.Init();
         }
 
         internal void Update()
@@ -50,29 +57,34 @@ namespace XPlat.Engine
             }
         }
 
-        public Node(){}
-        
-        public void AddChild(Node node){
-            if(!IsChildAllowed(node)) throw new Exception("Child not allowed");
+        public Node() { }
+
+        public void AddChild(Node node)
+        {
+            if (!IsChildAllowed(node)) throw new Exception("Child not allowed");
             node.Parent?.RemoveChild(node);
             _children.Add(node);
             node.Parent = this;
+            node.scene = this.Scene; 
         }
 
-        public void RemoveChild(Node node){
+        public void RemoveChild(Node node)
+        {
             _children.Remove(node);
             node.Parent = null;
+            node.Scene = null;
         }
 
         public Node? Find(string name)
         {
-            if(Name == name){
+            if (Name == name)
+            {
                 return this;
             }
             foreach (var c in _children)
             {
                 var res = c.Find(name);
-                if(res != null) 
+                if (res != null)
                     return res;
             }
             return null;
@@ -80,13 +92,14 @@ namespace XPlat.Engine
 
         public Node? FindByTag(string tag)
         {
-            if(Tag == tag){
+            if (Tag == tag)
+            {
                 return this;
             }
             foreach (var c in _children)
             {
                 var res = c.Find(tag);
-                if(res != null) 
+                if (res != null)
                     return res;
             }
             return null;
@@ -94,9 +107,9 @@ namespace XPlat.Engine
 
         public void AddComponent(Component comp)
         {
-            if(comp.Node != null) comp.Node.RemoveComponent(comp);
+            if (comp.Node != null) comp.Node.RemoveComponent(comp);
             _components.Add(comp);
-            comp.Node = this; 
+            comp.Node = this;
         }
 
         public void RemoveComponent(Component comp)
@@ -111,27 +124,35 @@ namespace XPlat.Engine
         public IEnumerable<Node> Children => _children;
         private bool IsChildAllowed(Node node) => Parent == null || (Parent.IsChildAllowed(node) && node != this);
 
-        private void ParseGltfNode(GltfNode gltf){
+        private void ParseGltfNode(GltfNode gltf)
+        {
             Name = gltf.Name;
             Transform = gltf.Transform;
 
-            if(gltf.HasLight){
-                AddComponent(new LightComponent {
+            if (gltf.HasLight)
+            {
+                AddComponent(new LightComponent
+                {
                     Light = gltf.ReadLight()
                 });
             }
-            if(gltf.HasMesh){
-                AddComponent(new MeshComponent {
+            if (gltf.HasMesh)
+            {
+                AddComponent(new MeshComponent
+                {
                     Mesh = gltf.ReadMesh()
                 });
             }
-            if(gltf.HasCamera){
-                AddComponent(new CameraComponent{
+            if (gltf.HasCamera)
+            {
+                AddComponent(new CameraComponent
+                {
                     Camera = gltf.ReadCamera()
                 });
             }
 
-            foreach(var c in gltf.Children){
+            foreach (var c in gltf.Children)
+            {
                 var node = new Node();
                 AddChild(node);
                 node.ParseGltfNode(c);
@@ -140,12 +161,16 @@ namespace XPlat.Engine
 
         public void Parse(XElement el, SceneReader reader)
         {
-            if(el.TryGetAttribute("src", out var src)){
+            if (el.TryGetAttribute("src", out var src))
+            {
                 var split = src.Split(':');
-                if(split.Length > 1){
+                if (split.Length > 1)
+                {
                     var node = reader.LoadGltfNode(split[0], split[1]);
                     ParseGltfNode(node);
-                } else {
+                }
+                else
+                {
                     var scene = reader.LoadGltfScene(split[0]);
                     Name = scene.Name;
                     foreach (var n in scene.Nodes)
@@ -157,33 +182,39 @@ namespace XPlat.Engine
                 }
 
             }
-            if(el.TryGetAttribute("name", out var name)) Name = name;
-            if(el.TryGetAttribute("tag", out var tag)) Tag = tag;
-            if(el.TryGetAttribute("translate", out var translate)) Transform.Translation = translate.Vector3();
-            if(el.TryGetAttribute("rotate", out var rotate)) Transform.RotateDeg(rotate.Vector3());
-            
-            if(el.TryGetAttribute("scale", out var scale)) Transform.Scale = scale.Vector3();
+            if (el.TryGetAttribute("name", out var name)) Name = name;
+            if (el.TryGetAttribute("tag", out var tag)) Tag = tag;
+            if (el.TryGetAttribute("translate", out var translate)) Transform.Translation = translate.Vector3();
+            if (el.TryGetAttribute("rotate", out var rotate)) Transform.RotateDeg(rotate.Vector3());
 
-            foreach(var c in el.Element("components")?.Elements() ?? Enumerable.Empty<XElement>()){
+            if (el.TryGetAttribute("scale", out var scale)) Transform.Scale = scale.Vector3();
+
+            foreach (var c in el.Element("components")?.Elements() ?? Enumerable.Empty<XElement>())
+            {
                 var target = reader.GetTargetType(c);
                 var component = GetComponent(target);
-                if(component != null) {
+                if (component != null)
+                {
                     component.Parse(c, reader);
                 }
-                else {
+                else
+                {
                     component = reader.ReadElement(c) as Component ?? throw new InvalidDataException($"{target.Name} is not a component");
                     AddComponent(component);
                 }
             }
 
-            foreach(var c in el.Elements("node")){
-                if(c.TryGetAttribute("name", out var n)){
+            foreach (var c in el.Elements("node"))
+            {
+                if (c.TryGetAttribute("name", out var n))
+                {
                     var child = Children.FirstOrDefault(x => x.Name == n);
-                    if(child != null) {
+                    if (child != null)
+                    {
                         child.Parse(c, reader);
                         continue;
                     }
-                } 
+                }
                 var node = (Node)reader.ReadElement(c);
                 AddChild(node);
             }

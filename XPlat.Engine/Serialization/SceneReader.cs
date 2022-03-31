@@ -18,6 +18,8 @@ namespace XPlat.Engine.Serialization
         public Dictionary<string, Type> SceneElements { get; } = new Dictionary<string, Type>();
         public XElement XElement { get; private set; }
 
+        public string Directory => root;
+
         public GltfNode LoadGltfNode(string file, string path)
         {
             var scene = GltfReader.Load(ResolvePath(file));
@@ -30,7 +32,7 @@ namespace XPlat.Engine.Serialization
             return scene;
         }
 
-        private string ResolvePath(string path){
+        public string ResolvePath(string path){
             return Path.Combine(root, path);
         }
 
@@ -56,6 +58,7 @@ namespace XPlat.Engine.Serialization
         {
             var type = GetTargetType(el);
             var inst = (ISceneElement)Activator.CreateInstance(type);
+            //if(inst is Scene scn) this.Scene = scn;
             inst.Parse(el, this);
             return inst;
         }

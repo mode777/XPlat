@@ -12,7 +12,11 @@
         <node name="Light">
             <!-- <components><xsample-control/></components> -->
         </node>
-        <node name="Suzanne"><components><xsample-cube/></components></node>
+        <node name="Suzanne">
+            <components>
+                <!-- <lua src="rotate.lua" watch="true"/> -->
+            </components>
+        </node>
         <node name="Suzanne.001"><components><xsample-cube/></components></node>
         <node name="Suzanne.002"><components><xsample-cube/></components></node>
     </node>
