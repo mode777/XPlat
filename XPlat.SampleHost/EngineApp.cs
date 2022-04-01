@@ -9,7 +9,7 @@ namespace XPlat.SampleHost
     public class EngineApp : ISdlApp
     {
         private Scene scene;
-        private Renderer renderer;
+        private Renderer3d renderer;
 
         public EngineApp(IPlatform platform)
         {
@@ -59,7 +59,7 @@ namespace XPlat.SampleHost
             light.AddComponent(new LightComponent());
             scene.RootNode.AddChild(light);
 
-            renderer = new Renderer(platform);
+            renderer = new Renderer3d(platform);
         }
 
         public void Update()

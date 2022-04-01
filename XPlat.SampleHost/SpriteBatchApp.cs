@@ -5,13 +5,53 @@ using XPlat.Graphics;
 
 namespace XPlat.SampleHost
 {
+    public class Particle
+    {
+        static float Ran => Random.Shared.NextSingle();
+
+        public Particle(Texture texture, Vector2 pos)
+        {
+            Texture = texture;
+            Trajectory = new Vector2((Ran-0.5f) * 10, (Ran-0.5f) * 10);
+            Rotation = (Ran - 0.5f) * 20;
+            Transform.OriginX = texture.Size.X / 2;
+            Transform.OriginY = texture.Size.Y / 2;
+            Transform.X = pos.X;
+            Transform.Y = pos.Y;
+            var s = (Ran + 0.5f) * 0.3f;
+            Transform.ScaleX = s;
+            Transform.ScaleY = s;
+        }
+        public Texture Texture { get; set; }
+        public Vector2 Trajectory;
+        public float Rotation;
+        private Matrix3x2 _mat;
+        public Transform2d Transform { get; } = new Transform2d();
+
+        public void Update()
+        {
+            Transform.RotationDeg += Rotation;
+            Transform.X += Trajectory.X;
+            Transform.Y += Trajectory.Y;
+            Transform.ScaleX += 0.001f;
+            Transform.ScaleY += 0.001f;
+        }
+
+        public void Draw(SpriteBatch b)
+        {
+            Transform.GetMatrix(ref _mat);
+            b.SetTexture(Texture);
+            b.Draw(ref _mat);
+        }
+    }
+
     public class SpriteBatchApp : ISdlApp
     {
         private SpriteBatch batch;
         private Texture texture;
-        private Texture texture2;
         private Matrix3x2 mat;
         private Transform2d transform;
+        private Particle[] particles;
         private readonly IPlatform platform;
 
         public SpriteBatchApp(IPlatform platform)
@@ -21,11 +61,11 @@ namespace XPlat.SampleHost
 
         public void Init()
         {
-            this.batch = new SpriteBatch(16);
-            this.texture = new Texture("assets/desktop.jpeg", TextureUsage.Graphics2d);
-            this.texture2 = new Texture("assets/ijon.jpeg", TextureUsage.Graphics2d);
-            this.mat = Matrix3x2.Identity;
-            this.transform = new Transform2d();
+            batch = new SpriteBatch();
+            texture = new Texture("assets/coin.png", TextureUsage.Graphics2d);
+            mat = Matrix3x2.Identity;
+            transform = new Transform2d();
+            particles = Enumerable.Repeat(0, 4096).Select(x => new Particle(texture, platform.RendererSize/2)).ToArray();
 
             transform.OriginX = texture.Size.X / 2;
             transform.OriginY = texture.Size.Y / 2;
@@ -42,15 +82,14 @@ namespace XPlat.SampleHost
 
             GL.ClearColor(1, 0, 0, 1);
             GL.Clear(GL.COLOR_BUFFER_BIT);
+
             
             batch.Begin((int)platform.RendererSize.X, (int)platform.RendererSize.Y);
-            batch.SetTexture(texture);
-            batch.Draw(0,0);
-            batch.SetColor(new Color(0,0,255));
-            batch.Draw(ref mat);
-            batch.SetColor(new Color(255,255,255));
-            batch.SetTexture(texture2);
-            batch.Draw(400,400);
+            foreach (var p in particles)
+            {
+                p.Update();
+                p.Draw(batch);
+            }
             batch.End();
         }
     }

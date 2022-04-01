@@ -53,17 +53,27 @@ namespace XPlat.Core
         //}
 
         public static GlBufferHandle CreateBuffer<T>(uint buffer_type, T[] data, uint usageHint = GL.STATIC_DRAW) where T : unmanaged {
-            uint[] buffer = new uint[1];
+            uint buffer = 0;
             unsafe{ 
-                fixed(uint* p = buffer){
-                    GL.GenBuffers(1, p);
-                }
-                GL.BindBuffer(buffer_type, buffer[0]);
+                GL.GenBuffers(1, &buffer);
+                GL.BindBuffer(buffer_type, buffer);
                 fixed(void* p = data){
                     GL.BufferData(buffer_type, (uint)(sizeof(T)*data.Length), p, usageHint);
                 }
             }
-            return new GlBufferHandle(buffer[0]);            
+            return new GlBufferHandle(buffer);            
+        }
+
+        public static void ResizeBuffer<T>(GlBufferHandle handle, uint buffer_type, T[] data, uint usageHint = GL.STATIC_DRAW) where T : unmanaged
+        {
+            unsafe
+            {
+                GL.BindBuffer(buffer_type, handle.Handle);
+                fixed (void* p = data)
+                {
+                    GL.BufferData(buffer_type, (uint)(sizeof(T) * data.Length), p, usageHint);
+                }
+            }
         }
 
         public static void DeleteBuffer(uint buffer){

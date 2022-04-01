@@ -32,7 +32,4 @@
   <ItemGroup>
     <None Remove="assets\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="assets\" />
-  </ItemGroup>
 </Project>
