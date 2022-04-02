@@ -14,7 +14,7 @@ namespace XPlat.SampleHost
     public class EngineXmlApp : ISdlApp
     {
         private Scene scene;
-        private Renderer renderer;
+        private Renderer3d renderer;
         private SceneVisualizer sceneViz;
         private readonly IPlatform platform;
         private readonly ISdlPlatformEvents events;
@@ -41,7 +41,7 @@ namespace XPlat.SampleHost
 
         private void LoadScene()
         {
-            renderer = new Renderer(platform);
+            renderer = new Renderer3d(platform);
             if(scene != null) scene.Dispose();
             scene = SceneReader.Load("assets/scenes/gltf_scene_2.xml");
             scene.Init();

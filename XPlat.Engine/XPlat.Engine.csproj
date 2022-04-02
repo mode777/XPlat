@@ -5,6 +5,7 @@
     <ProjectReference Include="..\XPlat.Graphics\XPlat.Graphics.csproj" />
     <ProjectReference Include="..\XPlat.Gltf\XPlat.Gltf.csproj" />
     <ProjectReference Include="..\XPlat.Lua\XPlat.LuaScripting.csproj" />
+    <ProjectReference Include="..\XPlat.SpriteBatch\XPlat.SpriteBatch.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
