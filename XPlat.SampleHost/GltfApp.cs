@@ -15,7 +15,7 @@ namespace XPlat.SampleHost
 
         public void Init()
         {
-            var scene = GltfReader.Load("assets/test_scene.glb");
+            var scene = GltfReader.Load("assets/models/test_scene.glb");
             scene.Dump((s) => Console.WriteLine(s));
             var l = scene.FindNode("/Light/Light_Orientation");
         }

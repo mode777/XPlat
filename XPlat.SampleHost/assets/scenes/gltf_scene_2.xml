@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <scene version="1.0">
     <import assembly="XPlat.SampleHost" />
-    <node src="test_scene_2.glb">
+    <node src="../models/test_scene_2.glb">
         <node name="Camera">
             <node name="Camera_Orientation">
                 <components>
@@ -14,11 +14,11 @@
         </node>
         <node name="Suzanne">
             <components>
-                 <lua src="rotate.lua" watch="true"/> 
+                 <lua src="../scripts/rotate.lua" watch="true"/> 
             </components>
         </node>
         <node name="Suzanne.001"><components>
-          <lua src="rotate.lua" watch="true"/>
+          <lua src="../scripts/rotate.lua" watch="true"/>
         </components></node>
         <node name="Suzanne.002"><components><xsample-cube/></components></node>
     </node>

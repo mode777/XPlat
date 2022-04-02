@@ -22,8 +22,8 @@ namespace XPlat.SampleHost
         public void Init()
         {
             this.batch = new SpriteBatch(16);
-            this.texture = new Texture("assets/desktop.jpeg", TextureUsage.Graphics2d);
-            this.texture2 = new Texture("assets/ijon.jpeg", TextureUsage.Graphics2d);
+            this.texture = new Texture("assets/images/desktop.jpeg", TextureUsage.Graphics2d);
+            this.texture2 = new Texture("assets/images/ijon.jpeg", TextureUsage.Graphics2d);
             this.mat = Matrix3x2.Identity;
             this.transform = new Transform2d();
 

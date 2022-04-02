@@ -24,7 +24,7 @@ public class LuaApp : ISdlApp
 
     private void LoadScript(){
         reload = false;
-        script.Load(File.ReadAllText("assets/myscript.lua"), vg);
+        script.Load(File.ReadAllText("assets/scripts/myscript.lua"), vg);
     }
 
 

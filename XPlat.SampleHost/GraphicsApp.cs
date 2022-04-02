@@ -37,7 +37,7 @@ public class GraphicsApp : ISdlApp
             new VertexAttribute<float>(XPlat.Graphics.Attribute.Uv_0, VertexUvs, VertexAttributeDescriptor.Vec2f),
         }, new VertexIndices(Indices));
 
-        this.texture = new PhongMaterial(new Texture("assets/desktop.jpeg"), Uniform.AlbedoTexture);
+        this.texture = new PhongMaterial(new Texture("assets/images/desktop.jpeg"), Uniform.AlbedoTexture);
         
         this.primitive.Material = this.texture;
     }

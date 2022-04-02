@@ -29,7 +29,7 @@ public class LightsApp : ISdlApp
     {
         this.shader = new PhongShader();
 
-        var gltf = GltfReader.Load("assets/test_scene.glb");
+        var gltf = GltfReader.Load("assets/models/test_scene.glb");
         var node = gltf.FindNode("Suzanne");
         primitive = node.ReadMesh().Primitives.First();
 

@@ -2,14 +2,14 @@
 <scene version="1.0">
     <import assembly="XPlat.SampleHost" />
     <node name="root">
-        <node src="test_scene.glb:Camera" />
+        <node src="../models/test_scene.glb:Camera" />
         <!-- <node name="Camera" tag="camera" translate="0,3,-5" rotate="-20,180,0">
             <components>
                 <camera />
                 <xsample-cube />
             </components>
         </node> -->
-        <node src="test_scene.glb:Suzanne">
+        <node src="../models/test_scene.glb:Suzanne">
             <components>
                 <xsample-cube />
             </components>
@@ -19,8 +19,8 @@
                 <xsample-cube />
             </components>
         </node> -->
-        <node src="test_scene.glb:Plane" />
-        <node src="test_scene.glb:Light">
+        <node src="../models/test_scene.glb:Plane" />
+        <node src="../models/test_scene.glb:Light">
             <!-- <node name="Light_Orientation">
                 <components>
                     <light color="0.8,1,0.7"/>

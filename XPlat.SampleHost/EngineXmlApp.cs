@@ -43,7 +43,7 @@ namespace XPlat.SampleHost
         {
             renderer = new Renderer(platform);
             if(scene != null) scene.Dispose();
-            scene = SceneReader.Load("assets/gltf_scene_2.xml");
+            scene = SceneReader.Load("assets/scenes/gltf_scene_2.xml");
             scene.Init();
         }
 

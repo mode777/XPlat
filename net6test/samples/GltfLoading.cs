@@ -19,7 +19,7 @@ namespace net6test.samples
 
         public Scene LoadScene()
         {
-            var model = SharpGLTF.Schema2.ModelRoot.Load("assets/monkey.glb");
+            var model = SharpGLTF.Schema2.ModelRoot.Load("assets/models/monkey.glb");
             return GltfLoader.LoadScene(model);
         }
 

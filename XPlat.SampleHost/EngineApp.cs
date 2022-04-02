@@ -42,7 +42,7 @@ namespace XPlat.SampleHost
                     new VertexAttribute<float>(Graphics.Attribute.Normal, vertexNormals, VertexAttributeDescriptor.Vec3f),
                     new VertexAttribute<float>(Graphics.Attribute.Uv_0, uvs, VertexAttributeDescriptor.Vec2f),
                 }, new VertexIndices(indices)){
-                    Material = new PhongMaterial(new Texture("assets/bricks.jpeg"), Uniform.AlbedoTexture)
+                    Material = new PhongMaterial(new Texture("assets/textures/bricks.jpeg"), Uniform.AlbedoTexture)
                 }) 
             });
             cube.AddComponent(new ActionComponent(null, c => {

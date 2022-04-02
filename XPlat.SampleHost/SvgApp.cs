@@ -20,7 +20,7 @@ public class SvgApp : ISdlApp
         this.vg = NVGcontext.CreateGl(NVGcreateFlags.NVG_ANTIALIAS |
                         NVGcreateFlags.NVG_STENCIL_STROKES);
 
-        this.svg = SvgImage.Load("assets/Ghostscript_Tiger.svg");
+        this.svg = SvgImage.Load("assets/images/Ghostscript_Tiger.svg");
     }
 
     public void Update()

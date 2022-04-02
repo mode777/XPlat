@@ -30,7 +30,7 @@ public class Graphics3dApp : ISdlApp
             new VertexAttribute<float>(XPlat.Graphics.Attribute.Uv_0, uvs, VertexAttributeDescriptor.Vec2f),
         }, new VertexIndices(indices));
 
-        this.texture = new PhongMaterial(new Texture("assets/bricks.jpeg"), Uniform.AlbedoTexture);
+        this.texture = new PhongMaterial(new Texture("assets/textures/bricks.jpeg"), Uniform.AlbedoTexture);
 
         this.primitive.Material = this.texture;
         this.camera = new Camera3d {

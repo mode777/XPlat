@@ -46,9 +46,6 @@ namespace XPlat.NanoGui
                         NVGcreateFlags.NVG_STENCIL_STROKES);
 
             var vg = nvgContext;
-            vg.CreateFont("sans", "assets/Roboto-Regular.ttf");
-            vg.CreateFont("sans-bold", "assets/Roboto-Bold.ttf");
-            vg.CreateFont("icons", "assets/FontAwesome-Solid.ttf");
 
             Theme = new Theme(nvgContext);
 
