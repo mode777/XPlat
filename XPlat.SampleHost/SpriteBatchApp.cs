@@ -62,7 +62,7 @@ namespace XPlat.SampleHost
         public void Init()
         {
             batch = new SpriteBatch();
-            texture = new Texture("assets/coin.png", TextureUsage.Graphics2d);
+            texture = new Texture("assets/sprites/coin.png", TextureUsage.Graphics2d);
             mat = Matrix3x2.Identity;
             transform = new Transform2d();
             particles = Enumerable.Repeat(0, 4096).Select(x => new Particle(texture, platform.RendererSize/2)).ToArray();

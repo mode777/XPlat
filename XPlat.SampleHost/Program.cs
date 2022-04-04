@@ -3,7 +3,8 @@ using System.Numerics;
 using XPlat.Core;
 using XPlat.SampleHost;
 
-XPlatApp.RunSdl<SpriteBatchApp>(args);
+//XPlatApp.RunSdl<SpriteBatchApp>(args);
+XPlatApp.RunSdl<Tiny2cApp>(args);
 //XPlatApp.RunSdl<EngineXmlApp>(args);
 //XPlatApp.RunSdl<LightsApp>(args);
 //XPlatApp.RunSdl<MinimalApp>(args);
