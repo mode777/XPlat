@@ -1476,7 +1476,9 @@ namespace XPlat.NanoVg
                 if (nvg__ptEquals(p0.x, p0.y, p1.x, p1.y, ctx.distTol))
                 {
                     path.count--;
-                    p0 = pts[ipts + path.count - 1];
+                    var idx = ipts + path.count - 1;
+                    if (idx < 0) continue;
+                    p0 = pts[idx];
                     path.closed = 1;
                 }
 
@@ -1683,7 +1685,9 @@ namespace XPlat.NanoVg
                 int ipts = path.first;
                 NVGpoint[] pts = cache.points;
 
-                NVGpoint p0 = pts[ipts + path.count - 1];
+                var idx = ipts + path.count - 1;
+                if (idx < 0) continue;
+                NVGpoint p0 = pts[idx];
 
                 int ip1 = ipts;
                 NVGpoint p1 = pts[ip1 + 0];

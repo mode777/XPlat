@@ -11,9 +11,6 @@ namespace XPlat.SampleHost
     {
         private readonly IPlatform platform;
         private NVGcontext vg;
-        private c2Circle circle;
-        private float r;
-        private c2Capsule capsule;
         private List<c2Shape> shapes = new List<c2Shape>();
         private c2Manifold man;
 
@@ -26,12 +23,14 @@ namespace XPlat.SampleHost
         {
             this.vg = NVGcontext.CreateGl(NVGcreateFlags.NVG_ANTIALIAS | NVGcreateFlags.NVG_STENCIL_STROKES);
 
-            circle = new c2Circle();
-            circle.p = new Vector2(100, 100);
-            circle.r = 50;
+            var circle = new c2Circle
+            {
+                p = new Vector2(100, 100),
+                r = 50
+            };
             shapes.Add(circle);
 
-            capsule = new c2Capsule {
+            var capsule = new c2Capsule {
                 a = new Vector2(150, 150),
                 b = new Vector2(300, 300),
                 r = 50
@@ -49,19 +48,36 @@ namespace XPlat.SampleHost
 
         public void Update()
         {
-            circle.p = platform.MousePosition;
-            c2Collide(circle, c2x.Identity, capsule, c2x.Identity, man);
-
             GL.ClearColor(0.2f, 0.2f, 0.2f, 1);
             GL.Clear(GL.COLOR_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
-
             vg.BeginFrame((int)platform.WindowSize.X, (int)platform.WindowSize.Y, platform.RetinaScale);
 
-            if (man.count > 0) vg.StrokeColor("#f00");
-            else vg.StrokeColor("#fff");
-            DrawShape(circle);
-            DrawShape(capsule);
-            DrawManifold(man);
+            var movable = shapes[0] as c2Circle;
+            if (Input.IsKeyDown(Key.UP)) movable.p.Y -= 3;
+            if (Input.IsKeyDown(Key.DOWN)) movable.p.Y += 3;
+            if (Input.IsKeyDown(Key.LEFT)) movable.p.X -= 3;
+            if (Input.IsKeyDown(Key.RIGHT)) movable.p.X += 3;
+
+            for (int i = 1; i < shapes.Count; i++)
+            {
+                var s = shapes[i];
+                
+                c2Collide(movable, c2x.Identity, s, c2x.Identity, man);
+                if(man.count > 0)
+                {
+                    var n = man.normal;
+                    var d = man.depths1 * (s is c2AABB ? -1 : 1);
+                    movable.p -= (n * d);
+                }
+
+                if (man.count > 0) vg.StrokeColor("#f00");
+                else vg.StrokeColor("#fff");
+                DrawShape(s);
+                DrawManifold(man);
+            }
+
+            vg.StrokeColor("#00f");
+            DrawShape(movable);
 
             vg.EndFrame();
         }
@@ -71,14 +87,17 @@ namespace XPlat.SampleHost
             switch (shape)
             {
                 case c2Circle c:
-                    vg.DrawCircle(c.p, c.r, false, true);
+                    vg.DrawCircle(c.p, c.r, DrawMode.Line);
                     break;
                 case c2Capsule ca:
                     var v = Vector2.Normalize(ca.b - ca.a);
                     v = new Vector2(v.Y, -v.X) * ca.r;
-                    vg.DrawCircle(ca.a, ca.r, false, true);
-                    vg.DrawCircle(ca.b, ca.r, false, true);
+                    vg.DrawCircle(ca.a, ca.r, DrawMode.Line);
+                    vg.DrawCircle(ca.b, ca.r, DrawMode.Line);
                     vg.DrawLine(ca.a + v, ca.b + v, ca.b - v, ca.a - v, ca.a + v);
+                    break;
+                case c2AABB aabb:
+                    vg.DrawRectangle(aabb.min, aabb.max - aabb.min, DrawMode.Line);
                     break;
             }
         }
@@ -94,7 +113,7 @@ namespace XPlat.SampleHost
             {
                 var p = i == 0 ? m.contact_points1 : m.contact_points2;
                 float d = i == 0 ? m.depths1 : m.depths2;
-                vg.DrawCircle(p, 3.0f, true, false);
+                vg.DrawCircle(p, 3.0f);
                 vg.DrawLine(p.X, p.Y, p.X - n.X * d, p.Y - n.Y * d);
             }
         }

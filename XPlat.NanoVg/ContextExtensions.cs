@@ -7,16 +7,30 @@ using System.Numerics;
 
 namespace XPlat.NanoVg
 {
+    [Flags]
+    public enum DrawMode
+    {
+        Line = 1,
+        Fill = 2
+    }
+
     public static class ContextExtensions
     {
-        public static void DrawCircle(this NVGcontext vg, Vector2 p, float r, bool fill, bool stroke){
+
+        public static void DrawCircle(this NVGcontext vg, Vector2 p, float r, DrawMode mode = DrawMode.Fill){
             vg.BeginPath();
             vg.Circle(p.X, p.Y, r);
-            if(fill) vg.Fill();
-            if(stroke) vg.Stroke();
+            if(mode.HasFlag(DrawMode.Fill)) vg.Fill();
+            if(mode.HasFlag(DrawMode.Line)) vg.Stroke();
         }
 
-
+        public static async void DrawRectangle(this NVGcontext vg, Vector2 p, Vector2 size, DrawMode mode = DrawMode.Fill)
+        {
+            vg.BeginPath();
+            vg.Rect(p.X, p.Y, size.X, size.Y);
+            if (mode.HasFlag(DrawMode.Fill)) vg.Fill();
+            if (mode.HasFlag(DrawMode.Line)) vg.Stroke();
+        }
 
         public static async void DrawLine(this NVGcontext vg, params Vector2[] vs){
             vg.BeginPath();
