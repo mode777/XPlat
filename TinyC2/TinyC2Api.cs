@@ -393,7 +393,7 @@ namespace TinyC2
             switch (A)
             {
                 case c2Circle ca:
-                    switch (A)
+                    switch (B)
                     {
                         case c2Circle cb: return c2CircletoCircle(ca, cb);
                         case c2AABB ab: return c2CircletoAABB(ca, ab);
@@ -436,80 +436,80 @@ namespace TinyC2
             }
         }
 
-        public static void c2Collide(object A, ref c2x ax, C2_TYPE typeA, object B, ref c2x bx, C2_TYPE typeB, c2Manifold m)
+        public static void c2Collide(c2Shape A, c2x ax, c2Shape B, c2x bx, c2Manifold m)
         {
             m.count = 0;
 
-            switch (typeA)
+            switch (A)
             {
-                case C2_TYPE.C2_CIRCLE:
-                    switch (typeB)
+                case c2Circle cA:
+                    switch (B)
                     {
-                        case C2_TYPE.C2_CIRCLE:
-                            c2CircletoCircleManifold((c2Circle)A, (c2Circle)B, m);
+                        case c2Circle cB:
+                            c2CircletoCircleManifold(cA, cB, m);
                             break;
-                        case C2_TYPE.C2_AABB:
-                            c2CircletoAABBManifold((c2Circle)A, (c2AABB)B, m);
+                        case c2AABB aB:
+                            c2CircletoAABBManifold(cA, aB, m);
                             break;
-                        case C2_TYPE.C2_CAPSULE:
-                            c2CircletoCapsuleManifold((c2Circle)A, (c2Capsule)B, m);
+                        case c2Capsule caB:
+                            c2CircletoCapsuleManifold(cA, caB, m);
                             break;
-                        case C2_TYPE.C2_POLY:
-                            c2CircletoPolyManifold((c2Circle)A, (c2Poly)B, ref bx, m);
+                        case c2Poly pB:
+                            c2CircletoPolyManifold(cA, pB, ref bx, m);
                             break;
                     }
                     break;
 
-                case C2_TYPE.C2_AABB:
-                    switch (typeB)
+                case c2AABB aA:
+                    switch (B)
                     {
-                        case C2_TYPE.C2_CIRCLE:
-                            c2CircletoAABBManifold((c2Circle)B, (c2AABB)A, m);
+                        case c2Circle cB:
+                            c2CircletoAABBManifold(cB, aA, m);
                             break;
-                        case C2_TYPE.C2_AABB:
-                            c2AABBtoAABBManifold((c2AABB)A, (c2AABB)B, m);
+                        case c2AABB aB:
+                            c2AABBtoAABBManifold(aA, aB, m);
                             break;
-                        case C2_TYPE.C2_CAPSULE:
-                            c2AABBtoCapsuleManifold((c2AABB)A, (c2Capsule)B, m);
+                        case c2Capsule caB:
+                            c2AABBtoCapsuleManifold(aA, caB, m);
                             break;
-                        case C2_TYPE.C2_POLY:
-                            c2AABBtoPolyManifold((c2AABB)A, (c2Poly)B, ref bx, m);
+                        case c2Poly pB:
+                            c2AABBtoPolyManifold(aA, pB, ref bx, m);
                             break;
                     }
                     break;
 
-                case C2_TYPE.C2_CAPSULE:
-                    switch (typeB)
+                case c2Capsule caA:
+                    switch (B)
                     {
-                        case C2_TYPE.C2_CIRCLE:
-                            c2CircletoCapsuleManifold((c2Circle)B, (c2Capsule)A, m);
+                        case c2Circle cB:
+                            c2CircletoCapsuleManifold(cB, caA, m);
                             break;
-                        case C2_TYPE.C2_AABB:
-                            c2AABBtoCapsuleManifold((c2AABB)B, (c2Capsule)A, m);
+                        case c2AABB aB:
+                            c2AABBtoCapsuleManifold(aB, caA, m);
                             break;
-                        case C2_TYPE.C2_CAPSULE:
-                            c2CapsuletoCapsuleManifold((c2Capsule)A, (c2Capsule)B, m);
+                        case c2Capsule caB:
+                            c2CapsuletoCapsuleManifold(caA, caB, m);
                             break;
-                        case C2_TYPE.C2_POLY:
-                            c2CapsuletoPolyManifold((c2Capsule)A, (c2Poly)B, ref bx, m);
+                        case c2Poly pB:
+                            c2CapsuletoPolyManifold(caA, pB, ref bx, m);
                             break;
                     }
                     break;
 
-                case C2_TYPE.C2_POLY:
-                    switch (typeB)
+                case c2Poly pA:
+                    switch (B)
                     {
-                        case C2_TYPE.C2_CIRCLE:
-                            c2CircletoPolyManifold((c2Circle)B, (c2Poly)A, ref ax, m);
+                        case c2Circle cB:
+                            c2CircletoPolyManifold(cB, pA, ref ax, m);
                             break;
-                        case C2_TYPE.C2_AABB:
-                            c2AABBtoPolyManifold((c2AABB)B, (c2Poly)A, ref ax, m);
+                        case c2AABB aB:
+                            c2AABBtoPolyManifold(aB, pA, ref ax, m);
                             break;
-                        case C2_TYPE.C2_CAPSULE:
-                            c2CapsuletoPolyManifold((c2Capsule)A, (c2Poly)A, ref ax, m);
+                        case c2Capsule caB:
+                            c2CapsuletoPolyManifold(caB, pA, ref ax, m);
                             break;
-                        case C2_TYPE.C2_POLY:
-                            c2PolytoPolyManifold((c2Poly)A, ref ax, (c2Poly)B, ref bx, m);
+                        case c2Poly pB:
+                            c2PolytoPolyManifold(pA, ref ax, pB, ref bx, m);
                             break;
                     }
                     break;
