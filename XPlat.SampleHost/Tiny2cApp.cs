@@ -53,21 +53,25 @@ namespace XPlat.SampleHost
             vg.BeginFrame((int)platform.WindowSize.X, (int)platform.WindowSize.Y, platform.RetinaScale);
 
             var movable = shapes[0] as c2Circle;
-            if (Input.IsKeyDown(Key.UP)) movable.p.Y -= 3;
-            if (Input.IsKeyDown(Key.DOWN)) movable.p.Y += 3;
-            if (Input.IsKeyDown(Key.LEFT)) movable.p.X -= 3;
-            if (Input.IsKeyDown(Key.RIGHT)) movable.p.X += 3;
+             if (Input.IsKeyDown(Key.UP)) movable.p.Y -= 3;
+             if (Input.IsKeyDown(Key.DOWN)) movable.p.Y += 3;
+             if (Input.IsKeyDown(Key.LEFT)) movable.p.X -= 3;
+             if (Input.IsKeyDown(Key.RIGHT)) movable.p.X += 3;
+            //movable.p = platform.MousePosition;
 
             for (int i = 1; i < shapes.Count; i++)
             {
                 var s = shapes[i];
                 
-                c2Collide(movable, c2x.Identity, s, c2x.Identity, man);
+                c2Collide(s, c2x.Identity, movable, c2x.Identity, man);
                 if(man.count > 0)
                 {
                     var n = man.normal;
-                    var d = man.depths1 * (s is c2AABB ? -1 : 1);
-                    movable.p -= (n * d);
+                    var d = man.depths1;
+                    var sep_vec = n*d;
+                    var origin = s.Center - movable.Center;
+                    var sign = Vector2.Dot(sep_vec, origin) > 0 ? -1 : 1;
+                    movable.p += (sign * n * d);
                 }
 
                 if (man.count > 0) vg.StrokeColor("#f00");

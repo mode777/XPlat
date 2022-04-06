@@ -169,17 +169,41 @@ namespace TinyC2
             public float d; // distance to origin from plane, or ax + by = d
         }
 
-        public class c2Shape {}
+        public abstract class c2Shape {
+            public abstract Vector2 Center { get; }
+            public abstract void Transform(ref Matrix4x4 mat);
+            public abstract void Transform(ref Matrix3x2 mat);
+        }
 
         public class c2Circle : c2Shape
         {
             public Vector2 p;
             public float r;
+
+            public override Vector2 Center => p;
+
+            public override void Transform(ref Matrix4x4 mat) => Vector2.Transform(p, mat);
+
+            public override void Transform(ref Matrix3x2 mat) => Vector2.Transform(p, mat);
         }
 
         public class c2AABB : c2Shape
         {
             public Vector2 min, max;
+
+            public override Vector2 Center => min + (max - min) / 2;
+
+            public override void Transform(ref Matrix4x4 mat)
+            {
+                Vector2.Transform(min, mat);
+                Vector2.Transform(max, mat);
+            }
+
+            public override void Transform(ref Matrix3x2 mat)
+            {
+                Vector2.Transform(min, mat);
+                Vector2.Transform(max, mat);
+            }
         }
 
         // a capsule is defined as a line segment (from a to b) and radius r
@@ -187,6 +211,20 @@ namespace TinyC2
         {
             public Vector2 a, b;
             public float r;
+
+            public override Vector2 Center => a + (b - a) / 2;
+
+            public override void Transform(ref Matrix4x4 mat)
+            {
+                Vector2.Transform(a, mat);
+                Vector2.Transform(b, mat);
+            }
+
+            public override void Transform(ref Matrix3x2 mat)
+            {
+                Vector2.Transform(a, mat);
+                Vector2.Transform(b, mat);
+            }
         }
 
         public class c2Poly : c2Shape
@@ -194,6 +232,18 @@ namespace TinyC2
             public int count = 0;
             public Vector2[] verts = new Vector2[C2_MAX_POLYGON_VERTS];
             public Vector2[] norms = new Vector2[C2_MAX_POLYGON_VERTS];
+
+            public override Vector2 Center => throw new NotImplementedException();
+
+            public override void Transform(ref Matrix4x4 mat)
+            {
+                throw new NotImplementedException();
+            }
+
+            public override void Transform(ref Matrix3x2 mat)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public struct c2Ray
