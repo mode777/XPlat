@@ -33,6 +33,18 @@ namespace XPlat.Graphics
 
         }
 
+        public Texture(int width, int height, TextureUsage usage = TextureUsage.Graphics3d)
+        {
+            Size = new Vector2(width, height);
+            GlTexture = GlUtil.CreateTexture2d(width, height);
+            SetProperties(usage);
+        }
+
+        public void Update(Image<Rgba32> image, int x = 0, int y = 0)
+        {
+            GlUtil.UpdateTexture2d(GlTexture, x, y, image);
+        }
+
         private void SetProperties(TextureUsage usage)
         {
             switch (usage)

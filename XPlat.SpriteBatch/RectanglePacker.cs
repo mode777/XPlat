@@ -1,7 +1,44 @@
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace XPlat.Graphics {
-    public class SpriteAtlas {
+
+	public class SpriteSource
+    {
+        public readonly Rectangle Rectangle;
+		public readonly Texture Texture;
+
+        public SpriteSource(Texture texture, Rectangle rect)
+        {
+            Texture = texture;
+            Rectangle = rect;
+        }
+    }
+
+	public class SpriteAtlas
+    {
+        private readonly Texture texture;
+		private readonly Dictionary<string, SpriteSource> sprites = new Dictionary<string, SpriteSource>();
+
+        public SpriteAtlas(Texture texture)
+        {
+            this.texture = texture;
+        }
+
+		public void Add(string name, int x, int y, int w, int h)
+        {
+			sprites[name] = new SpriteSource(texture, new Rectangle(x, y, w, h));
+        }
+
+		public SpriteSource this[string name]
+		{
+			get { return sprites[name]; }
+		}
+
+	}
+
+    public class RectanglePacker {
 
         public class FONSatlasNode
         {
@@ -13,7 +50,7 @@ namespace XPlat.Graphics {
 		public int nnodes;
 		public int cnodes;
 
-        public SpriteAtlas(int w, int h, int nnodes)
+        public RectanglePacker(int w, int h, int nnodes = 64)
         {
             width = w;
 			height = h;

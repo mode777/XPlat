@@ -7,11 +7,15 @@ namespace XPlat.Core {
         public static readonly ConcurrentQueue<uint> DeleteBuffers = new ConcurrentQueue<uint>();
         public static readonly ConcurrentQueue<uint> DeleteTextures = new ConcurrentQueue<uint>();
         public static readonly ConcurrentQueue<uint> DeletePrograms = new ConcurrentQueue<uint>();
+        public static readonly ConcurrentQueue<uint> DeleteFramebuffers = new ConcurrentQueue<uint>();
+        public static readonly ConcurrentQueue<uint> DeleteRenderbuffers = new ConcurrentQueue<uint>();
         
         public static void Purge(){
             while(DeleteBuffers.TryDequeue(out var res)) GlUtil.DeleteBuffer(res);
             while(DeleteTextures.TryDequeue(out var res)) GlUtil.DeleteTexture(res);
             while(DeletePrograms.TryDequeue(out var res)) GlUtil.DeleteProgram(res);
+            while(DeleteFramebuffers.TryDequeue(out var res)) GlUtil.DeleteFramebuffer(res);
+            while(DeleteRenderbuffers.TryDequeue(out var res)) GlUtil.DeleteRenderbuffer(res);
         }
     }
 }

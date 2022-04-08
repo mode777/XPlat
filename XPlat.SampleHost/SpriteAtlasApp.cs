@@ -1,15 +1,11 @@
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using System.Numerics;
 using XPlat.Core;
 using XPlat.Graphics;
 
 namespace XPlat.SampleHost
 {
-    public class SpriteSheetEntry {
-        public Texture Texture { get; set; }
-        public Vector2 Position { get; set; }
-        public string Name { get; set; }
-    }
-
     public class SpriteAtlasApp : ISdlApp
     {
         public SpriteAtlasApp(IPlatform platform)
@@ -20,28 +16,33 @@ namespace XPlat.SampleHost
 
         public async void Init()
         {
-            textures = CollectImages("assets/sprites/space")
-                .Select(x => new SpriteSheetEntry { 
-                    Texture = new Texture(x, TextureUsage.GraphicsPixel), 
-                    Name = x 
-                }).ToArray();
-            var atlas = new SpriteAtlas(1024,1024,textures.Length);
-            foreach (var t in textures)
+            var texture = new Texture(1024,1024);
+            atlas = new SpriteAtlas(texture);
+            var packer = new RectanglePacker((int)texture.Size.X, (int)texture.Size.Y);
+            foreach (var file in CollectImages("assets/sprites/space"))
             {
-                if(atlas.AddRect((int)t.Texture.Size.X,(int)t.Texture.Size.Y, out var x, out var y)){
-                    t.Position = new Vector2(x,y);
-                } else {
-                    throw new InvalidDataException("No more room in sprite atlas");
+                using(var img = Image.Load<Rgba32>(file))
+                {
+                    if (packer.AddRect(img.Width, img.Height, out var x, out var y))
+                    {
+                        //t.Position = new Vector2(x, y);
+                        texture.Update(img, x, y);
+                        atlas.Add(Path.GetFileName(file), x, y, img.Width, img.Height);
+                    }
+                    else
+                    {
+                        throw new InvalidDataException("No more room in sprite atlas");
+                    }
                 }
-                
             }
+            
             spriteBatch = new SpriteBatch();
 
         }
 
         private static string[] extensions = new string[] { ".png", ".jpeg", ".jpg" };
-        private SpriteSheetEntry[] textures;
         private SpriteBatch spriteBatch;
+        private SpriteAtlas atlas;
         private readonly IPlatform platform;
 
         private IEnumerable<string> CollectImages(string path){
@@ -52,11 +53,10 @@ namespace XPlat.SampleHost
         public void Update()
         {
             spriteBatch.Begin((int)platform.RendererSize.X, (int)platform.RendererSize.Y);
-            foreach (var t in textures)
-            {
-                spriteBatch.SetTexture(t.Texture);
-                spriteBatch.Draw((int)t.Position.X,(int)t.Position.Y);
-            }
+            spriteBatch.SetSprite(atlas["playerShip2_red.png"]);
+            spriteBatch.Draw(150, 150);
+            spriteBatch.SetSprite(atlas["playerShip1_green.png"]);
+            spriteBatch.Draw(300, 300);
             spriteBatch.End();
         }
     }

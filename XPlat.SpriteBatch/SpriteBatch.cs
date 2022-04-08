@@ -136,6 +136,12 @@ namespace XPlat.Graphics
             this.color = color;
         }
 
+        public void SetSprite(SpriteSource spr)
+        {
+            SetTexture(spr.Texture);
+            SetSource(spr.Rectangle);
+        }
+
         private void Resize(int capacity)
         {
             Array.Resize(ref data, capacity);

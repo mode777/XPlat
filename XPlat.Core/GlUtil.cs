@@ -46,6 +46,13 @@ namespace XPlat.Core
             } 
         }
 
+        public static int[] GetViewport()
+        {
+            int[] viewport = new int[4];
+            unsafe { fixed (int* ptr = viewport) { GL.GetIntegerv(GL.VIEWPORT, ptr); } }
+            return viewport;
+        }
+
         //public static void SendUniform(int location, NVGcolor c){
         //    unsafe {
         //        GL.Uniform4fv(location, 1, &c.r);
@@ -89,6 +96,22 @@ namespace XPlat.Core
         public static void DeleteTexture(uint texture){
             unsafe {
                 GL.DeleteTextures(1, &texture);
+            }
+        }
+
+        public static void DeleteFramebuffer(uint framebuffer)
+        {
+            unsafe
+            {
+                GL.DeleteFramebuffers(1, &framebuffer);
+            }
+        }
+
+        public static void DeleteRenderbuffer(uint renderbuffer)
+        {
+            unsafe
+            {
+                GL.DeleteRenderbuffers(1, &renderbuffer);
             }
         }
 
@@ -176,5 +199,74 @@ namespace XPlat.Core
                 return new GlTextureHandle(tex);
             }
         }
+
+        public static GlTextureHandle CreateTexture2d(int width, int height, uint colorFormat = GL.RGBA)
+        {
+            unsafe
+            {
+                uint tex = 0;
+                GL.GenTextures(1, &tex);
+                GL.BindTexture(GL.TEXTURE_2D, tex);
+                GL.TexImage2D(GL.TEXTURE_2D, 0, (int)colorFormat, (uint)width, (uint)height, 0, colorFormat, GL.UNSIGNED_BYTE, null);
+                GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, (int)GL.CLAMP_TO_EDGE);
+                GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, (int)GL.CLAMP_TO_EDGE);               
+                return new GlTextureHandle(tex);
+            }
+        }
+
+        public static void UpdateTexture2d(GlTextureHandle texture, int x, int y, Image<Rgba32> image)
+        {
+            unsafe
+            {
+                GL.BindTexture(GL.TEXTURE_2D, texture.Handle);
+                if (image.TryGetSinglePixelSpan(out var span))
+                {
+                    fixed (Rgba32* p = span)
+                    {
+                        GL.TexSubImage2D(GL.TEXTURE_2D, 0, x, y, (uint)image.Width, (uint)image.Height, GL.RGBA, GL.UNSIGNED_BYTE, p);
+                        //var err = GL.GetError();
+                    }
+                }
+                else
+                {
+                    throw new Exception("Cannot access image pixels");
+                }
+            }
+        }
+
+        public static GlFramebufferHandle CreateFramebuffer(GlTextureHandle colorAttachment, GlRenderbufferHandle depthAttachment = null, GlRenderbufferHandle stencilAttachment = null)
+        {
+            unsafe
+            {
+                uint fb;
+                GL.GenFramebuffers(1, &fb);
+                GL.BindFramebuffer(GL.FRAMEBUFFER, fb);
+                GL.FramebufferTexture2D(GL.FRAMEBUFFER, GL.COLOR_ATTACHMENT0, GL.TEXTURE_2D, colorAttachment.Handle, 0);
+                if (depthAttachment != null) GL.FramebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, depthAttachment.Handle);
+                if (stencilAttachment != null) GL.FramebufferRenderbuffer(GL.FRAMEBUFFER, GL.STENCIL_ATTACHMENT, GL.RENDERBUFFER, stencilAttachment.Handle);
+                var status = GL.CheckFramebufferStatus(GL.FRAMEBUFFER);
+                GL.BindFramebuffer(GL.FRAMEBUFFER, 0);
+                if(status != GL.FRAMEBUFFER_COMPLETE)
+                {
+                    throw new InvalidOperationException("Framebuffer is incomplete");
+                }
+                return new GlFramebufferHandle(fb);
+            }            
+        }
+
+        public static GlRenderbufferHandle CreateRenderbuffer(int width, int height, uint format)
+        {
+            // GL_RGBA4, GL_RGB565, GL_RGB5_A1, GL_DEPTH_COMPONENT16, or GL_STENCIL_INDEX8
+            unsafe
+            {
+                uint rbo;
+                GL.GenRenderbuffers(1, &rbo);
+                GL.BindRenderbuffer(GL.RENDERBUFFER, rbo);
+                GL.RenderbufferStorage(GL.RENDERBUFFER, format, (uint)width, (uint)height);
+                GL.BindRenderbuffer(GL.RENDERBUFFER, 0);
+                return new GlRenderbufferHandle(rbo);
+            }
+        }
+
     }
 }
