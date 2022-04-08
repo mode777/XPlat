@@ -38,6 +38,8 @@ namespace XPlat.Core
 
         public float RetinaScale { get; private set; }
         public string WindowTitle { get => SDL.SDL_GetWindowTitle(window); set => SDL.SDL_SetWindowTitle(window, value); }
+        public bool AutoClear { get; set; } = false;
+        public Vector3 ClearColor { get; set; } = Vector3.Zero;
 
         public event PlatformEventHandler<SDL.SDL_EventType, SDL.SDL_Event> OnEvent;
 
@@ -123,6 +125,9 @@ namespace XPlat.Core
                 UpdateMouse();
 
                 GL.Viewport(0, 0, (uint)RendererSize.X, (uint)RendererSize.Y);
+                
+                if(AutoClear)
+                    Clear();
 
                 app.Update();
 
@@ -147,5 +152,11 @@ namespace XPlat.Core
 
         public void Unsubscribe(SDL.SDL_EventType ev, PlatformEventHandler<SDL.SDL_EventType, SDL.SDL_Event> handler)
             => handlers[(int)ev] -= handler;
+
+        public void Clear()
+        {
+            GL.ClearColor(ClearColor.X, ClearColor.Y, ClearColor.Z, 1);
+            GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
+        }
     }
 }

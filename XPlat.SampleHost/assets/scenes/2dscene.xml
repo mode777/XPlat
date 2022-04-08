@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<scene version="1.0">
+    <import assembly="XPlat.SampleHost" />
+    <atlas name="space" src="../sprites/space" width="1024" height="1024"/>
+    
+    <node name="root">
+
+        <node name="camera"><components><camera2d /></components></node>
+        
+        <node name="player" translate="200, 200, 0">
+            <components>
+                <sprite src="space:playerShip1_green" />
+                <collision mode="active">
+                    <capsule a="50, 20" b="50, 100" r="80" />
+                </collision>
+            </components>
+        </node>
+
+    </node>
+</scene>
