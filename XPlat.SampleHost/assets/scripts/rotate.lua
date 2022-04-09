@@ -1,6 +1,7 @@
-return function(node)
+return function(node, args)
     
     return {
+        __component = "rotate",
         _node = node,
         init = function()
         end,
@@ -8,7 +9,8 @@ return function(node)
             local r = 0
             if Input.IsKeyDown(Key.E) then r = 4 end
             if Input.IsKeyDown(Key.Q) then r = -4 end
-            self:rotate(0,r,0)
+            local x,y,z = (args.axis == 'x' and r or 0), (args.axis == 'y' and r or 0), (args.axis == 'z' and r or 0)
+            self:rotate(x,y,z)
         end,
         rotate = function(self, x,y,z)
             self._node.Transform:RotateDeg(x,y,z)

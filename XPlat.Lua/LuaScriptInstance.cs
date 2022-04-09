@@ -9,7 +9,7 @@ namespace XPlat.LuaScripting
         private LuaFunction init;
         private LuaFunction update;
 
-        internal LuaTable Table { get; }
+        public LuaTable Table { get; }
 
         public event EventHandler<Exception> OnError;
 

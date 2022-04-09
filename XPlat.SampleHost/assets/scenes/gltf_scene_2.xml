@@ -21,14 +21,14 @@
         </node>
         <node name="Suzanne">
             <components>
-                 <lua res="rotate"/> 
+                 <lua res="rotate" args="{ axis = 'x' }"/> 
             </components>
         </node>
         <node name="Suzanne.001"><components>
-            <lua res="rotate"/>
+            <lua res="rotate" args="{ axis = 'y' }"/>
         </components></node>
         <node name="Suzanne.002"><components>
-            <lua res="rotate" />
+            <lua res="rotate" args="{ axis = 'z' }"/>
         </components></node>
     </node>
 </scene>

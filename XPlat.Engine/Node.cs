@@ -1,5 +1,6 @@
 using System.Numerics;
 using System.Xml.Linq;
+using NLua;
 using XPlat.Core;
 using XPlat.Engine.Components;
 using XPlat.Engine.Serialization;
@@ -104,6 +105,8 @@ namespace XPlat.Engine
 
         public T? GetComponent<T>() where T : Component => _components.FirstOrDefault(x => x is T) as T;
         public Component? GetComponent(Type t) => _components.FirstOrDefault(x => x.GetType() == t);
+        public LuaTable? GetLuaComponent(string name) => GetComponents<LuaScriptComponent>().Where(x => x.Name == name).Select(x => x.Instance?.Table).FirstOrDefault();
+        public IEnumerable<LuaTable> GetLuaComponents(string name) => GetComponents<LuaScriptComponent>().Where(x => x.Name == name).Select(x => x.Instance.Table);
         public IEnumerable<T> GetComponents<T>() where T : Component => _components.Where(x => x is T).Cast<T>();
         public IEnumerable<Component> Components => _components;
         public IEnumerable<Node> Children => _children;

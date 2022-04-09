@@ -1,4 +1,6 @@
-﻿using NLua;
+﻿using System;
+using System.Linq;
+using NLua;
 
 namespace XPlat.LuaScripting
 {
@@ -29,6 +31,11 @@ namespace XPlat.LuaScripting
         public void ImportNamespace(string ns)
         {
             state.DoString($"import ('{ns}')");
+        }
+
+        public LuaTable? ParseTable(string args)
+        {
+            return state.DoString($"return {args}").FirstOrDefault() as LuaTable;
         }
     }
 }
