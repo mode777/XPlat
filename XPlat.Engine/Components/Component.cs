@@ -8,6 +8,7 @@ namespace XPlat.Engine.Components
         private bool disposedValue;
 
         public Node? Node { get; set; }
+        public Scene Scene => Node.Scene;
 
         public virtual void Parse(XElement el, SceneReader reader) {
             // TODO: Implement default parser

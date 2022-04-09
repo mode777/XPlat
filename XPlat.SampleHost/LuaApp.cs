@@ -9,6 +9,7 @@ public class LuaApp : ISdlApp
 {
     private LuaHost lua;
     private LuaScript script;
+    private LuaScriptInstance instance;
     private FileSystemWatcher watcher;
     private NVGcontext vg;
     private bool reload;
@@ -24,15 +25,20 @@ public class LuaApp : ISdlApp
 
     private void LoadScript(){
         reload = false;
-        script.Load(File.ReadAllText("assets/scripts/myscript.lua"), vg);
+        script.Load(File.ReadAllText("assets/scripts/myscript.lua"));
+        instance = script.Instantiate(vg);
+        instance.OnError += OnError;
     }
 
+    private void OnError(object sender, Exception e) {
+        logger.LogError(e.Message);
+    }
 
     public void Init()
     {
         this.lua = new LuaHost();
         this.script = lua.CreateScript();
-        this.script.OnError += (s,e) => logger.LogError(e.Message);
+        this.script.OnError += OnError;
         this.watcher = new FileSystemWatcher("assets");
         watcher.Filter = "myscript.lua";
         watcher.NotifyFilter = NotifyFilters.LastWrite
@@ -58,7 +64,7 @@ public class LuaApp : ISdlApp
         GL.Clear(GL.COLOR_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
         
         vg.BeginFrame((int)platform.WindowSize.X, (int)platform.WindowSize.Y, platform.RetinaScale);
-        this.script.Update();
+        this.instance.Update();
         vg.EndFrame();
     }
 }

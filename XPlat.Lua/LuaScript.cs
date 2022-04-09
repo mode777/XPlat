@@ -4,12 +4,14 @@ using NLua;
 
 namespace XPlat.LuaScripting
 {
+
     public class LuaScript
     {
         private readonly Lua state;
-        private LuaFunction init;
-        private LuaFunction update;
+
         private bool hasError;
+        private LuaFunction? ctor;
+
         public event EventHandler<Exception> OnError;
         internal LuaScript(Lua state, string script)
         {
@@ -17,40 +19,25 @@ namespace XPlat.LuaScripting
             if(script != null) Load(script);
         }
 
-        public void Load(string script, params object[] args)
+        public bool Load(string script)
         {
             hasError = true;
             try {                
-                var ctor = state.DoString(script).First() as LuaFunction;
-                var mod = ctor.Call(args).First() as LuaTable;
-                this.init = mod["init"] as LuaFunction;
-                this.update = mod["update"] as LuaFunction;
+                ctor = state.DoString(script).First() as LuaFunction;
                 hasError = false;
+                return true;
             } catch(Exception e) {
                 OnError?.Invoke(this, e);
+                return false;
             }
         }
 
-        public void Init()
-        {
-            try {
-                if(!hasError) init?.Call();
-            } catch(Exception e) {
-                hasError = true;
-                OnError?.Invoke(this, e);
+        public LuaScriptInstance Instantiate(params object[] args){
+            if(!hasError){
+                var mod = ctor.Call(args).First() as LuaTable;
+                return new LuaScriptInstance(mod);
             }
-        }
-
-        public void Update()
-        {
-            try {
-                if(!hasError) update?.Call();
-            } catch(Exception e){
-                hasError = true;
-                OnError?.Invoke(this, e);
-            }
-
-
+            return null;
         }
     }
 }

@@ -9,8 +9,6 @@ using XPlat.NanoVg;
 
 namespace XPlat.SampleHost
 {
-
-
     public class EngineXmlApp : ISdlApp
     {
         private Scene scene;

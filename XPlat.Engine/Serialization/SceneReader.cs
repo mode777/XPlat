@@ -20,6 +20,8 @@ namespace XPlat.Engine.Serialization
 
         public string Directory => root;
 
+        public Scene Scene { get; private set; }
+
         public GltfNode LoadGltfNode(string file, string path)
         {
             var scene = GltfReader.Load(ResolvePath(file));
@@ -46,8 +48,10 @@ namespace XPlat.Engine.Serialization
 
         private Scene Read(XDocument doc)
         {
-            var scene = doc.Element("scene") ?? throw new InvalidDataException("Root element 'scene' not found");
-            return (Scene)ReadElement(scene);
+            var sceneEl = doc.Element("scene") ?? throw new InvalidDataException("Root element 'scene' not found");
+            Scene = new Scene();
+            Scene.Parse(sceneEl, this);
+            return Scene;
         }
 
         public Type GetTargetType(XElement el) => SceneElements.TryGetValue(el.Name.LocalName, out var type) 

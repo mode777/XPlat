@@ -1,0 +1,29 @@
+using System.Xml.Linq;
+using XPlat.Engine.Serialization;
+using XPlat.LuaScripting;
+
+namespace XPlat.Engine
+{
+    [SceneElement("script")]
+    public class ScriptResource : FileResource, ISceneElement
+    {
+        public LuaScript Script => Value as LuaScript;
+        public ScriptResource(string id, string path, LuaHost host) : base(id, path)
+        {
+            Value = host.CreateScript();
+        }
+
+        public void Parse(XElement el, SceneReader reader)
+        {
+            if(el.TryGetAttribute("src", out var src)) { Filename = reader.ResolvePath(src); Load(); }
+            if(el.TryGetAttribute("watch", out var value) && bool.TryParse(value, out var watch) && watch) { Watch(); }
+        }
+
+        protected override object LoadFile()
+        {
+            var str = File.ReadAllText(Filename);
+            (Value as LuaScript).Load(str);
+            return Value;
+        }
+    }
+}

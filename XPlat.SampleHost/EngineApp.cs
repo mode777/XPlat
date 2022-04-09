@@ -20,7 +20,7 @@ namespace XPlat.SampleHost
         {
             scene = new Scene();
 
-            var camera = new Node {
+            var camera = new Node(scene) {
                 Tag = "camera",
                 Name = "Cam",
                 Transform = new Transform3d {
@@ -31,7 +31,7 @@ namespace XPlat.SampleHost
             camera.AddComponent(new CameraComponent());
             scene.RootNode.AddChild(camera);
 
-            var cube = new Node {
+            var cube = new Node(scene) {
                 Name = "Cube"
             };
             cube.AddComponent(new MeshComponent
@@ -50,7 +50,7 @@ namespace XPlat.SampleHost
             }));
             scene.RootNode.AddChild(cube);
 
-            var light = new Node {
+            var light = new Node(scene) {
                 Name = "Light",
                 Transform = new Transform3d {
                     Translation = new Vector3(3,2,-2)

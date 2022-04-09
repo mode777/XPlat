@@ -7,72 +7,44 @@ namespace XPlat.Engine.Components
     [SceneElement("lua")]
     public class LuaScriptComponent : Behaviour
     {
-        public LuaScript Script { get; private set; }
-        public bool Watch { get; set; } = false;
-        public string Source { get; set; }
-        private FileSystemWatcher watcher;
+        public ScriptResource Resource { 
+            get => _resource; 
+            private set { 
+                _resource = value;
+                _resource.Changed += (s,a) => reload = true;
+            } 
+        }
+        public LuaScriptInstance Instance { get; private set; }
         private bool reload;
+        private ScriptResource _resource;
 
         public override void Init()
         {
-            Script = Node.Scene.LuaHost.CreateScript();
-            Script.OnError += (s, e) => Console.WriteLine(e.Message);
-            if(Source != null) 
-            {
-                LoadScript();
-                if(Watch){
-                    SetupWatcher();
-                }
-            }
+            LoadScript();
         }
 
-        private void SetupWatcher(){
-            var path = Path.GetDirectoryName(Source);
-            var file = Path.GetFileName(Source);
-            watcher = new FileSystemWatcher(path);
-            watcher.Filter = file;
-            watcher.NotifyFilter = NotifyFilters.LastWrite
-                | NotifyFilters.LastAccess
-                | NotifyFilters.Attributes
-                | NotifyFilters.Size
-                | NotifyFilters.CreationTime
-                | NotifyFilters.DirectoryName
-                | NotifyFilters.FileName
-                | NotifyFilters.Security;
-            watcher.Changed += (s, args) =>
-            {
-                reload = true;
-            };
-            watcher.EnableRaisingEvents = true;
-        }
-
-        private void LoadScript(){
-            try
-            {
-                using (var fs = new FileStream(Source, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (var sr = new StreamReader(fs))
-                    Script.Load(sr.ReadToEnd(), this.Node);
-
-                reload = false;
-                Script.Init();
-               
-            } catch(IOException e)
-            {
-                Console.WriteLine(e.Message);
-            }
+        private void LoadScript()
+        {
+            if(Resource == null) return;
+            Instance = Resource.Script.Instantiate(Node);
+            if(Instance == null) return;
+            Instance.OnError += (s,e) => System.Console.WriteLine(e.Message);
+            reload = false;
+            Instance.Init();
         }
 
         public override void Parse(XElement el, SceneReader reader)
         {
-            if(el.TryGetAttribute("src", out var src)) Source = reader.ResolvePath(src);
-            if(el.TryGetAttribute("watch", out var watch)) Watch = bool.Parse(watch);
+            if (el.TryGetAttribute("res", out var res)) Resource = (ScriptResource)reader.Scene.Resources.Load(res);
+            else throw new InvalidDataException("script resource needs 'ref' attribute");
+            if (el.TryGetAttribute("src", out var src)) throw new NotImplementedException("Src attribute is no longer supported for scripts");
             base.Parse(el, reader);
         }
 
         public override void Update()
         {
             if (reload) LoadScript();
-            Script.Update();
+            Instance?.Update();
         }
     }
 }

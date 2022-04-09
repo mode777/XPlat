@@ -15,11 +15,8 @@ namespace XPlat.Engine
         private List<Node> _children = new();
         private List<Component> _components = new();
         private bool disposedValue;
-        private Scene scene;
-
-        public Scene Scene {
-            get => scene ?? Parent?.Scene;
-            internal set => scene = value; }
+        
+        public Scene Scene { get; }
 
         public Transform3d Transform { get; set; } = new Transform3d();
 
@@ -44,7 +41,10 @@ namespace XPlat.Engine
             }
         }
 
-        public Node() { }
+        public Node(Scene scene) 
+        { 
+            Scene = scene ?? throw new ArgumentNullException(nameof(scene));
+        }
 
         public void AddChild(Node node)
         {
@@ -52,14 +52,12 @@ namespace XPlat.Engine
             node.Parent?.RemoveChild(node);
             _children.Add(node);
             node.Parent = this;
-            node.scene = this.Scene; 
         }
 
         public void RemoveChild(Node node)
         {
             _children.Remove(node);
             node.Parent = null;
-            node.Scene = null;
         }
 
         public Node? Find(string name)
@@ -140,7 +138,7 @@ namespace XPlat.Engine
 
             foreach (var c in gltf.Children)
             {
-                var node = new Node();
+                var node = new Node(Scene);
                 AddChild(node);
                 node.ParseGltfNode(c);
             }
@@ -162,7 +160,7 @@ namespace XPlat.Engine
                     Name = scene.Name;
                     foreach (var n in scene.Nodes)
                     {
-                        var node = new Node();
+                        var node = new Node(Scene);
                         AddChild(node);
                         node.ParseGltfNode(n);
                     }
@@ -202,7 +200,8 @@ namespace XPlat.Engine
                         continue;
                     }
                 }
-                var node = (Node)reader.ReadElement(c);
+                var node = new Node(Scene);
+                node.Parse(c, reader);
                 AddChild(node);
             }
         }

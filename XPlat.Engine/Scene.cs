@@ -12,20 +12,14 @@ namespace XPlat.Engine
 
         public Scene()
         {
-            RootNode = new Node();
-            RootNode.Scene = this;
+            RootNode = new Node(this);
+            Resources = new ResourceManager();
             SetupLua();
         }
-
-        // private class LuaTime {
-            
-        // }
 
         private void SetupLua(){
             LuaHost = new LuaHost();
             LuaHost.ImportNamespace(nameof(XPlat)+ "." + nameof(Core));
-
-            //LuaHost.SetGlobal("Time", Time.);
         }
 
         public Node FindNode(string name) => RootNode.Find(name);
@@ -36,13 +30,40 @@ namespace XPlat.Engine
         }
 
         public Node RootNode { get; private set; }
+        public ResourceManager Resources { get; }
         public LuaHost LuaHost { get; private set; }
 
         public void Init() => RootNode.Init();
-        public void Update() => RootNode.Update();
+        public void Update() 
+        { 
+            RootNode.Update(); 
+            foreach (var res in Resources)
+            {
+                if(res is FileResource f && f.FileChanged){
+                    f.Load();
+                }
+            }
+        }
 
         public void Parse(XElement el, SceneReader reader)
         {
+            var resources = el.Element("resources");
+            if(resources != null){
+                foreach (var r in resources.Elements())
+                {
+                    var type = reader.GetTargetType(r);
+                    if(type == typeof(ScriptResource)){
+                        if(r.TryGetAttribute("name", out var id)){
+                            var script = new ScriptResource(id, null, LuaHost);
+                            script.Parse(r, reader);
+                            Resources.Store(script);
+                        } else {
+                            throw new InvalidDataException("Script needs a name attribute");
+                        }
+                    }
+                }
+            }
+
             foreach(var i in el.Elements("import")){
                 reader.ReadElement(i);
             }
