@@ -37,11 +37,12 @@ namespace XPlat.SampleHost
             }
             
             spriteBatch = new SpriteBatch();
-
+            transform = new Transform3d();
         }
 
         private static string[] extensions = new string[] { ".png", ".jpeg", ".jpg" };
         private SpriteBatch spriteBatch;
+        private Transform3d transform;
         private SpriteAtlas atlas;
         private readonly IPlatform platform;
 
@@ -50,13 +51,18 @@ namespace XPlat.SampleHost
             .Concat(Directory.EnumerateDirectories(path).SelectMany(CollectImages));
         }
 
+        float r = 0;
+
         public void Update()
         {
+            if(Input.IsKeyDown(Key.A)) transform.RotateDeg(0,0,1);
+
             spriteBatch.Begin((int)platform.RendererSize.X, (int)platform.RendererSize.Y);
             spriteBatch.SetSprite(atlas["playerShip2_red.png"]);
             spriteBatch.Draw(150, 150);
             spriteBatch.SetSprite(atlas["playerShip1_green.png"]);
-            spriteBatch.Draw(300, 300);
+            Matrix4x4 m = transform.GetMatrix();
+            spriteBatch.Draw(ref m);
             spriteBatch.End();
         }
     }

@@ -172,7 +172,7 @@ namespace XPlat.Engine
             if (el.TryGetAttribute("name", out var name)) Name = name;
             if (el.TryGetAttribute("tag", out var tag)) Tag = tag;
             if (el.TryGetAttribute("translate", out var translate)) Transform.Translation = translate.Vector3();
-            if (el.TryGetAttribute("rotate", out var rotate)) Transform.RotateDeg(rotate.Vector3());
+            if (el.TryGetAttribute("rotate", out var rotate)) Transform.SetRotationDeg(rotate.Vector3());
 
             if (el.TryGetAttribute("scale", out var scale)) Transform.Scale = scale.Vector3();
 

@@ -14,6 +14,7 @@ namespace XPlat.Core
 
         public Vector3 Forward => Vector3.Normalize(Vector3.Transform(Vector3.UnitZ, RotationMatrix));
         public Vector3 Right => Vector3.Normalize(Vector3.Transform(Vector3.UnitX, RotationMatrix));
+        public Vector3 Up => Vector3.Normalize(Vector3.Transform(Vector3.UnitY, RotationMatrix));
 
         public Vector3 Translation
         {
@@ -24,6 +25,7 @@ namespace XPlat.Core
                 TranslationMatrix = Matrix4x4.CreateTranslation(value);
             }
         }
+
         public Vector3 Scale
         {
             get => _scale;
@@ -55,19 +57,27 @@ namespace XPlat.Core
 
         public void RotateDeg(float x, float y, float z)
         {
+            RotationQuat = Quaternion.CreateFromYawPitchRoll(y.ToRad(), x.ToRad(), z.ToRad()) * _rotation;
+        }
+
+        public void RotateDegLocal(float x, float y, float z)
+        {
+            RotationQuat = _rotation * Quaternion.CreateFromYawPitchRoll(y.ToRad(), x.ToRad(), z.ToRad());
+        }
+
+        public void SetRotationDeg(float x, float y, float z){
             RotationQuat = Quaternion.CreateFromYawPitchRoll(y.ToRad(), x.ToRad(), z.ToRad());
         }
 
-        public void RotateDeg(Vector3 v)
-        {
-            RotationQuat = Quaternion.CreateFromYawPitchRoll(v.Y.ToRad(), v.X.ToRad(), v.Z.ToRad());
-        }
+        public void RotateDeg(Vector3 v) => RotateDeg(v.X, v.Y, v.Z);
+        public void RotateDegLocal(Vector3 v) => RotateDegLocal(v.X, v.Y, v.Z);
+        public void SetRotationDeg(Vector3 v) => SetRotationDeg(v.X, v.Y, v.Z);
 
         public Transform3d()
         {
-            Translation = new Vector3();
-            RotationQuat = new Quaternion();
-            Scale = new Vector3(1,1,1);
+            Translation = Vector3.Zero;
+            RotationQuat = Quaternion.Identity;
+            Scale = Vector3.One;
         }
 
         public Transform3d(Matrix4x4 m){

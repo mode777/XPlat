@@ -1,15 +1,11 @@
 return function(node)
-    local v = nil
     
     return {
-        init = function()
-            v = node.Transform.RotationDeg
-        end,
         update = function()
-            --v.Y = Time.RunningTime * 200
-            if Input.IsKeyDown(Key.E) then v.Y = v.Y + 4 end
-            if Input.IsKeyDown(Key.Q) then v.Y = v.Y - 2 end
-            node.Transform:RotateDeg(v)
+            local r = 0
+            if Input.IsKeyDown(Key.E) then r = 4 end
+            if Input.IsKeyDown(Key.Q) then r = -4 end
+            node.Transform:RotateDeg(0,r,0)
         end
     }
 end
