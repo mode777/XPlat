@@ -11,6 +11,7 @@ namespace XPlat.Engine
         public ScriptResource(string id, string path, LuaHost host) : base(id, path)
         {
             Value = host.CreateScript();
+            Script.OnError += (s,e) => System.Console.WriteLine(e.Message);
         }
 
         public void Parse(XElement el, SceneReader reader)
