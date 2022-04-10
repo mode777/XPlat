@@ -5,6 +5,7 @@ namespace XPlat.Engine.Components
 {
     public abstract class Component : ISceneElement, IDisposable
     {
+        public bool IsEnabled { get; set; } = true;
         private bool disposedValue;
 
         public Node? Node { get; set; }

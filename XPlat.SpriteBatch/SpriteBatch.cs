@@ -320,6 +320,7 @@ namespace XPlat.Graphics
 
             var shader = SpriteBatchShader.Singleton;
             Shader.Use(shader);
+            GL.UseProgram(shader.GlProgram.Handle);
             GL.ActiveTexture(GL.TEXTURE0);
             shader.SetUniform(Uniform.AlbedoTexture, 0);
             shader.SetUniform(Uniform.ViewportSize, screenSize);

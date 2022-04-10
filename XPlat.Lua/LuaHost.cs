@@ -12,11 +12,6 @@ namespace XPlat.LuaScripting
         {
             this.state = new Lua();
             state.LoadCLRPackage();
-            //state.DoString("import ('XPlat.Core')");
-            //var mod = state.DoString("return { myfunc = function() return 42 end }").First() as LuaTable;
-            //var func = mod["myfunc"] as LuaFunction;
-            //var res = (long)func.Call().First();
-            
         }
 
         public LuaScript CreateScript(string script = null)

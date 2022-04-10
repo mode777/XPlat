@@ -38,7 +38,7 @@ namespace XPlat.Engine
                     if (packer.AddRect(img.Width, img.Height, out var x, out var y))
                     {
                         texture.Update(img, x, y);
-                        atlas.Add(Path.GetFileName(file), x, y, img.Width, img.Height);
+                        atlas.Add(Path.GetFileNameWithoutExtension(file), x, y, img.Width, img.Height);
                     }
                     else
                     {

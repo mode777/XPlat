@@ -5,64 +5,31 @@ namespace XPlat.Core
 
     public class Transform3d
     {
-        public Matrix4x4 ScaleMatrix;
-        public Matrix4x4 TranslationMatrix;
-        public Matrix4x4 RotationMatrix;
-        private Vector3 _translation;
-        private Vector3 _scale;
-        private Quaternion _rotation;
+        public Vector3 Forward => Vector3.Normalize(Vector3.Transform(Vector3.UnitZ, RotationQuat));
+        public Vector3 Right => Vector3.Normalize(Vector3.Transform(Vector3.UnitX, RotationQuat));
+        public Vector3 Up => Vector3.Normalize(Vector3.Transform(Vector3.UnitY, RotationQuat));
 
-        public Vector3 Forward => Vector3.Normalize(Vector3.Transform(Vector3.UnitZ, RotationMatrix));
-        public Vector3 Right => Vector3.Normalize(Vector3.Transform(Vector3.UnitX, RotationMatrix));
-        public Vector3 Up => Vector3.Normalize(Vector3.Transform(Vector3.UnitY, RotationMatrix));
-
-        public Vector3 Translation
-        {
-            get => _translation;
-            set
-            {
-                _translation = value;
-                TranslationMatrix = Matrix4x4.CreateTranslation(value);
-            }
-        }
-
-        public Vector3 Scale
-        {
-            get => _scale;
-            set
-            {
-                _scale = value;
-                ScaleMatrix = Matrix4x4.CreateScale(value);
-            }
-        }
-        public Quaternion RotationQuat
-        {
-            get => _rotation; 
-            set
-            {
-                _rotation = value;
-                RotationMatrix = Matrix4x4.CreateFromQuaternion(value);
-                
-            }
-        }
+        public Vector3 Translation;
+        public Vector3 Scale;
+        public Quaternion RotationQuat;
 
         public Vector3 RotationDeg {
             //set => RotationQuat = Quaternion.CreateFromYawPitchRoll(value.Y.ToRad(), value.X.ToRad(), value.Z.ToRad());
             get {
                 float yaw,pitch,roll;
-                _rotation.GetYawPitchRoll(out yaw, out pitch, out roll);
+                RotationQuat.GetYawPitchRoll(out yaw, out pitch, out roll);
                 return new Vector3(pitch.ToDeg(), yaw.ToDeg(), roll.ToDeg());
             }
         }
 
         public void RotateDeg(float x, float y, float z)
         {
-            RotationQuat = Quaternion.CreateFromYawPitchRoll(y.ToRad(), x.ToRad(), z.ToRad()) * _rotation;
+            RotationQuat = Quaternion.CreateFromYawPitchRoll(y.ToRad(), x.ToRad(), z.ToRad()) * RotationQuat;
         }
 
         public void RotateDegLocal(float x, float y, float z)
         {
-            RotationQuat = _rotation * Quaternion.CreateFromYawPitchRoll(y.ToRad(), x.ToRad(), z.ToRad());
+            RotationQuat = RotationQuat * Quaternion.CreateFromYawPitchRoll(y.ToRad(), x.ToRad(), z.ToRad());
         }
 
         public void SetRotationDeg(float x, float y, float z){
@@ -93,16 +60,14 @@ namespace XPlat.Core
             RotationQuat = Quaternion.CreateFromRotationMatrix(rotMat);
         }
 
-        public bool IsIdentity => ScaleMatrix.IsIdentity && RotationMatrix.IsIdentity && TranslationMatrix.IsIdentity;
-
         public Matrix4x4 GetMatrix()
         {
-            return ScaleMatrix * RotationMatrix * TranslationMatrix;
+            return Matrix4x4.CreateScale(Scale) * Matrix4x4.CreateFromQuaternion(RotationQuat) * Matrix4x4.CreateTranslation(Translation);
         }
 
         public Matrix4x4 GetNormalMatrix(){
             Matrix4x4 inv;
-            Matrix4x4.Invert(ScaleMatrix * RotationMatrix, out inv);
+            Matrix4x4.Invert(Matrix4x4.CreateScale(Scale) * Matrix4x4.CreateFromQuaternion(RotationQuat), out inv);
             return Matrix4x4.Transpose(inv);
         }
     }
