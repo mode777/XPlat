@@ -61,6 +61,15 @@ namespace XPlat.Engine
                             throw new InvalidDataException("Script needs a name attribute");
                         }
                     }
+                    if(type == typeof(SpriteAtlasResource)){
+                        if(r.TryGetAttribute("name", out var id)){
+                            var atlas = new SpriteAtlasResource(id, null);
+                            atlas.Parse(r, reader);
+                            Resources.Store(atlas);
+                        } else {
+                            throw new InvalidDataException("Script needs a name attribute");
+                        }
+                    }
                 }
             }
 

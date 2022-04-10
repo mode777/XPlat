@@ -22,7 +22,7 @@ namespace XPlat.Engine
             var dir = Path.GetDirectoryName(Filename);
             var file = Path.GetFileName(Filename);
             watcher = new FileSystemWatcher(dir);
-            watcher.Filter = file;
+            if(!string.IsNullOrEmpty(file)) watcher.Filter = file;
             watcher.NotifyFilter = NotifyFilters.LastWrite
                 | NotifyFilters.LastAccess
                 | NotifyFilters.Attributes

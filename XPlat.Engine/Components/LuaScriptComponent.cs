@@ -21,21 +21,26 @@ namespace XPlat.Engine.Components
         public LuaTable Arguments { get; private set; }
 
         private bool reload;
+        private bool initialized;
         private ScriptResource _resource;
 
         public override void Init()
         {
-            LoadScript();
+            Instantiate();
         }
 
-        private void LoadScript()
-        {
+        private void Instantiate(){
             if(Resource == null) return;
             Instance = Resource.Script.Instantiate(Node, Arguments);
             if(Instance == null) return;
-            Instance.OnError += (s,e) => System.Console.WriteLine(e.Message);
+            Instance.OnError += (s,e) => System.Console.WriteLine($"({Name}):{e.Message}");
             reload = false;
-            Instance.Init();
+            initialized = false;
+        }
+
+        private void Initialize(){
+            Instance?.Init();
+            initialized = true;
         }
 
         public override void Parse(XElement el, SceneReader reader)
@@ -53,7 +58,8 @@ namespace XPlat.Engine.Components
 
         public override void Update()
         {
-            if (reload) LoadScript();
+            if (reload) Instantiate();
+            if(!initialized) Initialize();
             Instance?.Update();
         }
     }

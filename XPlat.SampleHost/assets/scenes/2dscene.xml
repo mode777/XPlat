@@ -9,7 +9,7 @@
         
         <node name="player" translate="200, 200, 0">
             <components>
-                <sprite src="space:playerShip1_green" />
+                <sprite res="space:playerShip1_green" />
                 <collision mode="active">
                     <capsule a="50, 20" b="50, 100" r="80" />
                 </collision>
