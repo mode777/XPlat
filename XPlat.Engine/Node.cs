@@ -26,12 +26,12 @@ namespace XPlat.Engine
         public Node? Parent { get; private set; }
         public string Tag { get; set; }
 
-        internal void Init()
-        {
-            _globalMatrix = Parent != null ? Transform.GetMatrix() * Parent._globalMatrix : Matrix4x4.Identity;
-            foreach (var c in GetComponents<Behaviour>().Where(x => x.IsEnabled)) c.Init();
-            foreach (var c in _children) c.Init();
-        }
+        //internal void Init()
+        //{
+        //    _globalMatrix = Parent != null ? Transform.GetMatrix() * Parent._globalMatrix : Matrix4x4.Identity;
+        //    foreach (var c in GetComponents<Behaviour>().Where(x => x.IsEnabled)) c.Init();
+        //    foreach (var c in _children) c.Init();
+        //}
 
         // internal void Update()
         // {

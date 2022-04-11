@@ -1,51 +1,11 @@
 using System.Xml.Linq;
 using GLES2;
-using XPlat.Core;
 using XPlat.Engine.Components;
 using XPlat.Engine.Serialization;
 using XPlat.LuaScripting;
 
 namespace XPlat.Engine
 {
-    public interface IInitSubSystem {
-        void BeforeInit();
-        void AfterInit();
-        void OnInit(Node n);
-    }
-
-    public interface IUpdateSubSystem
-    {
-        void BeforeUpdate();
-        void AfterUpdate();
-        void OnUpdate(Node n);
-    }
-
-    public class BehaviourSubsystem : IInitSubSystem, IUpdateSubSystem
-    {
-        public void AfterInit(){}
-
-        public void AfterUpdate(){}
-
-        public void BeforeInit(){}
-
-        public void BeforeUpdate(){}
-
-        public void OnInit(Node n)
-        {
-            foreach (var comp in n.Components)
-            {
-                if (comp is Behaviour b && b.IsEnabled) b.Init();
-            }
-        }
-
-        public void OnUpdate(Node n)
-        {
-            foreach (var comp in n.Components)
-            {
-                if (comp is Behaviour b && b.IsEnabled) b.Update();
-            }
-        }
-    }
 
     [SceneElement("scene")]
     public class Scene : ISceneElement, IDisposable
@@ -53,6 +13,7 @@ namespace XPlat.Engine
         private bool disposedValue;
         private List<IInitSubSystem> _initSystems = new List<IInitSubSystem>();
         private List<IUpdateSubSystem> _updateSystems = new List<IUpdateSubSystem>();
+        private List<IRenderPass> _renderPasses = new List<IRenderPass>();
 
         public Scene()
         {
@@ -73,14 +34,19 @@ namespace XPlat.Engine
 
         public Node FindNode(string name) => RootNode.Find(name);
 
-        private void RegisterInitSubsystem(IInitSubSystem sub)
+        public void RegisterInitSubsystem(IInitSubSystem sub)
         {
             _initSystems.Add(sub);
         }
 
-        private void RegisterUpdateSubsystem(IUpdateSubSystem sub)
+        public void RegisterUpdateSubsystem(IUpdateSubSystem sub)
         {
             _updateSystems.Add(sub);
+        }
+
+        public void RegisterRenderPass(IRenderPass pass)
+        {
+            _renderPasses.Add(pass);
         }
 
         public Node RootNode { get; private set; }
@@ -110,6 +76,7 @@ namespace XPlat.Engine
                 Visit(RootNode, sub.OnUpdate);
                 sub.AfterUpdate();
             }
+
             foreach (var res in Resources)
             {
                 if(res is FileResource f && f.FileChanged){
@@ -148,6 +115,13 @@ namespace XPlat.Engine
         public void Render(){
             GL.ClearColor(0, 0, 0, 1);
             GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
+
+            foreach (var pass in _renderPasses)
+            {
+                pass.StartFrame();
+                Visit(RootNode, pass.OnRender);
+                pass.FinishFrame();
+            }
         }
 
         public void Parse(XElement el, SceneReader reader)
