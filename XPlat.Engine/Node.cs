@@ -21,26 +21,30 @@ namespace XPlat.Engine
 
         public Transform3d Transform { get; set; } = new Transform3d();
 
+        internal Matrix4x4 _globalMatrix;
+
         public Node? Parent { get; private set; }
         public string Tag { get; set; }
 
         internal void Init()
         {
+            _globalMatrix = Parent != null ? Transform.GetMatrix() * Parent._globalMatrix : Matrix4x4.Identity;
             foreach (var c in GetComponents<Behaviour>().Where(x => x.IsEnabled)) c.Init();
             foreach (var c in _children) c.Init();
         }
 
-        internal void Update()
-        {
-            foreach (var c in GetComponents<Behaviour>().Where(x => x.IsEnabled))
-            {
-                c.Update();
-            }
-            foreach (var c in _children)
-            {
-                c.Update();
-            }
-        }
+        // internal void Update()
+        // {
+        //     _globalMatrix = Transform.GetMatrix() * Parent._globalMatrix;
+        //     foreach (var c in GetComponents<Behaviour>().Where(x => x.IsEnabled))
+        //     {
+        //         c.Update();
+        //     }
+        //     foreach (var c in _children)
+        //     {
+        //         c.Update();
+        //     }
+        // }
 
         public Node(Scene scene) 
         { 

@@ -39,7 +39,7 @@ namespace XPlat.Engine
         private void Visit(Node node, ref Matrix4x4 model){
 
             var transform = node.Transform;
-            var currentModel = (transform == null || transform.IsIdentity) ? model : transform.GetMatrix() * model;
+            var currentModel = transform.GetMatrix() * model;
 
             foreach(var c in node.Components){
                 switch(c){

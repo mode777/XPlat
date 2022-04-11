@@ -7,81 +7,44 @@ using XPlat.Graphics;
 namespace XPlat.Engine
 {
 
-    //public class Renderer2d
-    //{
-    //    private readonly IPlatform platform;
+    public class Renderer2d
+    {
+       private readonly IPlatform platform;
+        private SpriteBatch batch;
 
-    //    public Renderer2d(IPlatform platform)
-    //    {
-    //        this.platform = platform;
-    //        this.batch = new SpriteBatch();
-    //    }
+        public Renderer2d(IPlatform platform)
+       {
+           this.platform = platform;
+           this.batch = new SpriteBatch();
+       }
 
-    //    public void Render(Scene scene){
-    //        lightId = LightId.Light_0;
+       public void Render(Scene scene){
+           GL.ClearColor(0, 0, 0, 1);
+           GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
 
-    //        GL.UseProgram(shader.GlProgram.Handle);
+           batch.Begin((int)platform.WindowSize.X, (int)platform.WindowSize.Y);
+           Visit(scene.RootNode);
+           batch.End();
+       }
 
-    //        GL.ClearColor(1, 0, 0, 1);
-    //        GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
+       private void Visit(Node node){
+           var transform = node.Transform;
 
-    //        var model = Matrix4x4.Identity;
-    //        Shader.Use(shader);
+           foreach(var c in node.Components){
+               switch(c){
+                   case SpriteComponent sprite:
+                        if(sprite.Sprite != null) {
+                            batch.SetSprite(sprite.Sprite);
+                            batch.Draw(ref node._globalMatrix);
+                        }
+                       break; 
+               }
+           }
 
-    //        Visit(scene.RootNode, ref model);
-    //    }
+           foreach (var n in node.Children){
+               Visit(n);
+           }
+       }
 
-    //    private void Visit(Node node, ref Matrix4x4 model){
-
-    //        var transform = node.Transform;
-    //        var currentModel = (transform == null || transform.IsIdentity) ? model : transform.GetMatrix() * model;
-
-    //        foreach(var c in node.Components){
-    //            switch(c){
-    //                case MeshComponent mesh:
-    //                    if(mesh.Mesh != null) RenderMesh(ref currentModel, mesh.Mesh);
-    //                    break;
-    //                case LightComponent light:
-    //                    if(light.Light != null) light.Light.ApplyToShader(shader, lightId, ref currentModel);
-    //                    lightId = lightId.Offset(1);
-    //                    break;
-    //                case CameraComponent cam:
-    //                    if(cam.Camera != null) ApplyCamera(cam.Camera, ref currentModel);
-    //                    break; 
-    //            }
-    //        }
-
-    //        foreach (var n in node.Children){
-    //            Visit(n, ref currentModel);
-    //        }
-    //    }
-
-    //    private void ApplyCamera(Camera3d cam, ref Matrix4x4 model)
-    //    {
-    //        var transform = new Transform3d(model);
-    //        cam.Ratio = platform.WindowSize.X / platform.WindowSize.Y;
-
-    //        cam.ApplyToShader(shader, ref model);
-    //    }
-
-    //    private void RenderMesh(ref Matrix4x4 model, Mesh mesh)
-    //    {
-    //        // Make a copy and remove translation components
-    //        // before creating the normal matrix
-    //        Matrix4x4 copy = model;
-    //        copy.M14 = 0;
-    //        copy.M24 = 0;
-    //        copy.M34 = 0;
-    //        copy.M41 = 0;
-    //        copy.M42 = 0;
-    //        copy.M43 = 0;
-    //        Matrix4x4 inv;
-    //        Matrix4x4.Invert(copy, out inv);
-    //        copy = Matrix4x4.Transpose(inv);
-
-    //        shader.SetUniform(Uniform.ModelMatrix, ref model);
-    //        shader.SetUniform(Uniform.NormalMatrix, ref copy);
-    //        mesh.DrawUsingShader(shader);
-    //    }
-    //}
+    }
 }
