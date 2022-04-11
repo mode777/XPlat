@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using GLES2;
 using XPlat.Core;
 using XPlat.Engine.Components;
@@ -6,59 +6,49 @@ using XPlat.Graphics;
 
 namespace XPlat.Engine
 {
-
-    public class Renderer3d
+    public class RenderPass3d : IRenderPass
     {
         private readonly Shader shader;
         private readonly IPlatform platform;
         private LightId lightId;
 
-        public Renderer3d(IPlatform platform)
+        public RenderPass3d(IPlatform platform)
         {
             this.shader = new PhongShader();
             this.platform = platform;
         }
 
-        public void Render(Scene scene){
-            lightId = LightId.Light_0;
-
-            GL.UseProgram(shader.GlProgram.Handle);
-
-            GL.Enable(GL.DEPTH_TEST);
-            GL.Enable(GL.CULL_FACE);
-
-            GL.ClearColor(1, 0, 0, 1);
-            GL.Clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT | GL.STENCIL_BUFFER_BIT);
-
-            var model = Matrix4x4.Identity;
-            Shader.Use(shader);
-
-            Visit(scene.RootNode, ref model);
+        public void FinishFrame()
+        {
         }
 
-        private void Visit(Node node, ref Matrix4x4 model){
-
-            var transform = node.Transform;
-            var currentModel = transform.GetMatrix() * model;
-
-            foreach(var c in node.Components){
+        public void OnRender(Node n)
+        {
+            foreach(var c in n.Components){
                 switch(c){
                     case MeshComponent mesh:
-                        if(mesh.Mesh != null) RenderMesh(ref currentModel, mesh.Mesh);
+                        if(mesh.Mesh != null) RenderMesh(ref n._globalMatrix, mesh.Mesh);
                         break;
                     case LightComponent light:
-                        if(light.Light != null) light.Light.ApplyToShader(shader, lightId, ref currentModel);
+                        if(light.Light != null) light.Light.ApplyToShader(shader, lightId, ref n._globalMatrix);
                         lightId = lightId.Offset(1);
                         break;
                     case CameraComponent cam:
-                        if(cam.Camera != null) ApplyCamera(cam.Camera, ref currentModel);
+                        if(cam.Camera != null) ApplyCamera(cam.Camera, ref n._globalMatrix);
                         break; 
                 }
             }
+        }
 
-            foreach (var n in node.Children){
-                Visit(n, ref currentModel);
-            }
+        public void StartFrame()
+        {
+            lightId = LightId.Light_0;
+
+            GL.UseProgram(shader.GlProgram.Handle);
+            Shader.Use(shader);
+
+            GL.Enable(GL.DEPTH_TEST);
+            GL.Enable(GL.CULL_FACE);
         }
 
         private void ApplyCamera(Camera3d cam, ref Matrix4x4 model)

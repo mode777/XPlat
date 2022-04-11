@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<scene version="1.0">
+<scene version="1.0" template="2d">
     <import assembly="XPlat.SampleHost" />
     <resources>
         <atlas name="space" src="../sprites/space" width="1024" height="1024"/>
@@ -19,7 +19,7 @@
             </components>
             <node name="player_sprite" translate="-50,-50,0">
                 <components>
-                    <sprite res="space:playerShip1_blue" />
+                    <sprite res="space:playerShip1_red" />
                 </components>
             </node>
         </node>

@@ -8,19 +8,19 @@ namespace XPlat.Engine.Serialization
     public class SceneReader
     {
 
-        public static Scene Load(string path)
-        {
-            var doc = XDocument.Load(path);
-            var reader = new SceneReader(Path.GetFullPath(Path.GetDirectoryName(path)));
-            return reader.Read(doc);
-        }
-
         public Dictionary<string, Type> SceneElements { get; } = new Dictionary<string, Type>();
         public XElement XElement { get; private set; }
 
         public string Directory => root;
 
         public Scene Scene { get; private set; }
+        public IServiceProvider Services { get; }
+
+        public SceneReader(IServiceProvider provider)
+        {
+            this.Services = provider;
+            LoadElementsFromAssembly(typeof(SceneReader).Assembly);
+        }
 
         public GltfNode LoadGltfNode(string file, string path)
         {
@@ -34,28 +34,32 @@ namespace XPlat.Engine.Serialization
             return scene;
         }
 
-        public string ResolvePath(string path){
+        public string ResolvePath(string path)
+        {
             return Path.Combine(root, path);
         }
 
-        private readonly string root;
+        private string root;
 
-        private SceneReader(string root)
-        {
-            this.root = root;
-            LoadElementsFromAssembly(typeof(SceneReader).Assembly);
-        }
+
 
         private Scene Read(XDocument doc)
         {
             var sceneEl = doc.Element("scene") ?? throw new InvalidDataException("Root element 'scene' not found");
-            Scene = new Scene();
+            Scene = new Scene(Services);
             Scene.Parse(sceneEl, this);
             return Scene;
         }
 
-        public Type GetTargetType(XElement el) => SceneElements.TryGetValue(el.Name.LocalName, out var type) 
-            ? type 
+        public Scene Read(string path)
+        {
+            this.root = Path.GetFullPath(Path.GetDirectoryName(path));
+            var doc = XDocument.Load(path);
+            return Read(doc);
+        }
+
+        public Type GetTargetType(XElement el) => SceneElements.TryGetValue(el.Name.LocalName, out var type)
+            ? type
             : throw new InvalidDataException($"Unknown element {el.Name.LocalName}");
 
         public ISceneElement ReadElement(XElement el)

@@ -1,4 +1,5 @@
 using System.Numerics;
+using Microsoft.Extensions.DependencyInjection;
 using SDL2;
 using XPlat.Core;
 using XPlat.Engine;
@@ -13,12 +14,14 @@ namespace XPlat.SampleHost
     {
         private Scene scene;
         private SceneVisualizer sceneViz;
+        private readonly IServiceProvider services;
         private readonly IPlatform platform;
         private readonly ISdlPlatformEvents events;
         int i = 0;
 
-        public EngineXmlApp(IPlatform platform, ISdlPlatformEvents events)
+        public EngineXmlApp(IServiceProvider services, IPlatform platform, ISdlPlatformEvents events)
         {
+            this.services = services;
             //platform.AutoSwap = false;
             this.platform = platform;
             this.events = events;
@@ -38,11 +41,10 @@ namespace XPlat.SampleHost
 
         private void LoadScene()
         {
-            var renderer = new RenderPass2d(platform);
             if(scene != null) scene.Dispose();
             //scene = SceneReader.Load("assets/scenes/gltf_scene_2.xml");
-            scene = SceneReader.Load("assets/scenes/2dscene.xml");
-            scene.RegisterRenderPass(renderer);
+            scene = new SceneReader(services).Read("assets/scenes/2dscene.xml");
+            
             scene.Init();
         }
 

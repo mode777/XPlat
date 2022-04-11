@@ -1,5 +1,7 @@
 using System.Xml.Linq;
 using GLES2;
+using Microsoft.Extensions.DependencyInjection;
+using XPlat.Core;
 using XPlat.Engine.Components;
 using XPlat.Engine.Serialization;
 using XPlat.LuaScripting;
@@ -15,7 +17,7 @@ namespace XPlat.Engine
         private List<IUpdateSubSystem> _updateSystems = new List<IUpdateSubSystem>();
         private List<IRenderPass> _renderPasses = new List<IRenderPass>();
 
-        public Scene()
+        public Scene(IServiceProvider services)
         {
             RootNode = new Node(this);
             Resources = new ResourceManager();
@@ -23,7 +25,8 @@ namespace XPlat.Engine
 
             var bs = new BehaviourSubsystem();
             RegisterInitSubsystem(bs);
-            RegisterUpdateSubsystem(bs);        
+            RegisterUpdateSubsystem(bs);
+            Services = services;
         }
 
         private void SetupLua(){
@@ -52,6 +55,7 @@ namespace XPlat.Engine
         public Node RootNode { get; private set; }
         public ResourceManager Resources { get; }
         public LuaHost LuaHost { get; private set; }
+        public IServiceProvider Services { get; }
 
         //private ProcessNode _OnInit;
         //private ProcessNode _OnUpdate;
@@ -124,8 +128,32 @@ namespace XPlat.Engine
             }
         }
 
+        public void Use2dRendering(){
+            RegisterRenderPass(new RenderPass2d(Services.GetRequiredService<IPlatform>()));
+        }
+
+        public void Use3dRendering(){
+            RegisterRenderPass(new RenderPass3d(Services.GetRequiredService<IPlatform>()));
+        }
+
         public void Parse(XElement el, SceneReader reader)
         {
+            if(el.TryGetAttribute("template", out var template)) {
+                switch(template){
+                    case "2d":
+                        Use2dRendering();
+                        break;
+                    case "3d":
+                        Use3dRendering();
+                        break;
+                    default:
+                        throw new InvalidDataException($"No app template found called '{template}'");
+                }
+            } else {
+                // TODO: Load custom pipeline config
+                Use3dRendering();
+            }
+
             var resources = el.Element("resources");
             if(resources != null){
                 foreach (var r in resources.Elements())

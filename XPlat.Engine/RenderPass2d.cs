@@ -4,6 +4,7 @@ using XPlat.Graphics;
 
 namespace XPlat.Engine
 {
+
     public class RenderPass2d : IRenderPass
     {
         private readonly IPlatform platform;

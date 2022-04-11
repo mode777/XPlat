@@ -10,28 +10,33 @@ namespace XPlat.SampleHost
     {
         private Scene scene;
         private Renderer3d renderer;
+        private readonly IServiceProvider services;
 
-        public EngineApp(IPlatform platform)
+        public EngineApp(IPlatform platform, IServiceProvider services)
         {
+            this.services = services;
             this.platform = platform;
         }
 
         public void Init()
         {
-            scene = new Scene();
+            scene = new Scene(services);
 
-            var camera = new Node(scene) {
+            var camera = new Node(scene)
+            {
                 Tag = "camera",
                 Name = "Cam",
-                Transform = new Transform3d {
-                    Translation = new Vector3(0,3,-5),
+                Transform = new Transform3d
+                {
+                    Translation = new Vector3(0, 3, -5),
                     RotationQuat = Quaternion.CreateFromYawPitchRoll(3, -0.5f, 0)
                 }
             };
             camera.AddComponent(new CameraComponent());
             scene.RootNode.AddChild(camera);
 
-            var cube = new Node(scene) {
+            var cube = new Node(scene)
+            {
                 Name = "Cube"
             };
             cube.AddComponent(new MeshComponent
@@ -41,19 +46,23 @@ namespace XPlat.SampleHost
                     new VertexAttribute<float>(Graphics.Attribute.Position, positions, VertexAttributeDescriptor.Vec3f),
                     new VertexAttribute<float>(Graphics.Attribute.Normal, vertexNormals, VertexAttributeDescriptor.Vec3f),
                     new VertexAttribute<float>(Graphics.Attribute.Uv_0, uvs, VertexAttributeDescriptor.Vec2f),
-                }, new VertexIndices(indices)){
+                }, new VertexIndices(indices))
+                {
                     Material = new PhongMaterial(new Texture("assets/textures/bricks.jpeg"), Uniform.AlbedoTexture)
-                }) 
+                })
             });
-            cube.AddComponent(new ActionComponent(null, c => {
+            cube.AddComponent(new ActionComponent(null, c =>
+            {
                 c.Node.Transform.RotationQuat = Quaternion.CreateFromYawPitchRoll(Time.RunningTime, 0, 0);
             }));
             scene.RootNode.AddChild(cube);
 
-            var light = new Node(scene) {
+            var light = new Node(scene)
+            {
                 Name = "Light",
-                Transform = new Transform3d {
-                    Translation = new Vector3(3,2,-2)
+                Transform = new Transform3d
+                {
+                    Translation = new Vector3(3, 2, -2)
                 }
             };
             light.AddComponent(new LightComponent());
