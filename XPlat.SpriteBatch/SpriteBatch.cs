@@ -287,8 +287,6 @@ namespace XPlat.Graphics
 
         public void Begin(int width, int height)
         {
-            GL.BlendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
-            GL.Enable(GL.BLEND);
             drawCalls.Clear();
             screenSize = new Vector2(width, height);
             Count = 0;
@@ -315,6 +313,9 @@ namespace XPlat.Graphics
         public void End()
         {
             AddCall();
+
+            GL.BlendFunc(GL.SRC_ALPHA, GL.ONE_MINUS_SRC_ALPHA);
+            GL.Enable(GL.BLEND);
 
             GlUtil.UpdateBuffer(glBuffer, GL.ARRAY_BUFFER, data, Count);
 

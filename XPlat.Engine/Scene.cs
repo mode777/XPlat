@@ -7,33 +7,43 @@ using XPlat.LuaScripting;
 
 namespace XPlat.Engine
 {
-    public interface ISubSystem {
-        void BeginPass();
-        void FinishPass();
-        void OnInit(Node n, Component comp);
-        void OnUpdate(Node n, Component comp);
+    public interface IInitSubSystem {
+        void BeforeInit();
+        void AfterInit();
+        void OnInit(Node n);
     }
 
-    public class BehaviourSubsystem : ISubSystem
+    public interface IUpdateSubSystem
     {
-        public void BeginPass()
+        void BeforeUpdate();
+        void AfterUpdate();
+        void OnUpdate(Node n);
+    }
+
+    public class BehaviourSubsystem : IInitSubSystem, IUpdateSubSystem
+    {
+        public void AfterInit(){}
+
+        public void AfterUpdate(){}
+
+        public void BeforeInit(){}
+
+        public void BeforeUpdate(){}
+
+        public void OnInit(Node n)
         {
-            throw new NotImplementedException();
+            foreach (var comp in n.Components)
+            {
+                if (comp is Behaviour b && b.IsEnabled) b.Init();
+            }
         }
 
-        public void FinishPass()
+        public void OnUpdate(Node n)
         {
-            throw new NotImplementedException();
-        }
-
-        public void OnInit(Node n, Component comp)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnUpdate(Node n, Component comp)
-        {
-            throw new NotImplementedException();
+            foreach (var comp in n.Components)
+            {
+                if (comp is Behaviour b && b.IsEnabled) b.Update();
+            }
         }
     }
 
@@ -41,13 +51,18 @@ namespace XPlat.Engine
     public class Scene : ISceneElement, IDisposable
     {
         private bool disposedValue;
+        private List<IInitSubSystem> _initSystems = new List<IInitSubSystem>();
+        private List<IUpdateSubSystem> _updateSystems = new List<IUpdateSubSystem>();
 
         public Scene()
         {
             RootNode = new Node(this);
             Resources = new ResourceManager();
             SetupLua();
-            ConfigurePipeline();
+
+            var bs = new BehaviourSubsystem();
+            RegisterInitSubsystem(bs);
+            RegisterUpdateSubsystem(bs);        
         }
 
         private void SetupLua(){
@@ -58,27 +73,43 @@ namespace XPlat.Engine
 
         public Node FindNode(string name) => RootNode.Find(name);
 
+        private void RegisterInitSubsystem(IInitSubSystem sub)
+        {
+            _initSystems.Add(sub);
+        }
+
+        private void RegisterUpdateSubsystem(IUpdateSubSystem sub)
+        {
+            _updateSystems.Add(sub);
+        }
+
         public Node RootNode { get; private set; }
         public ResourceManager Resources { get; }
         public LuaHost LuaHost { get; private set; }
 
-        private event ProcessNode _initFns;
-        private event ProcessNode _updateFns;
-
-        private void ConfigurePipeline(){
-            _initFns += UpdateTransforms;
-            _initFns += InitalizeComponents;
-
-            _updateFns += UpdateTransforms;
-            _updateFns += UpdateComponents;
-        }
+        //private ProcessNode _OnInit;
+        //private ProcessNode _OnUpdate;
+        private delegate void ProcessNode(Node n);
+        private delegate void ProcessComponent(Node n, Component c);
 
         public void Init() {
-            Visit(RootNode, _initFns);
+            Visit(RootNode, UpdateTransforms);
+            foreach (var sub in _initSystems)
+            {
+                sub.BeforeInit();
+                Visit(RootNode, sub.OnInit);
+                sub.AfterInit();
+            }
         }
         public void Update() 
         { 
-            Visit(RootNode, _updateFns); 
+            Visit(RootNode, UpdateTransforms);
+            foreach (var sub in _updateSystems)
+            {
+                sub.BeforeUpdate();
+                Visit(RootNode, sub.OnUpdate);
+                sub.AfterUpdate();
+            }
             foreach (var res in Resources)
             {
                 if(res is FileResource f && f.FileChanged){
@@ -86,21 +117,6 @@ namespace XPlat.Engine
                 }
             }
         }
-
-        private delegate void ProcessNode(Node n);
-        private delegate void ProcessComponent(Component n);
-        //private Dictionary<Type, ProcessComponent> _initHandlers = new Dictionary<Type, ProcessComponent>();
-        //private Dictionary<Type, ProcessComponent> _updateHandlers = new Dictionary<Type, ProcessComponent>();
-        // private void ProcessNodeGeneric(Node node){
-        //     foreach (var c in node.Components)
-        //     {
-        //         if(!c.IsEnabled) continue;
-        //         foreach (var kv in handlers)
-        //         {
-        //             if(kv.Key.IsInstanceOfType(kv.Value)) kv.Value?.Invoke(c);
-        //         }
-        //     }
-        // }
 
         private void InitalizeComponents(Node node){
             foreach (var c in node.GetComponents<Behaviour>())
@@ -118,7 +134,7 @@ namespace XPlat.Engine
 
         private void UpdateTransforms(Node node){
             node._globalMatrix = node.Transform.GetMatrix() * node.Parent?._globalMatrix ?? System.Numerics.Matrix4x4.Identity;
-        }
+        }        
 
         private void Visit(Node node, ProcessNode fn)
         {
