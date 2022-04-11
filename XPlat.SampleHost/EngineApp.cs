@@ -9,7 +9,6 @@ namespace XPlat.SampleHost
     public class EngineApp : ISdlApp
     {
         private Scene scene;
-        private Renderer3d renderer;
         private readonly IServiceProvider services;
 
         public EngineApp(IPlatform platform, IServiceProvider services)
@@ -21,6 +20,7 @@ namespace XPlat.SampleHost
         public void Init()
         {
             scene = new Scene(services);
+            scene.Use3dRendering();
 
             var camera = new Node(scene)
             {
@@ -67,14 +67,12 @@ namespace XPlat.SampleHost
             };
             light.AddComponent(new LightComponent());
             scene.RootNode.AddChild(light);
-
-            renderer = new Renderer3d(platform);
         }
 
         public void Update()
         {
             scene.Update();
-            renderer.Render(scene);
+            scene.Render();
         }
 
         private readonly float[] uvs = {
