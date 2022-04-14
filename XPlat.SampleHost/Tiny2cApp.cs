@@ -2,6 +2,7 @@
 using System.Numerics;
 using GLES2;
 using XPlat.Core;
+using XPlat.Engine;
 using XPlat.NanoVg;
 using static TinyC2.TinyC2Api;
 
@@ -53,10 +54,10 @@ namespace XPlat.SampleHost
             vg.BeginFrame((int)platform.WindowSize.X, (int)platform.WindowSize.Y, platform.RetinaScale);
 
             var movable = shapes[0] as c2Circle;
-             if (Input.IsKeyDown(Key.UP)) movable.p.Y -= 3;
-             if (Input.IsKeyDown(Key.DOWN)) movable.p.Y += 3;
-             if (Input.IsKeyDown(Key.LEFT)) movable.p.X -= 3;
-             if (Input.IsKeyDown(Key.RIGHT)) movable.p.X += 3;
+             if (Input.IsKeyDown(Key.UP)) movable.p.Y -= 10;
+             if (Input.IsKeyDown(Key.DOWN)) movable.p.Y += 10;
+             if (Input.IsKeyDown(Key.LEFT)) movable.p.X -= 10;
+             if (Input.IsKeyDown(Key.RIGHT)) movable.p.X += 10;
             //movable.p = platform.MousePosition;
 
             for (int i = 1; i < shapes.Count; i++)

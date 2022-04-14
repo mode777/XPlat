@@ -2,6 +2,7 @@ using System;
 using System.Drawing;
 using System.Numerics;
 using GLES2;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SDL2;
@@ -18,6 +19,7 @@ namespace XPlat.Core
 
         private readonly ILogger<SdlPlatform> logger;
         private readonly IHostApplicationLifetime lifetime;
+        private SystemConfiguration configuration;
         private readonly PlatformEventHandler<SDL.SDL_EventType, SDL.SDL_Event>[] handlers = new PlatformEventHandler<SDL.SDL_EventType, SDL.SDL_Event>[(int)SDL.SDL_EventType.SDL_LASTEVENT];
 
         public Vector2 RendererSize { get; private set; }
@@ -44,11 +46,12 @@ namespace XPlat.Core
         public event PlatformEventHandler<SDL.SDL_EventType, SDL.SDL_Event> OnEvent;
 
         public SdlPlatform(ILogger<SdlPlatform> logger,
-                           IHostApplicationLifetime lifetime)
+                           IHostApplicationLifetime lifetime, IConfiguration config)
         {
             this.logger = logger;
             this.lifetime = lifetime;
-
+            this.configuration = config.GetSection("System").Get<SystemConfiguration>();
+            TargetFramerate = configuration.TargetFramerate;
             lifetime.ApplicationStopping.Register(() => isRunning = false);
         }
 
@@ -66,7 +69,7 @@ namespace XPlat.Core
             SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_BLUE_SIZE, 8);
             SDL.SDL_GL_SetAttribute(SDL.SDL_GLattr.SDL_GL_STENCIL_SIZE, 8);
 
-            window = SDL.SDL_CreateWindow("SDL running on .NET 6.0", SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED, 1280, 720,
+            window = SDL.SDL_CreateWindow("SDL running on .NET 6.0", SDL.SDL_WINDOWPOS_CENTERED, SDL.SDL_WINDOWPOS_CENTERED, configuration.Width, configuration.Height,
             SDL.SDL_WindowFlags.SDL_WINDOW_OPENGL | SDL.SDL_WindowFlags.SDL_WINDOW_SHOWN | SDL.SDL_WindowFlags.SDL_WINDOW_RESIZABLE | SDL.SDL_WindowFlags.SDL_WINDOW_ALLOW_HIGHDPI);
             logger.LogInformation("Window initialized");
 

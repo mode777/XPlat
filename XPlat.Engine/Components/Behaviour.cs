@@ -10,6 +10,10 @@ namespace XPlat.Engine.Components
         public virtual void Update(){
 
         }
+
+        public virtual void OnCollision(CollisionInfo info){
+
+        }
     }
 }
 

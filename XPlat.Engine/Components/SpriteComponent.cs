@@ -4,8 +4,9 @@ using XPlat.Graphics;
 
 namespace XPlat.Engine.Components
 {
+
     [SceneElement("sprite")]
-    public class SpriteComponent : Behaviour
+    public class SpriteComponent : Component
     {
         public SpriteSource Sprite { get; set; }
         public SpriteAtlasResource Resource { 
@@ -32,10 +33,6 @@ namespace XPlat.Engine.Components
             else throw new InvalidDataException("script resource needs 'ref' attribute");
 
             base.Parse(el, reader);
-        }
-
-        public override void Update()
-        {
         }
     }
 }

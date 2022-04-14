@@ -24,7 +24,7 @@ namespace XPlat.Engine
         public void OnRender(Node n)
         {
             var s = n.GetComponent<SpriteComponent>();
-            if(s != null)
+            if (s != null)
             {
                 batch.SetSprite(s.Sprite);
                 batch.Draw(ref n._globalMatrix);

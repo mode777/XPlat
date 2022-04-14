@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Numerics;
 
 namespace TinyC2
@@ -171,6 +172,13 @@ namespace TinyC2
 
         public abstract class c2Shape {
             public abstract Vector2 Center { get; }
+
+            public abstract c2AABB GetBBox(ref Matrix4x4 mat);
+            public c2Shape GetTransformed(ref Matrix4x4 mat){
+                var clone = (c2Shape)this.MemberwiseClone();
+                clone.Transform(ref mat);
+                return clone;
+            }
             public abstract void Transform(ref Matrix4x4 mat);
             public abstract void Transform(ref Matrix3x2 mat);
         }
@@ -182,6 +190,14 @@ namespace TinyC2
 
             public override Vector2 Center => p;
 
+            public override c2AABB GetBBox(ref Matrix4x4 mat)
+            {
+                var np = Vector2.Transform(p, mat);
+                var nr = Vector2.Transform(new Vector2(r,r), mat).Length();
+
+                return new c2AABB(new Vector2(np.X - nr, np.Y - nr), new Vector2(np.X + nr, np.Y + nr));
+            }
+
             public override void Transform(ref Matrix4x4 mat) => Vector2.Transform(p, mat);
 
             public override void Transform(ref Matrix3x2 mat) => Vector2.Transform(p, mat);
@@ -191,7 +207,19 @@ namespace TinyC2
         {
             public Vector2 min, max;
 
+            public c2AABB(Vector2 min, Vector2 max)
+            {
+                this.min = min;
+                this.max = max;
+            }
+
+            public c2AABB()
+            {
+            }
+
             public override Vector2 Center => min + (max - min) / 2;
+
+            
 
             public override void Transform(ref Matrix4x4 mat)
             {
@@ -204,6 +232,16 @@ namespace TinyC2
                 Vector2.Transform(min, mat);
                 Vector2.Transform(max, mat);
             }
+
+            public override c2AABB GetBBox(ref Matrix4x4 mat)
+            {
+                var r = new c2AABB(min, max);
+                r.Transform(ref mat);
+                return r;
+            }
+
+            public bool IntersectsWith(c2AABB rect) => (rect.min.X < max.X) && (min.X < rect.max.X) &&
+                                                        (rect.min.Y < max.Y) && (min.Y < rect.max.Y);
         }
 
         // a capsule is defined as a line segment (from a to b) and radius r
@@ -213,6 +251,17 @@ namespace TinyC2
             public float r;
 
             public override Vector2 Center => a + (b - a) / 2;
+
+            public override c2AABB GetBBox(ref Matrix4x4 mat)
+            {
+                var a = Vector2.Transform(this.a, mat);
+                var b = Vector2.Transform(this.b, mat);
+                var nr = Vector2.Transform(new Vector2(r,r), mat).Length();
+                var vr = new Vector2(r,r);
+                var min = Vector2.Min(a - vr, b - vr);
+                var max = Vector2.Min(a + vr, b + vr);
+                return new c2AABB(min, max);
+            }
 
             public override void Transform(ref Matrix4x4 mat)
             {
@@ -234,6 +283,11 @@ namespace TinyC2
             public Vector2[] norms = new Vector2[C2_MAX_POLYGON_VERTS];
 
             public override Vector2 Center => throw new NotImplementedException();
+
+            public override c2AABB GetBBox(ref Matrix4x4 mat)
+            {
+                throw new NotImplementedException();
+            }
 
             public override void Transform(ref Matrix4x4 mat)
             {

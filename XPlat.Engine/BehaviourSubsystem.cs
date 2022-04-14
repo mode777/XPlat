@@ -2,6 +2,7 @@
 
 namespace XPlat.Engine
 {
+
     public class BehaviourSubsystem : IInitSubSystem, IUpdateSubSystem
     {
         public void AfterInit(){}
@@ -24,7 +25,13 @@ namespace XPlat.Engine
         {
             foreach (var comp in n.Components)
             {
-                if (comp is Behaviour b && b.IsEnabled) b.Update();
+                if(comp is Behaviour b){
+                    foreach (var c in n.Collisions)
+                    {
+                        b.OnCollision(c);
+                    }
+                    if(b.IsEnabled) b.Update();
+                }
             }
         }
     }

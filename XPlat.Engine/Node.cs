@@ -16,7 +16,7 @@ namespace XPlat.Engine
         private List<Node> _children = new();
         private List<Component> _components = new();
         private bool disposedValue;
-        
+        internal Dictionary<Node, CollisionInfo> _collisions = new();
         public Scene Scene { get; }
 
         public Transform3d Transform { get; set; } = new Transform3d();
@@ -106,6 +106,8 @@ namespace XPlat.Engine
         {
             this._components.Remove(comp);
         }
+
+        
 
         public T? GetComponent<T>() where T : Component => _components.FirstOrDefault(x => x is T) as T;
         public Component? GetComponent(Type t) => _components.FirstOrDefault(x => x.GetType() == t);
@@ -212,6 +214,14 @@ namespace XPlat.Engine
                 AddChild(node);
             }
         }
+
+        public void ResetCollisions() => _collisions.Clear();
+        public void AddCollision(CollisionInfo info){
+            _collisions[info.Other] = info;
+        }
+        public IEnumerable<CollisionInfo> Collisions => _collisions.Values;
+        public bool TryGetCollision(Node n, out CollisionInfo info) => _collisions.TryGetValue(n, out info);
+
 
         protected virtual void Dispose(bool disposing)
         {

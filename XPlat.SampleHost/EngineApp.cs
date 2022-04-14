@@ -19,8 +19,8 @@ namespace XPlat.SampleHost
 
         public void Init()
         {
-            scene = new Scene(services);
-            scene.Use3dRendering();
+            var config = new SceneConfiguration3d(platform);
+            scene = new Scene(config);
 
             var camera = new Node(scene)
             {

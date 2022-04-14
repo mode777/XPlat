@@ -8,7 +8,6 @@ using XPlat.LuaScripting;
 
 namespace XPlat.Engine
 {
-
     [SceneElement("scene")]
     public class Scene : ISceneElement, IDisposable
     {
@@ -16,17 +15,16 @@ namespace XPlat.Engine
         private List<IInitSubSystem> _initSystems = new List<IInitSubSystem>();
         private List<IUpdateSubSystem> _updateSystems = new List<IUpdateSubSystem>();
         private List<IRenderPass> _renderPasses = new List<IRenderPass>();
+        public Node RootNode { get; private set; }
+        public ResourceManager Resources { get; }
+        public LuaHost LuaHost { get; private set; }
 
-        public Scene(IServiceProvider services)
+        public Scene(SceneConfiguration config)
         {
             RootNode = new Node(this);
             Resources = new ResourceManager();
             SetupLua();
-
-            var bs = new BehaviourSubsystem();
-            RegisterInitSubsystem(bs);
-            RegisterUpdateSubsystem(bs);
-            Services = services;
+            config?.Apply(this);
         }
 
         private void SetupLua(){
@@ -52,10 +50,7 @@ namespace XPlat.Engine
             _renderPasses.Add(pass);
         }
 
-        public Node RootNode { get; private set; }
-        public ResourceManager Resources { get; }
-        public LuaHost LuaHost { get; private set; }
-        public IServiceProvider Services { get; }
+
 
         //private ProcessNode _OnInit;
         //private ProcessNode _OnUpdate;
@@ -128,30 +123,25 @@ namespace XPlat.Engine
             }
         }
 
-        public void Use2dRendering(){
-            RegisterRenderPass(new RenderPass2d(Services.GetRequiredService<IPlatform>()));
-        }
-
-        public void Use3dRendering(){
-            RegisterRenderPass(new RenderPass3d(Services.GetRequiredService<IPlatform>()));
-        }
-
         public void Parse(XElement el, SceneReader reader)
         {
             if(el.TryGetAttribute("template", out var template)) {
                 switch(template){
                     case "2d":
-                        Use2dRendering();
+                        new SceneConfiguration2d(reader.Services.GetRequiredService<IPlatform>())
+                            .Apply(this);
                         break;
                     case "3d":
-                        Use3dRendering();
+                        new SceneConfiguration3d(reader.Services.GetRequiredService<IPlatform>())
+                            .Apply(this);
                         break;
                     default:
                         throw new InvalidDataException($"No app template found called '{template}'");
                 }
             } else {
                 // TODO: Load custom pipeline config
-                Use3dRendering();
+                new SceneConfiguration3d(reader.Services.GetRequiredService<IPlatform>())
+                    .Apply(this);
             }
 
             var resources = el.Element("resources");

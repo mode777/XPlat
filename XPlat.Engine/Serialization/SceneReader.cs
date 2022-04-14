@@ -46,7 +46,8 @@ namespace XPlat.Engine.Serialization
         private Scene Read(XDocument doc)
         {
             var sceneEl = doc.Element("scene") ?? throw new InvalidDataException("Root element 'scene' not found");
-            Scene = new Scene(Services);
+            
+            Scene = new Scene(null);
             Scene.Parse(sceneEl, this);
             return Scene;
         }
