@@ -9,6 +9,7 @@ namespace XPlat.Engine
             AddInitSystem(bs);
             AddUpdateSystem(bs);
             AddRenderPass(new RenderPass2d(platform));
+            AddRenderPass(new DebugRenderPass(platform));
         }
     }
 }

@@ -9,6 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NanoGuiPort\**" />
+    <Compile Remove="NanoVG\**" />
+    <EmbeddedResource Remove="NanoGuiPort\**" />
+    <EmbeddedResource Remove="NanoVG\**" />
+    <None Remove="NanoGuiPort\**" />
+    <None Remove="NanoVG\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SharpGLTF.Core" Version="1.0.0-alpha0023" />
     <PackageReference Include="SimplexNoise" Version="2.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0-rc.2.21480.5" />
@@ -26,9 +35,5 @@
   <ItemGroup>
     <None Remove="NanoVG\" />
     <None Remove="NanoGuiPort\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="NanoVG\" />
-    <Folder Include="NanoGuiPort\" />
   </ItemGroup>
 </Project>
