@@ -13,11 +13,12 @@
         <node name="player" translate="200, 200, 0">
             <components>
                 <lua res="rotate" args="{ axis = 'z' }"/>
-                <!-- <collision mode="active">
+                 <!--<collider mode="active">
                     <capsule a="50, 20" b="50, 100" r="80" />
-                </collision> -->
+                </collider>--> 
             </components>
-            <node name="player_sprite" translate="-50,-50,0">
+            <node name="player_sprite" translate="-50,-50">
+              
                 <components>
                     <sprite res="space:playerShip1_red" />
                 </components>

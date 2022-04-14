@@ -13,7 +13,10 @@ namespace XPlat.Engine.Serialization {
             var str = attr;
             try {
                 var v3 = str.Split(',').Select(x => float.Parse(x)).ToArray();
-                return new Vector3(v3[0],v3[1],v3[2]);
+                if(v3.Length == 2)
+                    return new Vector3(v3[0],v3[1],0);
+                else
+                    return new Vector3(v3[0],v3[1],v3[2]);
             } catch {
                 throw new InvalidDataException($"'{str}' is not a valid Vector3");
             }

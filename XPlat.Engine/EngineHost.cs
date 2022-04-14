@@ -43,8 +43,8 @@ namespace XPlat.Engine
             {
                 resource.Load();
                 resource.Scene?.Init();
-            } catch(Exception e) {
-                logger.LogError(e.Message);
+            } catch(Exception e) {                
+                logger.LogError(e.ToString());
             }
         }
 
@@ -61,7 +61,7 @@ namespace XPlat.Engine
             }
             catch (Exception e)
             {
-                logger.LogError(e.Message);
+                logger.LogError(e.ToString());
             }
         }
     }

@@ -12,8 +12,8 @@ namespace XPlat.Engine
         }
 
         public void Load(){
-            Value = LoadFile();
             FileChanged = false;
+            Value = LoadFile();
         }
 
         protected abstract object LoadFile();
