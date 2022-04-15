@@ -44,6 +44,13 @@ namespace XPlat.SampleHost
             };
             shapes.Add(aabb);
 
+            var circle2 = new c2Circle
+            {
+                p = new Vector2(400, 50),
+                r = 25
+            };
+            shapes.Add(circle2);
+
             man = new c2Manifold();
         }
 
@@ -69,9 +76,9 @@ namespace XPlat.SampleHost
                 {
                     var n = man.normal;
                     var d = man.depths1;
-                    var sep_vec = n*d;
+                    //var sep_vec = n*d;
                     var origin = s.Center - movable.Center;
-                    var sign = Vector2.Dot(sep_vec, origin) > 0 ? -1 : 1;
+                    var sign = Vector2.Dot(n, origin) > 0 ? -1 : 1;
                     movable.p += (sign * n * d);
                 }
 

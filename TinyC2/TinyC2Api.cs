@@ -155,7 +155,7 @@ namespace TinyC2
             public static readonly c2x Identity = new c2x();
             public c2x()
             {
-                p = c2V(0, 0);
+                p = new Vector2(0, 0);
                 r = c2RotIdentity();
             }
 
@@ -193,14 +193,20 @@ namespace TinyC2
             public override c2AABB GetBBox(ref Matrix4x4 mat)
             {
                 var np = Vector2.Transform(p, mat);
-                var nr = Vector2.Transform(new Vector2(r,r), mat).Length();
+                //var nr = Vector2.Transform(new Vector2(r,r), mat).Length();
 
-                return new c2AABB(new Vector2(np.X - nr, np.Y - nr), new Vector2(np.X + nr, np.Y + nr));
+                return new c2AABB(new Vector2(np.X - r, np.Y - r), new Vector2(np.X + r, np.Y + r));
             }
 
-            public override void Transform(ref Matrix4x4 mat) => Vector2.Transform(p, mat);
+            public override void Transform(ref Matrix4x4 mat) {
+                p = Vector2.Transform(p, mat);
+                //r = Vector2.Transform(new Vector2(0,r), mat).Length();
+            } 
 
-            public override void Transform(ref Matrix3x2 mat) => Vector2.Transform(p, mat);
+            public override void Transform(ref Matrix3x2 mat) {
+                p = Vector2.Transform(p, mat);
+                //r = Vector2.Transform(new Vector2(0,r), mat).Length();
+            }
         }
 
         public class c2AABB : c2Shape
@@ -219,18 +225,16 @@ namespace TinyC2
 
             public override Vector2 Center => min + (max - min) / 2;
 
-            
-
             public override void Transform(ref Matrix4x4 mat)
             {
-                Vector2.Transform(min, mat);
-                Vector2.Transform(max, mat);
+                min = Vector2.Transform(min, mat);
+                max = Vector2.Transform(max, mat);
             }
 
             public override void Transform(ref Matrix3x2 mat)
             {
-                Vector2.Transform(min, mat);
-                Vector2.Transform(max, mat);
+                min = Vector2.Transform(min, mat);
+                max = Vector2.Transform(max, mat);
             }
 
             public override c2AABB GetBBox(ref Matrix4x4 mat)
@@ -256,7 +260,7 @@ namespace TinyC2
             {
                 var a = Vector2.Transform(this.a, mat);
                 var b = Vector2.Transform(this.b, mat);
-                var nr = Vector2.Transform(new Vector2(r,r), mat).Length();
+                //var nr = Vector2.Transform(new Vector2(r,r), mat).Length();
                 var vr = new Vector2(r,r);
                 var min = Vector2.Min(a - vr, b - vr);
                 var max = Vector2.Min(a + vr, b + vr);
@@ -265,14 +269,16 @@ namespace TinyC2
 
             public override void Transform(ref Matrix4x4 mat)
             {
-                Vector2.Transform(a, mat);
-                Vector2.Transform(b, mat);
+                a = Vector2.Transform(this.a, mat);
+                b = Vector2.Transform(this.b, mat);
+                //r = Vector2.Transform(new Vector2(0,r), mat).Length();
             }
 
             public override void Transform(ref Matrix3x2 mat)
             {
-                Vector2.Transform(a, mat);
-                Vector2.Transform(b, mat);
+                a = Vector2.Transform(this.a, mat);
+                b = Vector2.Transform(this.b, mat);
+                //r = Vector2.Transform(new Vector2(0,r), mat).Length();
             }
         }
 
@@ -313,7 +319,7 @@ namespace TinyC2
         }
 
         // position of impact p = ray.p + ray.d * raycast.t
-        public static Vector2 c2Impact(c2Ray ray, float t) => c2Add(ray.p, c2Mulvs(ray.d, t));
+        public static Vector2 c2Impact(c2Ray ray, float t) => Vector2.Add(ray.p, Vector2.Multiply(ray.d, t));
 
         // contains all information necessary to resolve a collision, or in other words
         // this is the information needed to separate shapes that are colliding. Doing
@@ -386,12 +392,12 @@ namespace TinyC2
         // can be NULL, and represent local to world transformations for shapes A and B respectively.
         // use_radius will apply radii for capsules and circles (if set to false, spheres are
         // treated as points and capsules are treated as line segments i.e. rays).
-        //float c2GJK( object A, C2_TYPE typeA, c2x* ax_ptr, object B, C2_TYPE typeB, c2x* bx_ptr, c2v* outA, c2v* outB, int use_radius);
+        //float c2GJK( object A, C2_TYPE typeA, c2x* ax_ptr, object B, C2_TYPE typeB, c2x* bx_ptr, new Vector2* outA, new Vector2* outB, int use_radius);
 
         // Computes 2D convex hull. Will not do anything if less than two verts supplied. If
         // more than C2_MAX_POLYGON_VERTS are supplied extras are ignored.
-        //int c2Hull(c2v* verts, int count);
-        //void c2Norms(c2v* verts, c2v* norms, int count);
+        //int c2Hull(new Vector2* verts, int count);
+        //void c2Norms(new Vector2* verts, new Vector2* norms, int count);
 
         // runs c2Hull and c2Norms, assumes p.verts and p.count are both set to valid values
         //void c2MakePoly(c2Poly* p);
@@ -431,24 +437,24 @@ namespace TinyC2
         static float c2Dot(Vector2 a, Vector2 b) { return a.X * b.X + a.Y * b.Y; }
         static Vector2 c2Mulvs(Vector2 a, float b) { a.X *= b; a.Y *= b; return a; }
         static Vector2 c2Mulvv(Vector2 a, Vector2 b) { a.X *= b.X; a.Y *= b.Y; return a; }
-        static Vector2 c2Div(Vector2 a, float b) { return c2Mulvs(a, 1.0f / b); }
+        static Vector2 c2Div(Vector2 a, float b) { return Vector2.Multiply(a, 1.0f / b); }
         static Vector2 c2Skew(Vector2 a) { Vector2 b; b.X = -a.Y; b.Y = a.X; return b; }
         static Vector2 c2CCW90(Vector2 a) { Vector2 b; b.X = a.Y; b.Y = -a.X; return b; }
         static float c2Det2(Vector2 a, Vector2 b) { return a.X * b.Y - a.Y * b.X; }
-        static Vector2 c2Minv(Vector2 a, Vector2 b) { return c2V(c2Min(a.X, b.X), c2Min(a.Y, b.Y)); }
-        static Vector2 c2Maxv(Vector2 a, Vector2 b) { return c2V(c2Max(a.X, b.X), c2Max(a.Y, b.Y)); }
+        static Vector2 c2Minv(Vector2 a, Vector2 b) { return new Vector2(c2Min(a.X, b.X), c2Min(a.Y, b.Y)); }
+        static Vector2 c2Maxv(Vector2 a, Vector2 b) { return new Vector2(c2Max(a.X, b.X), c2Max(a.Y, b.Y)); }
         static Vector2 c2Clampv(Vector2 a, Vector2 lo, Vector2 hi) { return c2Maxv(lo, c2Minv(a, hi)); }
-        static Vector2 c2Absv(Vector2 a) { return c2V(c2Abs(a.X), c2Abs(a.Y)); }
+        static Vector2 c2Absv(Vector2 a) { return new Vector2(c2Abs(a.X), c2Abs(a.Y)); }
         static float c2Hmin(Vector2 a) { return c2Min(a.X, a.Y); }
         static float c2Hmax(Vector2 a) { return c2Max(a.X, a.Y); }
-        static float c2Len(Vector2 a) { return c2Sqrt(c2Dot(a, a)); }
+        static float c2Len(Vector2 a) { return MathF.Sqrt(Vector2.Dot(a, a)); }
         static Vector2 c2Norm(Vector2 a) { return c2Div(a, c2Len(a)); }
-        static Vector2 c2Neg(Vector2 a) { return c2V(-a.X, -a.Y); }
-        static Vector2 c2Lerp(Vector2 a, Vector2 b, float t) { return c2Add(a, c2Mulvs(c2Sub(b, a), t)); }
+        static Vector2 c2Neg(Vector2 a) { return new Vector2(-a.X, -a.Y); }
+        static Vector2 c2Lerp(Vector2 a, Vector2 b, float t) { return Vector2.Add(a, Vector2.Multiply(b -  a, t)); }
         static bool c2Parallel(Vector2 a, Vector2 b, float kTol)
         {
             float k = c2Len(a) / c2Len(b);
-            b = c2Mulvs(b, k);
+            b = Vector2.Multiply(b, k);
             if (c2Abs(a.X - b.X) < kTol && c2Abs(a.Y - b.Y) < kTol) return true;
             return false;
         }
@@ -456,10 +462,10 @@ namespace TinyC2
         // rotation ops
         static c2r c2Rot(float radians) { c2r r = new c2r(); c2SinCos(radians, ref r.s, ref r.c); return r; }
         static c2r c2RotIdentity() { c2r r; r.c = 1.0f; r.s = 0; return r; }
-        static Vector2 c2RotX(c2r r) { return c2V(r.c, r.s); }
-        static Vector2 c2RotY(c2r r) { return c2V(-r.s, r.c); }
-        static Vector2 c2Mulrv(c2r a, Vector2 b) { return c2V(a.c * b.X - a.s * b.Y, a.s * b.X + a.c * b.Y); }
-        static Vector2 c2MulrvT(c2r a, Vector2 b) { return c2V(a.c * b.X + a.s * b.Y, -a.s * b.X + a.c * b.Y); }
+        static Vector2 c2RotX(c2r r) { return new Vector2(r.c, r.s); }
+        static Vector2 c2RotY(c2r r) { return new Vector2(-r.s, r.c); }
+        static Vector2 c2Mulrv(c2r a, Vector2 b) { return new Vector2(a.c * b.X - a.s * b.Y, a.s * b.X + a.c * b.Y); }
+        static Vector2 c2MulrvT(c2r a, Vector2 b) { return new Vector2(a.c * b.X + a.s * b.Y, -a.s * b.X + a.c * b.Y); }
         static c2r c2Mulrr(c2r a, c2r b) { c2r c; c.c = a.c * b.c - a.s * b.s; c.s = a.s * b.c + a.c * b.s; return c; }
         static c2r c2MulrrT(c2r a, c2r b) { c2r c; c.c = a.c * b.c + a.s * b.s; c.s = a.c * b.s - a.s * b.c; return c; }
 
@@ -469,27 +475,27 @@ namespace TinyC2
         static c2m c2MulmmT(c2m a, c2m b) { c2m c; c.x = c2MulmvT(a, b.x); c.y = c2MulmvT(a, b.y); return c; }
 
         // transform ops
-        static c2x c2xIdentity() { c2x x; x.p = c2V(0, 0); x.r = c2RotIdentity(); return x; }
-        static Vector2 c2Mulxv(c2x a, Vector2 b) { return c2Add(c2Mulrv(a.r, b), a.p); }
-        static Vector2 c2MulxvT(c2x a, Vector2 b) { return c2MulrvT(a.r, c2Sub(b, a.p)); }
-        static c2x c2Mulxx(c2x a, c2x b) { c2x c; c.r = c2Mulrr(a.r, b.r); c.p = c2Add(c2Mulrv(a.r, b.p), a.p); return c; }
-        static c2x c2MulxxT(c2x a, c2x b) { c2x c; c.r = c2MulrrT(a.r, b.r); c.p = c2MulrvT(a.r, c2Sub(b.p, a.p)); return c; }
+        static c2x c2xIdentity() { c2x x; x.p = new Vector2(0, 0); x.r = c2RotIdentity(); return x; }
+        static Vector2 c2Mulxv(c2x a, Vector2 b) { return c2Mulrv(a.r, b) + a.p; }
+        static Vector2 c2MulxvT(c2x a, Vector2 b) { return c2MulrvT(a.r, b - a.p); }
+        static c2x c2Mulxx(c2x a, c2x b) { c2x c; c.r = c2Mulrr(a.r, b.r); c.p = c2Mulrv(a.r, b.p) + a.p; return c; }
+        static c2x c2MulxxT(c2x a, c2x b) { c2x c; c.r = c2MulrrT(a.r, b.r); c.p = c2MulrvT(a.r, b.p - a.p); return c; }
         static c2x c2Transform(Vector2 p, float radians) { c2x x; x.r = c2Rot(radians); x.p = p; return x; }
 
         // halfspace ops
-        static Vector2 c2Origin(c2h h) { return c2Mulvs(h.n, h.d); }
-        static float c2Dist(c2h h, Vector2 p) { return c2Dot(h.n, p) - h.d; }
-        static Vector2 c2Project(c2h h, Vector2 p) { return c2Sub(p, c2Mulvs(h.n, c2Dist(h, p))); }
-        static c2h c2Mulxh(c2x a, c2h b) { c2h c; c.n = c2Mulrv(a.r, b.n); c.d = c2Dot(c2Mulxv(a, c2Origin(b)), c.n); return c; }
-        static c2h c2MulxhT(c2x a, c2h b) { c2h c; c.n = c2MulrvT(a.r, b.n); c.d = c2Dot(c2MulxvT(a, c2Origin(b)), c.n); return c; }
-        static Vector2 c2Intersect(Vector2 a, Vector2 b, float da, float db) { return c2Add(a, c2Mulvs(c2Sub(b, a), (da / (da - db)))); }
+        static Vector2 c2Origin(c2h h) { return Vector2.Multiply(h.n, h.d); }
+        static float c2Dist(c2h h, Vector2 p) { return Vector2.Dot(h.n, p) - h.d; }
+        static Vector2 c2Project(c2h h, Vector2 p) { return Vector2.Subtract(p, Vector2.Multiply(h.n, c2Dist(h, p))); }
+        static c2h c2Mulxh(c2x a, c2h b) { c2h c; c.n = c2Mulrv(a.r, b.n); c.d = Vector2.Dot(c2Mulxv(a, c2Origin(b)), c.n); return c; }
+        static c2h c2MulxhT(c2x a, c2h b) { c2h c; c.n = c2MulrvT(a.r, b.n); c.d = Vector2.Dot(c2MulxvT(a, c2Origin(b)), c.n); return c; }
+        static Vector2 c2Intersect(Vector2 a, Vector2 b, float da, float db) { return Vector2.Add(a, Vector2.Multiply(b -  a, (da / (da - db)))); }
 
         static void c2BBVerts(Vector2[] @out, c2AABB bb)
         {
             @out[0] = bb.min;
-            @out[1] = c2V(bb.max.X, bb.min.Y);
+            @out[1] = new Vector2(bb.max.X, bb.min.Y);
             @out[2] = bb.max;
-            @out[3] = c2V(bb.min.X, bb.max.Y);
+            @out[3] = new Vector2(bb.min.X, bb.max.Y);
         }
 
         public static bool c2Collided(c2Shape A, c2x ax, c2Shape B, c2x bx)
@@ -692,11 +698,11 @@ namespace TinyC2
         static int c2Support(Vector2[] verts, int count, Vector2 d)
         {
             int imax = 0;
-            float dmax = c2Dot(verts[0], d);
+            float dmax = Vector2.Dot(verts[0], d);
 
             for (int i = 1; i < count; ++i)
             {
-                float dot = c2Dot(verts[i], d);
+                float dot = Vector2.Dot(verts[i], d);
                 if (dot > dmax)
                 {
                     imax = i;
@@ -707,9 +713,9 @@ namespace TinyC2
             return imax;
         }
 
-        //#define c2Mulvs( s. n. x , (den * s. n.u) ) c2Mulvs( s.n.x, (den * s.n.u) )
-        //#define c2Add( c2Mulvs( s. a.  x  , (den * s. a.u) ), c2Mulvs( s. b.  x  , (den * s. b.u) ) ) c2Add( c2Mulvs( s. a. x , (den * s. a.u) ), c2Mulvs( s. b. x , (den * s. b.u) ) )
-        //#define c2Add( c2Add( c2Mulvs( s. a.  x  , (den * s. a.u) ), c2Mulvs( s. b.  x  , (den * s. b.u) ) ), c2Mulvs( s. c.  x  , (den * s. c.u) ) ) c2Add( c2Add( c2Mulvs( s. a. x , (den * s. a.u) ), c2Mulvs( s. b. x , (den * s. b.u) ) ), c2Mulvs( s. c. x , (den * s. c.u) ) )
+        //#define Vector2.Multiply( s. n. x , (den * s. n.u) ) Vector2.Multiply( s.n.x, (den * s.n.u) )
+        //#define  Vector2.Multiply( s. a.  x   +  (den * s. a.u) , Vector2.Multiply( s. b.  x  , (den * s. b.u) ) )  Vector2.Multiply( s. a. x  +  (den * s. a.u) , Vector2.Multiply( s. b. x , (den * s. b.u) ) )
+        //#define  Vector2.Add( Vector2.Multiply( s. a.  x   +  (den * s. a.u) , Vector2.Multiply( s. b.  x  , (den * s. b.u) ) ), Vector2.Multiply( s. c.  x  , (den * s. c.u) ) )  Vector2.Add( Vector2.Multiply( s. a. x  +  (den * s. a.u) , Vector2.Multiply( s. b. x , (den * s. b.u) ) ), Vector2.Multiply( s. c. x , (den * s. c.u) ) )
 
         static Vector2 c2L(c2Simplex s)
         {
@@ -717,9 +723,10 @@ namespace TinyC2
             switch (s.count)
             {
                 case 1: return s.verts[0].p;
-                case 2: return c2Add(c2Mulvs(s.verts[0].p, (den * s.verts[0].u)), c2Mulvs(s.verts[1].p, (den * s.verts[1].u)));
-                case 3: return c2Add(c2Add(c2Mulvs(s.verts[0].p, (den * s.verts[0].u)), c2Mulvs(s.verts[1].p, (den * s.verts[1].u))), c2Mulvs(s.verts[2].p, (den * s.verts[2].u)));
-                default: return c2V(0, 0);
+                case 2: return Vector2.Multiply(s.verts[0].p, (den * s.verts[0].u)) + Vector2.Multiply(s.verts[1].p, (den * s.verts[1].u));
+                case 3: return (Vector2.Multiply(s.verts[0].p, (den * s.verts[0].u)) + Vector2.Multiply(s.verts[1].p, (den * s.verts[1].u))) + 
+                                Vector2.Multiply(s.verts[2].p, (den * s.verts[2].u));
+                default: return new Vector2(0, 0);
             }
         }
 
@@ -729,9 +736,13 @@ namespace TinyC2
             switch (s.count)
             {
                 case 1: a = s.verts[0].sA; b = s.verts[0].sB; break;
-                case 2: a = c2Add(c2Mulvs(s.verts[0].sA, (den * s.verts[0].u)), c2Mulvs(s.verts[1].sA, (den * s.verts[1].u))); b = c2Add(c2Mulvs(s.verts[0].sB, (den * s.verts[0].u)), c2Mulvs(s.verts[1].sB, (den * s.verts[1].u))); break;
-                case 3: a = c2Add(c2Add(c2Mulvs(s.verts[0].sA, (den * s.verts[0].u)), c2Mulvs(s.verts[1].sA, (den * s.verts[1].u))), c2Mulvs(s.verts[2].sA, (den * s.verts[2].u))); b = c2Add(c2Add(c2Mulvs(s.verts[0].sB, (den * s.verts[0].u)), c2Mulvs(s.verts[1].sB, (den * s.verts[1].u))), c2Mulvs(s.verts[2].sB, (den * s.verts[2].u))); break;
-                default: a = c2V(0, 0); b = c2V(0, 0); break;
+                case 2: a = Vector2.Multiply(s.verts[0].sA, (den * s.verts[0].u)) + Vector2.Multiply(s.verts[1].sA, (den * s.verts[1].u)); 
+                        b = Vector2.Multiply(s.verts[0].sB, (den * s.verts[0].u)) + Vector2.Multiply(s.verts[1].sB, (den * s.verts[1].u)); 
+                        break;
+                case 3: a = (Vector2.Multiply(s.verts[0].sA, (den * s.verts[0].u))+Vector2.Multiply(s.verts[1].sA, (den * s.verts[1].u))) + Vector2.Multiply(s.verts[2].sA, (den * s.verts[2].u)); 
+                        b = (Vector2.Multiply(s.verts[0].sB, (den * s.verts[0].u)) + Vector2.Multiply(s.verts[1].sB, (den * s.verts[1].u))) + Vector2.Multiply(s.verts[2].sB, (den * s.verts[2].u)); 
+                        break;
+                default: a = new Vector2(0, 0); b = new Vector2(0, 0); break;
             }
         }
 
@@ -742,12 +753,12 @@ namespace TinyC2
                 case 1: return c2Neg(s.verts[0].p);
                 case 2:
                     {
-                        Vector2 ab = c2Sub(s.verts[1].p, s.verts[0].p);
+                        Vector2 ab = s.verts[1].p -  s.verts[0].p;
                         if (c2Det2(ab, c2Neg(s.verts[0].p)) > 0) return c2Skew(ab);
                         return c2CCW90(ab);
                     }
                 case 3:
-                default: return c2V(0, 0);
+                default: return new Vector2(0, 0);
             }
         }
 
@@ -755,8 +766,8 @@ namespace TinyC2
         {
             Vector2 a = s.verts[0].p;
             Vector2 b = s.verts[1].p;
-            float u = c2Dot(b, c2Norm(c2Sub(b, a)));
-            float v = c2Dot(a, c2Norm(c2Sub(a, b)));
+            float u = Vector2.Dot(b, c2Norm(b -  a));
+            float v = Vector2.Dot(a, c2Norm(a -  b));
 
             if (v <= 0)
             {
@@ -788,13 +799,13 @@ namespace TinyC2
             Vector2 b = s.verts[1].p;
             Vector2 c = s.verts[2].p;
 
-            float uAB = c2Dot(b, c2Norm(c2Sub(b, a)));
-            float vAB = c2Dot(a, c2Norm(c2Sub(a, b)));
-            float uBC = c2Dot(c, c2Norm(c2Sub(c, b)));
-            float vBC = c2Dot(b, c2Norm(c2Sub(b, c)));
-            float uCA = c2Dot(a, c2Norm(c2Sub(a, c)));
-            float vCA = c2Dot(c, c2Norm(c2Sub(c, a)));
-            float area = c2Det2(c2Norm(c2Sub(b, a)), c2Norm(c2Sub(c, a)));
+            float uAB = Vector2.Dot(b, c2Norm(b -  a));
+            float vAB = Vector2.Dot(a, c2Norm(a -  b));
+            float uBC = Vector2.Dot(c, c2Norm(c -  b));
+            float vBC = Vector2.Dot(b, c2Norm(b -  c));
+            float uCA = Vector2.Dot(a, c2Norm(a -  c));
+            float vCA = Vector2.Dot(c, c2Norm(c -  a));
+            float area = c2Det2(c2Norm(b -  a), c2Norm(c -  a));
             float uABC = c2Det2(b, c) * area;
             float vABC = c2Det2(c, a) * area;
             float wABC = c2Det2(a, b) * area;
@@ -881,7 +892,7 @@ namespace TinyC2
             s.verts[0].iB = 0;
             s.verts[0].sA = c2Mulxv(ax, pA.verts[0]);
             s.verts[0].sB = c2Mulxv(bx, pB.verts[0]);
-            s.verts[0].p = c2Sub(s.verts[0].sB, s.verts[0].sA);
+            s.verts[0].p = s.verts[0].sB -  s.verts[0].sA;
             s.verts[0].u = 1.0f;
             s.count = 1;
 
@@ -915,13 +926,13 @@ namespace TinyC2
                 }
 
                 Vector2 p = c2L(s);
-                d1 = c2Dot(p, p);
+                d1 = Vector2.Dot(p, p);
 
                 if (d1 > d0) break;
                 d0 = d1;
 
                 Vector2 d = c2D(s);
-                if (c2Dot(d, d) < float.Epsilon * float.Epsilon) break;
+                if (Vector2.Dot(d, d) < float.Epsilon * float.Epsilon) break;
 
                 int iA = c2Support(pA.verts, pA.count, c2MulrvT(ax.r, c2Neg(d)));
                 Vector2 sA = c2Mulxv(ax, pA.verts[iA]);
@@ -945,13 +956,13 @@ namespace TinyC2
                 verts[s.count].sA = sA;
                 verts[s.count].iB = iB;
                 verts[s.count].sB = sB;
-                verts[s.count].p = c2Sub(verts[s.count].sB, verts[s.count].sA);
+                verts[s.count].p = verts[s.count].sB -  verts[s.count].sA;
                 ++s.count;
             }
 
             Vector2 a = default(Vector2), b = default(Vector2);
             c2Witness(s, ref a, ref b);
-            float dist = c2Len(c2Sub(a, b));
+            float dist = c2Len(a -  b);
 
             if (hit)
             {
@@ -967,14 +978,14 @@ namespace TinyC2
                 if (dist > rA + rB && dist > float.Epsilon)
                 {
                     dist -= rA + rB;
-                    Vector2 n = c2Norm(c2Sub(b, a));
-                    a = c2Add(a, c2Mulvs(n, rA));
-                    b = c2Sub(b, c2Mulvs(n, rB));
+                    Vector2 n = c2Norm(b -  a);
+                    a = Vector2.Add(a, Vector2.Multiply(n, rA));
+                    b = Vector2.Subtract(b, Vector2.Multiply(n, rB));
                 }
 
                 else
                 {
-                    Vector2 p = c2Mulvs(c2Add(a, b), 0.5f);
+                    Vector2 p = Vector2.Multiply(a +  b, 0.5f);
                     a = p;
                     b = p;
                     dist = 0;
@@ -1023,11 +1034,11 @@ namespace TinyC2
                         continue;
                     }
 
-                    Vector2 e1 = c2Sub(verts[next], verts[hull[out_count]]);
-                    Vector2 e2 = c2Sub(verts[i], verts[hull[out_count]]);
+                    Vector2 e1 = verts[next] -  verts[hull[out_count]];
+                    Vector2 e2 = verts[i] -  verts[hull[out_count]];
                     float c = c2Det2(e1, e2);
                     if (c < 0) next = i;
-                    if (c == 0 && c2Dot(e2, e2) > c2Dot(e1, e1)) next = i;
+                    if (c == 0 && Vector2.Dot(e2, e2) > Vector2.Dot(e1, e1)) next = i;
                 }
 
                 ++out_count;
@@ -1038,7 +1049,7 @@ namespace TinyC2
             Vector2[] hull_verts = new Vector2[C2_MAX_POLYGON_VERTS];
             for (int i = 0; i < out_count; ++i) hull_verts[i] = verts[hull[i]];
             Array.Copy(verts, hull_verts, out_count);
-            //memcpy(verts, hull_verts, sizeof(c2v) * out_count);
+            //memcpy(verts, hull_verts, sizeof(new Vector2) * out_count);
             return out_count;
         }
 
@@ -1048,7 +1059,7 @@ namespace TinyC2
             {
                 int a = i;
                 int b = i + 1 < count ? i + 1 : 0;
-                Vector2 e = c2Sub(verts[b], verts[a]);
+                Vector2 e = verts[b] -  verts[a];
                 norms[i] = c2Norm(c2CCW90(e));
             }
         }
@@ -1061,8 +1072,8 @@ namespace TinyC2
 
         static bool c2CircletoCircle(c2Circle A, c2Circle B)
         {
-            Vector2 c = c2Sub(B.p, A.p);
-            float d2 = c2Dot(c, c);
+            Vector2 c = B.p -  A.p;
+            float d2 = Vector2.Dot(c, c);
             float r2 = A.r + B.r;
             r2 = r2 * r2;
             return d2 < r2;
@@ -1071,8 +1082,8 @@ namespace TinyC2
         static bool c2CircletoAABB(c2Circle A, c2AABB B)
         {
             Vector2 L = c2Clampv(A.p, B.min, B.max);
-            Vector2 ab = c2Sub(A.p, L);
-            float d2 = c2Dot(ab, ab);
+            Vector2 ab = A.p -  L;
+            float d2 = Vector2.Dot(ab, ab);
             float r2 = A.r * A.r;
             return d2 < r2;
         }
@@ -1089,24 +1100,24 @@ namespace TinyC2
         // see: http://www.randygaul.net/2014/07/23/distance-point-to-line-segment/
         public static bool c2CircletoCapsule(c2Circle A, c2Capsule B)
         {
-            Vector2 n = c2Sub(B.b, B.a);
-            Vector2 ap = c2Sub(A.p, B.a);
-            float da = c2Dot(ap, n);
+            Vector2 n = B.b -  B.a;
+            Vector2 ap = A.p -  B.a;
+            float da = Vector2.Dot(ap, n);
             float d2;
 
-            if (da < 0) d2 = c2Dot(ap, ap);
+            if (da < 0) d2 = Vector2.Dot(ap, ap);
             else
             {
-                float db = c2Dot(c2Sub(A.p, B.b), n);
+                float db = Vector2.Dot(A.p -  B.b, n);
                 if (db < 0)
                 {
-                    Vector2 e = c2Sub(ap, c2Mulvs(n, (da / c2Dot(n, n))));
-                    d2 = c2Dot(e, e);
+                    Vector2 e = Vector2.Subtract(ap, Vector2.Multiply(n, (da / Vector2.Dot(n, n))));
+                    d2 = Vector2.Dot(e, e);
                 }
                 else
                 {
-                    Vector2 bp = c2Sub(A.p, B.b);
-                    d2 = c2Dot(bp, bp);
+                    Vector2 bp = A.p -  B.b;
+                    d2 = Vector2.Dot(bp, bp);
                 }
             }
 
@@ -1164,18 +1175,18 @@ namespace TinyC2
         static bool c2RaytoCircle(c2Ray A, c2Circle B, c2Raycast @out)
         {
             Vector2 p = B.p;
-            Vector2 m = c2Sub(A.p, p);
-            float c = c2Dot(m, m) - B.r * B.r;
-            float b = c2Dot(m, A.d);
+            Vector2 m = A.p -  p;
+            float c = Vector2.Dot(m, m) - B.r * B.r;
+            float b = Vector2.Dot(m, A.d);
             float disc = b * b - c;
             if (disc < 0) return false;
 
-            float t = -b - c2Sqrt(disc);
+            float t = -b - MathF.Sqrt(disc);
             if (t >= 0 && t <= A.t)
             {
                 @out.t = t;
                 Vector2 impact = c2Impact(A, t);
-                @out.n = c2Norm(c2Sub(impact, p));
+                @out.n = c2Norm(impact -  p);
                 return true;
             }
             return false;
@@ -1183,9 +1194,9 @@ namespace TinyC2
 
         static bool c2RaytoAABB(c2Ray A, c2AABB B, ref c2Raycast @out)
         {
-            Vector2 inv = c2V(1.0f / A.d.X, 1.0f / A.d.Y);
-            Vector2 d0 = c2Mulvv(c2Sub(B.min, A.p), inv);
-            Vector2 d1 = c2Mulvv(c2Sub(B.max, A.p), inv);
+            Vector2 inv = new Vector2(1.0f / A.d.X, 1.0f / A.d.Y);
+            Vector2 d0 = c2Mulvv(B.min -  A.p, inv);
+            Vector2 d1 = c2Mulvv(B.max -  A.p, inv);
             Vector2 v0 = c2Minv(d0, d1);
             Vector2 v1 = c2Maxv(d0, d1);
             float lo = c2Hmax(v0);
@@ -1193,11 +1204,11 @@ namespace TinyC2
 
             if (hi >= 0 && hi >= lo && lo <= A.t)
             {
-                Vector2 c = c2Mulvs(c2Add(B.min, B.max), 0.5f);
-                c = c2Sub(c2Impact(A, lo), c);
+                Vector2 c = Vector2.Multiply(B.min +  B.max, 0.5f);
+                c = c2Impact(A, lo) - c;
                 Vector2 abs_c = c2Absv(c);
-                if (abs_c.X > abs_c.Y) @out.n = c2V(c2Sign(c.X), 0);
-                else @out.n = c2V(0, c2Sign(c.Y));
+                if (abs_c.X > abs_c.Y) @out.n = new Vector2(c2Sign(c.X), 0);
+                else @out.n = new Vector2(0, c2Sign(c.Y));
                 @out.t = lo;
                 return true;
             }
@@ -1207,15 +1218,15 @@ namespace TinyC2
         static bool c2RaytoCapsule(c2Ray A, c2Capsule B, ref c2Raycast @out)
         {
             c2m M;
-            M.y = c2Norm(c2Sub(B.b, B.a));
+            M.y = c2Norm(B.b -  B.a);
             M.x = c2CCW90(M.y);
 
             // rotate capsule to origin, along Y axis
             // rotate the ray same way
-            Vector2 yBb = c2MulmvT(M, c2Sub(B.b, B.a));
-            Vector2 yAp = c2MulmvT(M, c2Sub(A.p, B.a));
+            Vector2 yBb = c2MulmvT(M, B.b -  B.a);
+            Vector2 yAp = c2MulmvT(M, A.p -  B.a);
             Vector2 yAd = c2MulmvT(M, A.d);
-            Vector2 yAe = c2Add(yAp, c2Mulvs(yAd, A.t));
+            Vector2 yAe = Vector2.Add(yAp, Vector2.Multiply(yAd, A.t));
 
             if (yAe.X * yAp.X < 0 || c2Min(c2Abs(yAe.X), c2Abs(yAp.X)) < B.r)
             {
@@ -1266,8 +1277,8 @@ namespace TinyC2
             // test ray to each plane, tracking lo/hi times of intersection
             for (int i = 0; i < B.count; ++i)
             {
-                float num = c2Dot(B.norms[i], c2Sub(B.verts[i], p));
-                float den = c2Dot(B.norms[i], d);
+                float num = Vector2.Dot(B.norms[i], B.verts[i] -  p);
+                float den = Vector2.Dot(B.norms[i], d);
                 if (num == 0 && den < 0) return false;
                 else
                 {
@@ -1294,16 +1305,18 @@ namespace TinyC2
         static void c2CircletoCircleManifold(c2Circle A, c2Circle B, c2Manifold m)
         {
             m.count = 0;
-            Vector2 d = c2Sub(B.p, A.p);
-            float d2 = c2Dot(d, d);
+            Vector2 d = B.p - A.p;
+            float d2 = Vector2.Dot(d, d);
             float r = A.r + B.r;
             if (d2 < r * r)
             {
-                float l = c2Sqrt(d2);
+                float l = MathF.Sqrt(d2);
                 m.count = 1;
+                //m.depths1 = r - d.Length();
                 m.depths1 = r - l;
-                m.contact_points1 = c2Mulvs(c2Add(A.p, B.p), 0.5f);
-                m.normal = l != 0 ? c2Mulvs(d, 1.0f / l) : c2V(0, 1.0f);
+                m.contact_points1 = (A.p + B.p) * 0.5f;
+                //m.normal = Vector2.Normalize(d);
+                m.normal = l != 0 ? d * (1.0f / l) : new Vector2(0, 1.0f);
             }
         }
 
@@ -1311,19 +1324,19 @@ namespace TinyC2
         {
             m.count = 0;
             Vector2 L = c2Clampv(A.p, B.min, B.max);
-            Vector2 ab = c2Sub(L, A.p);
-            float d2 = c2Dot(ab, ab);
+            Vector2 ab = L -  A.p;
+            float d2 = Vector2.Dot(ab, ab);
             float r2 = A.r * A.r;
             if (d2 < r2)
             {
                 // shallow (center of circle not inside of AABB)
                 if (d2 != 0)
                 {
-                    float d = c2Sqrt(d2);
+                    float d = MathF.Sqrt(d2);
                     Vector2 n = c2Norm(c2Neg(ab));
                     m.count = 1;
                     m.depths1 = A.r - d;
-                    m.contact_points1 = c2Add(A.p, c2Mulvs(n, -d));
+                    m.contact_points1 = Vector2.Add(A.p, Vector2.Multiply(n, -d));
                     m.normal = n;
                 }
 
@@ -1331,9 +1344,9 @@ namespace TinyC2
                 // clamp circle's center to edge of AABB, then form the manifold
                 else
                 {
-                    Vector2 mid = c2Mulvs(c2Add(B.min, B.max), 0.5f);
-                    Vector2 e = c2Mulvs(c2Sub(B.max, B.min), 0.5f);
-                    Vector2 d = c2Sub(A.p, mid);
+                    Vector2 mid = Vector2.Multiply(B.min +  B.max, 0.5f);
+                    Vector2 e = Vector2.Multiply(B.max -  B.min, 0.5f);
+                    Vector2 d = A.p -  mid;
                     Vector2 abs_d = c2Absv(d);
                     Vector2 n;
                     Vector2 p = A.p;
@@ -1342,13 +1355,13 @@ namespace TinyC2
                     {
                         if (d.X < 0)
                         {
-                            n = c2V(-1.0f, 0);
+                            n = new Vector2(-1.0f, 0);
                             p.X = mid.X - e.X;
                         }
 
                         else
                         {
-                            n = c2V(1.0f, 0);
+                            n = new Vector2(1.0f, 0);
                             p.X = mid.X + e.X;
                         }
                         depth = e.X - abs_d.X;
@@ -1357,13 +1370,13 @@ namespace TinyC2
                     {
                         if (d.Y < 0)
                         {
-                            n = c2V(0, -1.0f);
+                            n = new Vector2(0, -1.0f);
                             p.Y = mid.Y - e.Y;
                         }
 
                         else
                         {
-                            n = c2V(0, 1.0f);
+                            n = new Vector2(0, 1.0f);
                             p.Y = mid.Y + e.Y;
                         }
                         depth = e.Y - abs_d.Y;
@@ -1387,20 +1400,20 @@ namespace TinyC2
             {
                 m.count = 1;
                 m.depths1 = r - d;
-                m.contact_points1 = c2Mulvs(c2Add(a, b), 0.5f);
-                if (d == 0) m.normal = c2Skew(c2Norm(c2Sub(B.b, B.a)));
-                else m.normal = c2Norm(c2Sub(b, a));
+                m.contact_points1 = Vector2.Multiply(a +  b, 0.5f);
+                if (d == 0) m.normal = c2Skew(c2Norm(B.b -  B.a));
+                else m.normal = c2Norm(b -  a);
             }
         }
 
         static void c2AABBtoAABBManifold(c2AABB A, c2AABB B, c2Manifold m)
         {
             m.count = 0;
-            Vector2 mid_a = c2Mulvs(c2Add(A.min, A.max), 0.5f);
-            Vector2 mid_b = c2Mulvs(c2Add(B.min, B.max), 0.5f);
-            Vector2 eA = c2Absv(c2Mulvs(c2Sub(A.max, A.min), 0.5f));
-            Vector2 eB = c2Absv(c2Mulvs(c2Sub(B.max, B.min), 0.5f));
-            Vector2 d = c2Sub(mid_b, mid_a);
+            Vector2 mid_a = Vector2.Multiply(A.min +  A.max, 0.5f);
+            Vector2 mid_b = Vector2.Multiply(B.min +  B.max, 0.5f);
+            Vector2 eA = c2Absv(Vector2.Multiply(A.max -  A.min, 0.5f));
+            Vector2 eB = c2Absv(Vector2.Multiply(B.max -  B.min, 0.5f));
+            Vector2 d = mid_b -  mid_a;
 
             // calc overlap on x and y axes
             float dx = eA.X + eB.X - c2Abs(d.X);
@@ -1418,13 +1431,13 @@ namespace TinyC2
                 depth = dx;
                 if (d.X < 0)
                 {
-                    n = c2V(-1.0f, 0);
-                    p = c2Sub(mid_a, c2V(eA.X, 0));
+                    n = new Vector2(-1.0f, 0);
+                    p = Vector2.Subtract(mid_a, new Vector2(eA.X, 0));
                 }
                 else
                 {
-                    n = c2V(1.0f, 0);
-                    p = c2Add(mid_a, c2V(eA.X, 0));
+                    n = new Vector2(1.0f, 0);
+                    p = Vector2.Add(mid_a, new Vector2(eA.X, 0));
                 }
             }
 
@@ -1434,13 +1447,13 @@ namespace TinyC2
                 depth = dy;
                 if (d.Y < 0)
                 {
-                    n = c2V(0, -1.0f);
-                    p = c2Sub(mid_a, c2V(0, eA.Y));
+                    n = new Vector2(0, -1.0f);
+                    p = Vector2.Subtract(mid_a, new Vector2(0, eA.Y));
                 }
                 else
                 {
-                    n = c2V(0, 1.0f);
-                    p = c2Add(mid_a, c2V(0, eA.Y));
+                    n = new Vector2(0, 1.0f);
+                    p = Vector2.Add(mid_a, new Vector2(0, eA.Y));
                 }
             }
 
@@ -1470,15 +1483,15 @@ namespace TinyC2
             if (d < A.r + B.r)
             {
                 m.count = 1;
-                m.contact_points1 = c2Mulvs(c2Add(a, b), 0.5f);
+                m.contact_points1 = Vector2.Multiply(a +  b, 0.5f);
                 m.depths1 = d;
-                m.normal = d != 0 ? c2Norm(c2Sub(b, a)) : c2Norm(c2Skew(c2Sub(A.b, A.a)));
+                m.normal = d != 0 ? c2Norm(b -  a) : c2Norm(c2Skew(A.b -  A.a));
             }
         }
 
         // Circle center is inside the polygon
         // find the face closest to circle center to form manifold
-        static c2h C2_PLANE_AT(c2Poly p, int i) => new c2h { n = (p).norms[i], d = c2Dot((p).norms[i], (p).verts[i]) };
+        static c2h C2_PLANE_AT(c2Poly p, int i) => new c2h { n = (p).norms[i], d = Vector2.Dot((p).norms[i], (p).verts[i]) };
 
         static void c2CircletoPolyManifold(c2Circle A, c2Poly B, ref c2x bx_tr, c2Manifold m)
         {
@@ -1491,15 +1504,15 @@ namespace TinyC2
             // just use a and b from GJK to define the collision
             if (d != 0)
             {
-                Vector2 n = c2Sub(b, a);
-                float l = c2Dot(n, n);
+                Vector2 n = b -  a;
+                float l = Vector2.Dot(n, n);
                 if (l < A.r * A.r)
                 {
-                    l = c2Sqrt(l);
+                    l = MathF.Sqrt(l);
                     m.count = 1;
                     m.contact_points1 = b;
                     m.depths1 = l;
-                    m.normal = c2Mulvs(n, 1.0f / l);
+                    m.normal = Vector2.Multiply(n, 1.0f / l);
                 }
             }
 
@@ -1563,12 +1576,12 @@ namespace TinyC2
         {
             Vector2 ra = c2Mulxv(x, p.verts[e]);
             Vector2 rb = c2Mulxv(x, p.verts[e + 1 == p.count ? 0 : e + 1]);
-            Vector2 @in = c2Norm(c2Sub(rb, ra));
-            c2h left = new c2h { n = c2Neg(@in), d = c2Dot(c2Neg(@in), ra) };
-            c2h right = new c2h { n = @in, d = c2Dot(@in, rb) };
+            Vector2 @in = c2Norm(rb -  ra);
+            c2h left = new c2h { n = c2Neg(@in), d = Vector2.Dot(c2Neg(@in), ra) };
+            c2h right = new c2h { n = @in, d = Vector2.Dot(@in, rb) };
             if (c2Clip(seg, left) < 2) return false;
             if (c2Clip(seg, right) < 2) return false;
-            h = new c2h { n = c2CCW90(@in), d = c2Dot(c2CCW90(@in), ra) };
+            h = new c2h { n = c2CCW90(@in), d = Vector2.Dot(c2CCW90(@in), ra) };
             return true;
         }
 
@@ -1594,10 +1607,10 @@ namespace TinyC2
 
         static Vector2 c2CapsuleSupport(c2Capsule A, Vector2 dir)
         {
-            float da = c2Dot(A.a, dir);
-            float db = c2Dot(A.b, dir);
-            if (da > db) return c2Add(A.a, c2Mulvs(dir, A.r));
-            else return c2Add(A.b, c2Mulvs(dir, A.r));
+            float da = Vector2.Dot(A.a, dir);
+            float db = Vector2.Dot(A.b, dir);
+            if (da > db) return Vector2.Add(A.a, Vector2.Multiply(dir, A.r));
+            else return Vector2.Add(A.b, Vector2.Multiply(dir, A.r));
         }
 
         static void c2AntinormalFace(c2Capsule cap, c2Poly p, c2x x, ref int face_out, ref Vector2 n_out)
@@ -1636,7 +1649,7 @@ namespace TinyC2
                 Vector2 n = new Vector2();
                 int index = 0;
                 c2AntinormalFace(A, B, bx, ref index, ref n);
-                Vector2[] seg = new Vector2[] { c2Add(A.a, c2Mulvs(n, A.r)), c2Add(A.b, c2Mulvs(n, A.r)) };
+                Vector2[] seg = new Vector2[] { Vector2.Add(A.a, Vector2.Multiply(n, A.r)), Vector2.Add(A.b, Vector2.Multiply(n, A.r)) };
                 c2h h = new c2h();
                 if (!c2SidePlanes(seg, bx, B, index, ref h)) return;
                 c2KeepDeep(seg, h, m);
@@ -1646,7 +1659,7 @@ namespace TinyC2
             else if (d < A.r)
             {
                 c2x bx = bx_ptr;
-                Vector2 ab = c2Sub(b, a);
+                Vector2 ab = b -  a;
                 bool face_case = false;
 
                 for (int i = 0; i < B.count; ++i)
@@ -1665,7 +1678,7 @@ namespace TinyC2
                     m.count = 1;
                     m.contact_points1 = b;
                     m.depths1 = A.r - d;
-                    m.normal = c2Mulvs(ab, 1.0f / d);
+                    m.normal = Vector2.Multiply(ab, 1.0f / d);
                 }
 
                 // 2 contacts if laying on a polygon face nicely
@@ -1674,7 +1687,7 @@ namespace TinyC2
                     Vector2 n = new Vector2();
                     int index = 0;
                     c2AntinormalFace(A, B, bx, ref index, ref n);
-                    Vector2[] seg = new Vector2[] { c2Add(A.a, c2Mulvs(n, A.r)), c2Add(A.b, c2Mulvs(n, A.r)) };
+                    Vector2[] seg = new Vector2[] { Vector2.Add(A.a, Vector2.Multiply(n, A.r)), Vector2.Add(A.b, Vector2.Multiply(n, A.r)) };
                     c2h h = new c2h();
                     if (!c2SidePlanes(seg, bx, B, index, ref h)) return;
                     c2KeepDeep(seg, h, m);
@@ -1713,7 +1726,7 @@ namespace TinyC2
             float min_dot = float.MaxValue;
             for (int i = 0; i < ip.count; ++i)
             {
-                float dot = c2Dot(n, ip.norms[i]);
+                float dot = Vector2.Dot(n, ip.norms[i]);
                 if (dot < min_dot)
                 {
                     min_dot = dot;

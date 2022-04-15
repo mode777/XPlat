@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NLua;
 
 namespace XPlat.LuaScripting
@@ -36,6 +37,14 @@ namespace XPlat.LuaScripting
                 if(!hasError) update?.Call(Table);
             } catch(Exception e){
                 hasError = true;
+                OnError?.Invoke(this, e);
+            }
+        }
+
+        public void Call(string name, params object[] args){
+            try {
+                (Table[name] as LuaFunction)?.Call(new[] {Table}.Concat(args).ToArray());
+            } catch(Exception e){
                 OnError?.Invoke(this, e);
             }
         }

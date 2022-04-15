@@ -4,5 +4,6 @@ namespace XPlat.Engine
     {
         public bool Debug { get; set; }
         public string InitialScene { get; set; }
+        public bool ThrowExceptions { get; set; }
     }
 }

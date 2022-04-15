@@ -34,8 +34,14 @@ namespace XPlat.LuaScripting
 
         public LuaScriptInstance Instantiate(params object[] args){
             if(!hasError){
-                var mod = ctor.Call(args).First() as LuaTable;
-                return new LuaScriptInstance(mod);
+                hasError = true;
+                try {
+                    var mod = ctor.Call(args).First() as LuaTable;
+                    hasError = false;
+                    return new LuaScriptInstance(mod);
+                } catch(Exception e) {
+                    OnError?.Invoke(this, e);
+                }
             }
             return null;
         }

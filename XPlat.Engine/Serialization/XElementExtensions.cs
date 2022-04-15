@@ -8,6 +8,16 @@ namespace XPlat.Engine.Serialization {
             if(value == null) return false;
             return true;
         }
+
+        public static Vector2 Vector2(this string attr){
+            var str = attr;
+            try {
+                var v3 = str.Split(',').Select(x => float.Parse(x)).ToArray();
+                return new Vector2(v3[0],v3[1]);
+            } catch {
+                throw new InvalidDataException($"'{str}' is not a valid Vector2");
+            }
+        }
         
         public static Vector3 Vector3(this string attr){
             var str = attr;

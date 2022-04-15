@@ -114,6 +114,8 @@ namespace XPlat.Engine
         public LuaTable? GetLuaComponent(string name) => GetComponents<LuaScriptComponent>().Where(x => x.Name == name).Select(x => x.Instance?.Table).FirstOrDefault();
         public IEnumerable<LuaTable> GetLuaComponents(string name) => GetComponents<LuaScriptComponent>().Where(x => x.Name == name).Select(x => x.Instance.Table);
         public IEnumerable<T> GetComponents<T>() where T : Component => _components.Where(x => x is T).Cast<T>();
+        public IEnumerable<Component> GetComponents(string type) => _components.Where(x => x.GetType().Name == type);
+        public Component? GetComponent(string type) => _components.FirstOrDefault(x => x.GetType().Name == type);
         public IEnumerable<Component> Components => _components;
         public IEnumerable<Node> Children => _children;
         private bool IsChildAllowed(Node node) => Parent == null || (Parent.IsChildAllowed(node) && node != this);

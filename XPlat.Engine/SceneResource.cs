@@ -18,5 +18,10 @@ namespace XPlat.Engine
             var scene = new SceneReader(services).Read(Filename);
             return scene;
         }
+
+        public void Unload(){
+            Scene?.Dispose();
+            Value = null;
+        }
     }
 }

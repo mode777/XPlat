@@ -29,6 +29,11 @@ namespace XPlat.Engine
             if (s != null)
             {
                 var shape = s.Shape.GetTransformed(ref n._globalMatrix);
+                if(n.Collisions.Any()) 
+                    vg.StrokeColor("#f00");
+                else
+                    vg.StrokeColor("#fff");
+
                 DrawShape(shape);
             }
         }
@@ -51,13 +56,11 @@ namespace XPlat.Engine
                     vg.DrawRectangle(aabb.min, aabb.max - aabb.min, DrawMode.Line);
                     break;
             }
-
         }
 
         public void StartFrame()
         {
-            vg.BeginFrame((int)Platform.RendererSize.X, (int)Platform.RendererSize.Y, 1);
-            vg.StrokeColor("#fff");
+            vg.BeginFrame((int)Platform.WindowSize.X, (int)Platform.WindowSize.Y, Platform.RetinaScale);
         }
     }
 }

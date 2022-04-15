@@ -62,6 +62,11 @@ namespace XPlat.Engine.Components
             if(!initialized) Initialize();
             Instance?.Update();
         }
+
+        public override void OnCollision(CollisionInfo info)
+        {
+            Instance?.Call("onCollision", info);
+        }
     }
 }
 

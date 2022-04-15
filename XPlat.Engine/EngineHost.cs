@@ -1,3 +1,4 @@
+using System.Runtime.ExceptionServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SDL2;
@@ -39,13 +40,7 @@ namespace XPlat.Engine
 
         public void Init()
         {
-            try
-            {
-                resource.Load();
-                resource.Scene?.Init();
-            } catch(Exception e) {                
-                logger.LogError(e.ToString());
-            }
+            TryExecute(InitRaw,OnError);
         }
 
         public void Update()
@@ -54,15 +49,34 @@ namespace XPlat.Engine
             {
                 Init();
             }
-            try
-            {                
-                resource.Scene?.Update();
-                resource.Scene?.Render();
+            TryExecute(UpdateRaw,OnError);
+        }
+
+        private void TryExecute(Action code, Action<Exception> error){
+            if(config.ThrowExceptions){
+                code.Invoke();
+            } else {
+                try {
+                    code.Invoke();
+                } catch(Exception e){
+                    error.Invoke(e);
+                }
             }
-            catch (Exception e)
-            {
-                logger.LogError(e.ToString());
-            }
+        }
+
+        private void InitRaw(){
+            resource.Load();
+            resource.Scene?.Init();
+        }
+
+        private void UpdateRaw(){
+            resource.Scene?.Update();
+            resource.Scene?.Render();
+        }
+
+        private void OnError(Exception e){
+            resource.Unload();   
+            logger.LogError(e.ToString());
         }
     }
 }
