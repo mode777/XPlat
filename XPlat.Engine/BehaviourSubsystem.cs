@@ -3,29 +3,23 @@
 namespace XPlat.Engine
 {
 
-    public class BehaviourSubsystem : IInitSubSystem, IUpdateSubSystem
+    public class BehaviourSubsystem : ISubSystem
     {
-        public void AfterInit(){}
-
         public void AfterUpdate(){}
-
-        public void BeforeInit(){}
 
         public void BeforeUpdate(){}
 
-        public void OnInit(Node n)
-        {
-            foreach (var comp in n.Components)
-            {
-                if (comp is Behaviour b && b.IsEnabled) b.Init();
-            }
-        }
+        public void Init(){}
 
         public void OnUpdate(Node n)
         {
             foreach (var comp in n.Components)
             {
                 if(comp is Behaviour b){
+                    if(!b.WasInitialized){
+                        b.Init();
+                        b.WasInitialized = true;
+                    }
                     foreach (var c in n.Collisions)
                     {
                         b.OnCollision(c);

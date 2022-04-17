@@ -1,5 +1,8 @@
 return function(node, args)
-    
+
+    local scene = node.Scene
+    local meteor = scene.Templates["meteor"]
+
     return {
         init = function(self)
             self.forward = 0
@@ -7,11 +10,12 @@ return function(node, args)
             node.Tag = "player"
             self.t:SetRotationDeg(0,0,0)
             self.t:RotateDeg(0,0,180)
+            self:spawnRocks()
         end,
         update = function(self)
             local r = 0
-            if Input.IsKeyDown(Key.D) then r = 4 end
-            if Input.IsKeyDown(Key.A) then r = -4 end
+            if Input.IsKeyDown(Key.D) then r = 8 end
+            if Input.IsKeyDown(Key.A) then r = -8 end
             if Input.IsKeyDown(Key.W) then self.forward = math.min(self.forward + 0.4, 10) end
             if Input.IsKeyDown(Key.S) then self.forward = math.max(self.forward - 0.4, 0) end
             self:rotate(r)
@@ -22,11 +26,20 @@ return function(node, args)
             self.t:RotateDeg(0,0,z)
         end,
         moveForward = function(self)
-            --node.Transform.Translation = node.Transform.Translation + Vector3(1,1,0)
             self.t.Translation = self.t.Translation + (-self.t.Up * self.forward) 
         end,
         onCollision = function(self, info)
             self.forward = 0
+        end,
+        spawnRocks = function(self)
+            for i=1,10 do
+                local t = Transform3d()
+                t.Translation = Vector3(math.random(100,500), math.random(100,400), 0)
+                t:SetRotationDeg(0,0,math.random(360))
+                local s = math.random(2,20) / 10
+                t.Scale = Vector3(s,s,s)
+                scene:Instantiate(meteor, scene.RootNode, t)
+            end
         end
     }
 end

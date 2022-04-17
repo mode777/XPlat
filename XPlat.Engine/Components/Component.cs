@@ -7,12 +7,17 @@ namespace XPlat.Engine.Components
     {
         public bool IsEnabled { get; set; } = true;
         private bool disposedValue;
-
+        public string Name { get; set; }
         public Node? Node { get; set; }
         public Scene Scene => Node.Scene;
 
         public virtual void Parse(XElement el, SceneReader reader) {
-            // TODO: Implement default parser
+            
+        }
+
+        public virtual Component Clone(){
+            var clone = this.MemberwiseClone() as Component;
+            return clone;
         }
 
         protected void Dispose(bool disposing)

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<scene version="1.0" template="2d">
+<scene version="1.0" configuration="2d">
     <import assembly="XPlat.SampleHost" />
     <resources>
         <atlas name="space" src="../sprites/space" width="1024" height="1024"/>
@@ -7,6 +7,18 @@
         <script name="meteor" src="../scripts/meteor.lua" watch="true" />
     </resources>
     
+    <templates>
+        <node name="meteor">
+            <components>
+                <collider2d name="collider" mode="active" weight="0">
+                    <circle p="0,-15" r="35" />
+                </collider2d>
+                <lua res="meteor" />
+                <sprite res="space:meteorBrown_big1" origin="50,50" />
+            </components>
+        </node>
+    </templates>
+
     <node name="root">
 
         <!-- <node name="camera"><components><camera2d /></components></node> -->
@@ -18,69 +30,9 @@
                     <!-- <capsule a="0,-30" b="0,10" r="15" /> -->
                     <circle p="0,-15" r="35" />
                 </collider2d>
+                <sprite res="space:playerShip1_red" origin="50,50" />
             </components>
-            <node name="player_sprite" translate="-50,-50">
-                <components>
-                    <sprite res="space:playerShip1_red" />
-                </components>
-            </node>
         </node>
-
-        <node name="meteor" translate="400, 400, 0">
-            <components>
-                <collider2d mode="active" weight="0">
-                    <circle p="0,-15" r="35" />
-                </collider2d>
-                <lua res="meteor" />
-            </components>
-            <node name="meteor_sprite" translate="-50,-50">
-                <components>
-                    <sprite res="space:meteorBrown_big1" />
-                </components>
-            </node>
-        </node>
-
-        <node name="meteor2" translate="400, 100" rotate="0,0,90">
-            <components>
-                <collider2d mode="active" weight="0">
-                    <circle p="0,-15" r="35" />
-                </collider2d>
-                <lua res="meteor" />
-            </components>
-            <node name="meteor_sprite" translate="-50,-50">
-                <components>
-                    <sprite res="space:meteorBrown_big1" />
-                </components>
-            </node>
-        </node>
-
-        <node name="meteor3" translate="100, 100" rotate="0,0,180">
-            <components>
-                <collider2d mode="active" weight="0">
-                    <circle p="0,-15" r="35" />
-                </collider2d>
-                <lua res="meteor" />
-            </components>
-            <node name="meteor_sprite" translate="-50,-50">
-                <components>
-                    <sprite res="space:meteorBrown_big1" />
-                </components>
-            </node>
-        </node>
-
-        <node name="meteor4" translate="100, 400" rotate="0,0,270">
-            <components>
-                <collider2d mode="active" weight="0">
-                    <circle p="0,-15" r="35" />
-                </collider2d>
-                <lua res="meteor" />
-            </components>
-            <node name="meteor_sprite" translate="-50,-50">
-                <components>
-                    <sprite res="space:meteorBrown_big1" />
-                </components>
-            </node>
-        </node>
-
+        
     </node>
 </scene>

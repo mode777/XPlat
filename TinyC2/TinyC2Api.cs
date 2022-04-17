@@ -181,6 +181,8 @@ namespace TinyC2
             }
             public abstract void Transform(ref Matrix4x4 mat);
             public abstract void Transform(ref Matrix3x2 mat);
+
+            public c2Shape Clone() => this.MemberwiseClone() as c2Shape;
         }
 
         public class c2Circle : c2Shape
@@ -198,8 +200,9 @@ namespace TinyC2
                 return new c2AABB(new Vector2(np.X - r, np.Y - r), new Vector2(np.X + r, np.Y + r));
             }
 
-            public override void Transform(ref Matrix4x4 mat) {
-                p = Vector2.Transform(p, mat);
+            public override void Transform(ref Matrix4x4 m) {
+                p = Vector2.Transform(p, m);
+                r *= new Vector3(m.M11, m.M12, m.M13).Length();
                 //r = Vector2.Transform(new Vector2(0,r), mat).Length();
             } 
 

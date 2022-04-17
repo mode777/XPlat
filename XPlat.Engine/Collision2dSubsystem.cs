@@ -18,7 +18,7 @@ namespace XPlat.Engine
         public float Distance;
     }
 
-    public class Collision2dSubsystem : IUpdateSubSystem
+    public class Collision2dSubsystem : ISubSystem
     {
         private struct CollisionHash {
             private int A;
@@ -146,6 +146,10 @@ namespace XPlat.Engine
                 c.UpdateBoundingBox(ref n._globalMatrix);
                 _world.Insert(c, c.BoundingBox);
             }
+        }
+
+        public void Init()
+        {
         }
     }
 }

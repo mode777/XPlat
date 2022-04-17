@@ -8,21 +8,39 @@ using XPlat.LuaScripting;
 
 namespace XPlat.Engine
 {
+    internal enum NodeTaskType {
+        Insert,
+        Delete
+    }
+
+    internal class NodeLifecycleTask {
+
+        public NodeLifecycleTask(Node parent, Node target, NodeTaskType type)
+        {
+            Parent = parent;
+            Target = target;
+            Type = type;
+        }
+        public Node Parent;
+        public Node Target;
+        public NodeTaskType Type;
+    }
+
     [SceneElement("scene")]
     public class Scene : ISceneElement, IDisposable
     {
         private bool disposedValue;
-        private List<IInitSubSystem> _initSystems = new List<IInitSubSystem>();
-        private List<IUpdateSubSystem> _updateSystems = new List<IUpdateSubSystem>();
-        private List<IRenderPass> _renderPasses = new List<IRenderPass>();
+        private List<ISubSystem> _subSystems = new();
+        private List<IRenderPass> _renderPasses = new();
+        private Queue<NodeLifecycleTask> _nodeTasks = new();
         public Node RootNode { get; private set; }
-        public ResourceManager Resources { get; }
+        public ResourceManager Resources { get; } = new();
         public LuaHost LuaHost { get; private set; }
+        public TemplateCollection Templates { get; set; } = new();
 
         public Scene(SceneConfiguration config)
         {
             RootNode = new Node(this);
-            Resources = new ResourceManager();
             SetupLua();
             config?.Apply(this);
         }
@@ -35,14 +53,9 @@ namespace XPlat.Engine
 
         public Node FindNode(string name) => RootNode.Find(name);
 
-        public void RegisterInitSubsystem(IInitSubSystem sub)
+        public void RegisterSubsystem(ISubSystem sub)
         {
-            _initSystems.Add(sub);
-        }
-
-        public void RegisterUpdateSubsystem(IUpdateSubSystem sub)
-        {
-            _updateSystems.Add(sub);
+            _subSystems.Add(sub);
         }
 
         public void RegisterRenderPass(IRenderPass pass)
@@ -58,18 +71,17 @@ namespace XPlat.Engine
         private delegate void ProcessComponent(Node n, Component c);
 
         public void Init() {
-            Visit(RootNode, UpdateTransforms);
-            foreach (var sub in _initSystems)
+            foreach (var sub in _subSystems)
             {
-                sub.BeforeInit();
-                Visit(RootNode, sub.OnInit);
-                sub.AfterInit();
+                sub.Init();
             }
+            Visit(RootNode, UpdateTransforms);
         }
         public void Update() 
         { 
+            ExecuteLifecycleTasks();
             Visit(RootNode, UpdateTransforms);
-            foreach (var sub in _updateSystems)
+            foreach (var sub in _subSystems)
             {
                 sub.BeforeUpdate();
                 Visit(RootNode, sub.OnUpdate);
@@ -84,18 +96,35 @@ namespace XPlat.Engine
             }
         }
 
-        private void InitalizeComponents(Node node){
-            foreach (var c in node.GetComponents<Behaviour>())
-            {
-                if(c.IsEnabled) c.Init();
+        public Node Instantiate(Node template, Node parent = null, Transform3d transform = null){
+            var cl = template.Clone(transform);
+            ScheduleForInsert(cl, parent ?? RootNode);
+            return cl;
+        }
+
+        private void ExecuteLifecycleTasks(){
+            while(_nodeTasks.TryDequeue(out var t)){
+                switch (t.Type)
+                {
+                    case NodeTaskType.Insert:
+                        t.Parent.AddChild(t.Target);
+                        break;
+                    case NodeTaskType.Delete:
+                        t.Parent.RemoveChild(t.Target);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
-        private void UpdateComponents(Node node){
-            foreach (var c in node.GetComponents<Behaviour>())
-            {
-                if(c.IsEnabled) c.Update();
-            }
+        private void ScheduleForInsert(Node n, Node parent){
+            _nodeTasks.Enqueue(new NodeLifecycleTask(parent, n, NodeTaskType.Insert));
+        }
+
+        private void ScheduleForDelete(Node n){
+            var p = n.Parent ?? throw new InvalidOperationException("Can only delete node which is part of tree");
+            _nodeTasks.Enqueue(new NodeLifecycleTask(p, n, NodeTaskType.Delete));
         }
 
         private void UpdateTransforms(Node node){
@@ -125,7 +154,69 @@ namespace XPlat.Engine
 
         public void Parse(XElement el, SceneReader reader)
         {
-            if(el.TryGetAttribute("template", out var template)) {
+            ParseImports(el, reader);
+            ParseConfiguration(el, reader);
+            ParseResources(el, reader);
+            ParseTemplates(el, reader);
+
+            var rootEl = el.Element("node") ?? throw new InvalidDataException("A scene needs a root note element");
+            RootNode.Parse(rootEl, reader);
+        }
+
+        private void ParseTemplates(XElement el, SceneReader reader)
+        {
+            var templates = el.Element("templates");
+            if (templates != null) Templates.Parse(templates, reader);
+        }
+
+        private static void ParseImports(XElement el, SceneReader reader)
+        {
+            foreach (var i in el.Elements("import"))
+            {
+                reader.ReadElement(i);
+            }
+        }
+
+        private void ParseResources(XElement el, SceneReader reader)
+        {
+            var resources = el.Element("resources");
+            if (resources != null)
+            {
+                foreach (var r in resources.Elements())
+                {
+                    var type = reader.GetTargetType(r);
+                    if (type == typeof(ScriptResource))
+                    {
+                        if (r.TryGetAttribute("name", out var id))
+                        {
+                            var script = new ScriptResource(id, null, LuaHost);
+                            script.Parse(r, reader);
+                            Resources.Store(script);
+                        }
+                        else
+                        {
+                            throw new InvalidDataException("Script needs a name attribute");
+                        }
+                    }
+                    if (type == typeof(SpriteAtlasResource))
+                    {
+                        if (r.TryGetAttribute("name", out var id))
+                        {
+                            var atlas = new SpriteAtlasResource(id, null);
+                            atlas.Parse(r, reader);
+                            Resources.Store(atlas);
+                        }
+                        else
+                        {
+                            throw new InvalidDataException("Script needs a name attribute");
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ParseConfiguration(XElement el, SceneReader reader){
+            if(el.TryGetAttribute("configuration", out var template)) {
                 switch(template){
                     case "2d":
                         new SceneConfiguration2d(reader.Services.GetRequiredService<IPlatform>())
@@ -136,45 +227,13 @@ namespace XPlat.Engine
                             .Apply(this);
                         break;
                     default:
-                        throw new InvalidDataException($"No app template found called '{template}'");
+                        throw new InvalidDataException($"No app configuration found called '{template}'");
                 }
             } else {
                 // TODO: Load custom pipeline config
                 new SceneConfiguration3d(reader.Services.GetRequiredService<IPlatform>())
                     .Apply(this);
             }
-
-            var resources = el.Element("resources");
-            if(resources != null){
-                foreach (var r in resources.Elements())
-                {
-                    var type = reader.GetTargetType(r);
-                    if(type == typeof(ScriptResource)){
-                        if(r.TryGetAttribute("name", out var id)){
-                            var script = new ScriptResource(id, null, LuaHost);
-                            script.Parse(r, reader);
-                            Resources.Store(script);
-                        } else {
-                            throw new InvalidDataException("Script needs a name attribute");
-                        }
-                    }
-                    if(type == typeof(SpriteAtlasResource)){
-                        if(r.TryGetAttribute("name", out var id)){
-                            var atlas = new SpriteAtlasResource(id, null);
-                            atlas.Parse(r, reader);
-                            Resources.Store(atlas);
-                        } else {
-                            throw new InvalidDataException("Script needs a name attribute");
-                        }
-                    }
-                }
-            }
-
-            foreach(var i in el.Elements("import")){
-                reader.ReadElement(i);
-            }
-            var rootEl = el.Element("node") ?? throw new InvalidDataException("A scene needs a root note element");
-            RootNode.Parse(rootEl, reader);
         }
 
         protected virtual void Dispose(bool disposing)

@@ -15,7 +15,7 @@ return function(node, args)
             t:RotateDeg(0,0,self.rot)
             self.velocity = math.max(self.velocity - 0.1, 0)
             self.rot = self.rot < 0 and math.min(self.rot + 0.1, 0) or math.max(self.rot - 0.1, 0)
-            self.collider.Weight = self.velocity / 10
+            self.collider.Weight = (self.velocity / 10) * node.Transform.Scale.X
         end,
         onCollision = function(self, info)
             if(info.Other.Tag == "player" or info.Other.Tag == "meteor") then

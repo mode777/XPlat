@@ -15,6 +15,7 @@ namespace XPlat.Engine
         public string? Name { get; set; }
         private List<Node> _children = new();
         private List<Component> _components = new();
+        private Dictionary<string, Component> _componentsById = new();
         private bool disposedValue;
         internal Dictionary<Node, CollisionInfo> _collisions = new();
         public Scene Scene { get; }
@@ -99,11 +100,13 @@ namespace XPlat.Engine
         {
             if (comp.Node != null) comp.Node.RemoveComponent(comp);
             _components.Add(comp);
+            if(comp.Name != null) _componentsById.Add(comp.Name, comp);
             comp.Node = this;
         }
 
         public void RemoveComponent(Component comp)
         {
+            if(comp.Name != null) _componentsById.Remove(comp.Name);
             this._components.Remove(comp);
         }
 
@@ -111,6 +114,7 @@ namespace XPlat.Engine
 
         public T? GetComponent<T>() where T : Component => _components.FirstOrDefault(x => x is T) as T;
         public Component? GetComponent(Type t) => _components.FirstOrDefault(x => x.GetType() == t);
+        public Component? GetComponentByName(string id) => _componentsById.TryGetValue(id, out var v) ? v : null;
         public LuaTable? GetLuaComponent(string name) => GetComponents<LuaScriptComponent>().Where(x => x.Name == name).Select(x => x.Instance?.Table).FirstOrDefault();
         public IEnumerable<LuaTable> GetLuaComponents(string name) => GetComponents<LuaScriptComponent>().Where(x => x.Name == name).Select(x => x.Instance.Table);
         public IEnumerable<T> GetComponents<T>() where T : Component => _components.Where(x => x is T).Cast<T>();
@@ -176,8 +180,13 @@ namespace XPlat.Engine
                         node.ParseGltfNode(n);
                     }
                 }
-
             }
+
+            if(el.TryGetAttribute("template", out var template)){
+                var t = reader.Scene.Templates[template];
+                this.CloneFrom(t);
+            }
+
             if (el.TryGetAttribute("name", out var name)) Name = name;
             if (el.TryGetAttribute("tag", out var tag)) Tag = tag;
             if (el.TryGetAttribute("translate", out var translate)) Transform.Translation = translate.Vector3();
@@ -187,15 +196,23 @@ namespace XPlat.Engine
 
             foreach (var c in el.Element("components")?.Elements() ?? Enumerable.Empty<XElement>())
             {
-                var target = reader.GetTargetType(c);
-                var component = GetComponent(target);
+                var cname = c.TryGetAttribute("name", out var cid) ? cid : null;
+
+                Component component = null;
+                if(cname != null) component = GetComponentByName(cname);
+                else {
+                    var target = reader.GetTargetType(c);
+                    component = GetComponent(target);
+                }
+                
                 if (component != null)
                 {
                     component.Parse(c, reader);
                 }
                 else
                 {
-                    component = reader.ReadElement(c) as Component ?? throw new InvalidDataException($"{target.Name} is not a component");
+                    component = reader.ReadElement(c) as Component ?? throw new InvalidDataException($"{reader.GetTargetType(c).Name} is not a component");
+                    component.Name = cname;
                     AddComponent(component);
                 }
             }
@@ -243,6 +260,33 @@ namespace XPlat.Engine
                 disposedValue = true;
             }
         }
+
+        public Node Clone(Transform3d transform = null){
+            var node = new Node(Scene);
+            node.CloneFrom(this, transform);
+            return node;
+        }
+
+        private void CloneFrom(Node source, Transform3d transform = null){
+            transform = transform != null ? new Transform3d(transform) : new Transform3d();
+
+            Transform = transform;
+
+            foreach (var comp in source.Components)
+            {
+                var cc = comp.Clone();
+                AddComponent(cc);
+            }
+
+            foreach (var child in source.Children)
+            {
+                var cc = child.Clone();
+                AddChild(cc);
+            }
+
+        }
+
+        //public 
 
         public void Dispose()
         {

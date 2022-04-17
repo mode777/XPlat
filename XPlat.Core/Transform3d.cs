@@ -60,6 +60,12 @@ namespace XPlat.Core
             RotationQuat = Quaternion.CreateFromRotationMatrix(rotMat);
         }
 
+        public Transform3d(Transform3d t){
+            Translation = t.Translation;
+            Scale = t.Scale;
+            RotationQuat = t.RotationQuat;
+        }
+
         public Matrix4x4 GetMatrix()
         {
             return Matrix4x4.CreateScale(Scale) * Matrix4x4.CreateFromQuaternion(RotationQuat) * Matrix4x4.CreateTranslation(Translation);

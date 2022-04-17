@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Xml.Linq;
 using XPlat.Engine.Serialization;
 using XPlat.Graphics;
@@ -9,6 +10,7 @@ namespace XPlat.Engine.Components
     public class SpriteComponent : Component
     {
         public SpriteSource Sprite { get; set; }
+        public Vector2 Origin { get; set; } = Vector2.Zero;
         public SpriteAtlasResource Resource { 
             get => _resource; 
             private set { 
@@ -31,6 +33,7 @@ namespace XPlat.Engine.Components
             }
             else if (el.TryGetAttribute("src", out var src)) throw new NotImplementedException("Src attribute is not yet supported for sprites");
             else throw new InvalidDataException("script resource needs 'ref' attribute");
+            if(el.TryGetAttribute("origin", out var o)) Origin = o.Vector2();
 
             base.Parse(el, reader);
         }

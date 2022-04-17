@@ -1,4 +1,5 @@
-﻿using XPlat.Core;
+﻿using System.Numerics;
+using XPlat.Core;
 using XPlat.Engine.Components;
 using XPlat.Graphics;
 
@@ -27,7 +28,12 @@ namespace XPlat.Engine
             if (s != null)
             {
                 batch.SetSprite(s.Sprite);
-                batch.Draw(ref n._globalMatrix);
+                if(s.Origin != Vector2.Zero){
+                    var mat = Matrix4x4.CreateTranslation(new Vector3(-s.Origin, 0)) * n._globalMatrix;
+                    batch.Draw(ref mat);
+                } else {
+                    batch.Draw(ref n._globalMatrix);
+                }
             }
         }
 

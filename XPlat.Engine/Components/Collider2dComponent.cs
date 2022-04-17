@@ -45,23 +45,31 @@ namespace XPlat.Engine.Components
         private c2Shape ParseShape(XElement el, SceneReader reader){
             switch(el.Name.ToString()){
                 case "circle":
-                    var c = new c2Circle();
+                    var c = Shape is c2Circle ? Shape as c2Circle : new c2Circle();
                     if(el.TryGetAttribute("p", out var valp)) c.p = valp.Vector2();
                     if(el.TryGetAttribute("r", out var valr) && int.TryParse(valr, out var r)) c.r = r;
                     return c;
                 case "capsule":
-                    var ca = new c2Capsule();
+                    var ca = Shape is c2Capsule ? Shape as c2Capsule : new c2Capsule();
                     if(el.TryGetAttribute("a", out var vala)) ca.a = vala.Vector2();
                     if(el.TryGetAttribute("b", out var valb)) ca.b = valb.Vector2();
                     if(el.TryGetAttribute("r", out var valr2) && int.TryParse(valr2, out var r2)) ca.r = r2;
                     return ca;
                 case "aabb":
-                    var a = new c2AABB();
+                    var a = Shape is c2AABB ? Shape as c2AABB : new c2AABB();
                     if(el.TryGetAttribute("min", out var min)) a.min = min.Vector2();
                     if(el.TryGetAttribute("max", out var max)) a.max = max.Vector2();
                     return a;
                 default: throw new InvalidDataException($"Shape '{el.Name}' is not supported");
             }
+        }
+
+        // TODO: Make c2Shape a struct to avoid this
+        public override Component Clone()
+        {
+            var c = base.Clone() as Collider2dComponent;
+            c.Shape = Shape.Clone();
+            return c;
         }
     }
 }
