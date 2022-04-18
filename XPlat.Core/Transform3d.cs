@@ -32,6 +32,10 @@ namespace XPlat.Core
             RotationQuat = RotationQuat * Quaternion.CreateFromYawPitchRoll(y.ToRad(), x.ToRad(), z.ToRad());
         }
 
+        public void SetScale(float s){
+            Scale = new Vector3(s,s,s);
+        }
+
         public void SetRotationDeg(float x, float y, float z){
             RotationQuat = Quaternion.CreateFromYawPitchRoll(y.ToRad(), x.ToRad(), z.ToRad());
         }

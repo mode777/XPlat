@@ -23,6 +23,7 @@ namespace XPlat.Graphics
                     [Uniform.AlbedoTexture] = "uTexture",
                     [Uniform.ViewportSize] = "uViewportSize",
                     [Uniform.TextureSize] = "uTextureSize",
+                    [Uniform.ViewProjectionMatrix] = "uViewProjection"
                 })
         {
 

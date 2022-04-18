@@ -16,7 +16,8 @@ namespace XPlat.SampleHost
 
         public async void Init()
         {
-            var texture = new Texture(1024,1024);
+            
+            var texture = new Texture(1024,1024, TextureUsage.Graphics2d);
             atlas = new SpriteAtlas(texture);
             var packer = new RectanglePacker((int)texture.Size.X, (int)texture.Size.Y);
             foreach (var file in CollectImages("assets/sprites/space"))
@@ -55,14 +56,27 @@ namespace XPlat.SampleHost
 
         public void Update()
         {
-            if(Input.IsKeyDown(Key.A)) transform.RotateDeg(0,0,1);
+            if(Input.IsKeyDown(Key.D)) transform.RotateDeg(0,0,1);
+            if(Input.IsKeyDown(Key.A)) transform.RotateDeg(0,0,-1);
+            if(Input.IsKeyDown(Key.W)) transform.Scale *= 1.01f;
+            if(Input.IsKeyDown(Key.S)) transform.Scale *= 0.99f;
+            if(Input.IsKeyDown(Key.LEFT)) transform.Translation += new Vector3(-1,0,0);
+            if(Input.IsKeyDown(Key.RIGHT)) transform.Translation += new Vector3(1,0,0);
+            if(Input.IsKeyDown(Key.UP)) transform.Translation += new Vector3(0,-1,0);
+            if(Input.IsKeyDown(Key.DOWN)) transform.Translation += new Vector3(0,1,0);
 
-            spriteBatch.Begin((int)platform.RendererSize.X, (int)platform.RendererSize.Y);
+            var mat = transform.GetMatrix();
+            spriteBatch.Camera.Transformation = mat;
+
+            spriteBatch.Begin((int)platform.WindowSize.X, (int)platform.WindowSize.Y);
             spriteBatch.SetSprite(atlas["playerShip2_red.png"]);
-            spriteBatch.Draw(150, 150);
-            spriteBatch.SetSprite(atlas["playerShip1_green.png"]);
-            Matrix4x4 m = transform.GetMatrix();
-            spriteBatch.Draw(ref m);
+            spriteBatch.Draw(0,0);
+            var src = atlas["playerShip1_green.png"];
+            spriteBatch.SetSprite(src);
+            spriteBatch.Draw((int)platform.WindowSize.X - src.Rectangle.Width, (int)platform.WindowSize.Y - src.Rectangle.Height);
+            src = atlas["playerShip1_blue.png"];
+            spriteBatch.SetSprite(src);
+            spriteBatch.Draw((int)platform.WindowSize.X/2 - src.Rectangle.Width/2, (int)platform.WindowSize.Y/2 - src.Rectangle.Height/2);
             spriteBatch.End();
         }
     }

@@ -28,7 +28,7 @@ namespace XPlat.Engine
 
         protected override object LoadFile()
         {
-            var texture = new Texture(1024,1024);
+            var texture = new Texture(Width, Height, TextureUsage.Graphics2d);
             var atlas = new SpriteAtlas(texture);
             var packer = new RectanglePacker((int)texture.Size.X, (int)texture.Size.Y);
             foreach (var file in CollectImages(Filename))

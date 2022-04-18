@@ -5,6 +5,7 @@ namespace XPlat.Graphics
         ProjectionMatrix = 1,
         ViewMatrix,
         ModelMatrix,
+        ViewProjectionMatrix,
         AlbedoTexture,
         LightmapTexture,
         ViewportSize,

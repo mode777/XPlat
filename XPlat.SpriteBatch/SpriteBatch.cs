@@ -98,6 +98,8 @@ namespace XPlat.Graphics
             }, __spriteIndices.Value);
         }
 
+        public Camera2d Camera { get; set; } = new();
+
         public int Capacity { get; private set; }
 
         private Vector2 screenSize;
@@ -324,7 +326,9 @@ namespace XPlat.Graphics
             GL.UseProgram(shader.GlProgram.Handle);
             GL.ActiveTexture(GL.TEXTURE0);
             shader.SetUniform(Uniform.AlbedoTexture, 0);
-            shader.SetUniform(Uniform.ViewportSize, screenSize);
+            //shader.SetUniform(Uniform.ViewportSize, screenSize);
+            Camera.Size = screenSize;
+            Camera.ApplyToShader(shader);
 
             foreach (var call in drawCalls)
             {
