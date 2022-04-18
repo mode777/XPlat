@@ -14,8 +14,8 @@ using XPlat.SampleHost;
 //XPlatApp.RunSdl<GltfApp>(args);
 //XPlatApp.RunSdl<GuiApp>(args);
 //XPlatApp.RunSdl<LuaApp>(args);
-XPlatApp.RunSdl<SpriteAtlasApp>(args);
-// XPlatApp.RunSdl<EngineHost>(args, services =>
-// {
-//     services.AddTransient<SceneReader>();
-// });
+//XPlatApp.RunSdl<SpriteAtlasApp>(args);
+XPlatApp.RunSdl<EngineHost>(args, services =>
+{
+    services.AddTransient<SceneReader>();
+});

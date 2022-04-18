@@ -24,15 +24,20 @@ namespace XPlat.Engine
 
         public void OnRender(Node n)
         {
-            var s = n.GetComponent<SpriteComponent>();
-            if (s != null)
+            foreach (var c in n.Components)
             {
-                batch.SetSprite(s.Sprite);
-                if(s.Origin != Vector2.Zero){
-                    var mat = Matrix4x4.CreateTranslation(new Vector3(-s.Origin, 0)) * n._globalMatrix;
-                    batch.Draw(ref mat);
-                } else {
-                    batch.Draw(ref n._globalMatrix);
+                if(c is SpriteComponent s){
+                    batch.SetSprite(s.Sprite);
+                    if(s.Origin != Vector2.Zero){
+                        var mat = Matrix4x4.CreateTranslation(new Vector3(-s.Origin, 0)) * n._globalMatrix;
+                        batch.Draw(ref mat);
+                    } else {
+                        batch.Draw(ref n._globalMatrix);
+                    }
+                }
+                if(c is Camera2dComponent cam){
+                    batch.Camera = cam.Camera;
+                    cam.Camera.Transformation = n._globalMatrix;
                 }
             }
         }

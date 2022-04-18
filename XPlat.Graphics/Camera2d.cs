@@ -13,8 +13,8 @@ namespace XPlat.Graphics
             set {
                 _size = value;
                 ProjectionMatrix = Matrix4x4.CreateOrthographic(Size.X, Size.Y, NearPlane, FarPlane);
-                _post = Matrix4x4.CreateTranslation(-Size.X / 2, -Size.Y / 2, 0);
-                _pre = Matrix4x4.CreateTranslation(Size.X / 2, Size.Y / 2, 0);
+                _post = Matrix4x4.CreateTranslation(Size.X / 2, Size.Y / 2, 0);
+                _pre = Matrix4x4.CreateTranslation(-Size.X / 2, -Size.Y / 2, 0);
             }
         }
         public float NearPlane = 0.0f;
@@ -26,7 +26,13 @@ namespace XPlat.Graphics
 
         public void Update()
         {
-            ViewProjection =  _post * Transformation * _pre * ProjectionMatrix * ViewMatrix;
+            if(Transformation == Matrix4x4.Identity){
+                ViewProjection = ProjectionMatrix * ViewMatrix;
+            } else {
+                Matrix4x4 m;
+                Matrix4x4.Invert(Transformation, out m);
+                ViewProjection =  _pre * m * _post * ProjectionMatrix * ViewMatrix;
+            }
         }
 
         public void ApplyToShader(Shader shader)

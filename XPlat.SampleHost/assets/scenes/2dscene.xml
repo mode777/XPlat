@@ -5,6 +5,7 @@
         <atlas name="space" src="../sprites/space" width="1024" height="1024"/>
         <script name="ship" src="../scripts/ship_control.lua" watch="true" />
         <script name="meteor" src="../scripts/meteor.lua" watch="true" />
+        <script name="cam" src="../scripts/cam.lua" watch="true" />
     </resources>
     
     <templates>
@@ -20,10 +21,12 @@
     </templates>
 
     <node name="root">
-
-        <!-- <node name="camera"><components><camera2d /></components></node> -->
-        
-        <node name="player" translate="200, 200, 0">
+        <node name="camera" translate="320,240">
+            <components>
+                <camera2d name="cam"/>
+                <lua res="cam" />
+            </components></node>
+        <node name="player" translate="640, 480, 0">
             <components>
                 <lua res="ship"/>
                 <collider2d mode="active" weight="1">

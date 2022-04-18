@@ -20,9 +20,9 @@ return function(node, args)
         onCollision = function(self, info)
             if(info.Other.Tag == "player" or info.Other.Tag == "meteor") then
                 self.direction = info.Normal
-                self.velocity = info.Distance + 0.5
+                self.velocity = 5
                 local sign = math.floor(info.Distance) % 2 == 0 and 1 or -1 
-                self.rot = info.Distance * sign
+                self.rot = 5 * sign
             end
         end
     }

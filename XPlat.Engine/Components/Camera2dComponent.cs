@@ -4,14 +4,13 @@ using XPlat.Graphics;
 
 namespace XPlat.Engine.Components
 {
+    [SceneElement("camera2d")]
+    public class Camera2dComponent : Component {
 
-    [SceneElement("camera")]
-    public class CameraComponent : Component {
-
-        public CameraComponent(){
-            Camera = new Camera3d();
+        public Camera2dComponent(){
+            Camera = new Camera2d();
         }
-        public Camera3d Camera { get; set; }
+        public Camera2d Camera { get; set; }
         public Node? Node { get; set; }
 
         public override void Parse(XElement el, SceneReader reader)
