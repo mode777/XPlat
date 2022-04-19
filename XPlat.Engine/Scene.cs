@@ -61,6 +61,7 @@ namespace XPlat.Engine
         public void RegisterRenderPass(IRenderPass pass)
         {
             _renderPasses.Add(pass);
+            pass.OnAttach(this);
         }
 
 

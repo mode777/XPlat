@@ -9,23 +9,30 @@
     </resources>
     
     <templates>
+
         <node name="meteor">
             <components>
                 <collider2d name="collider" mode="active" weight="0">
-                    <circle p="0,-15" r="35" />
+                    <circle p="0,-15" r="45" />
                 </collider2d>
                 <lua res="meteor" />
                 <sprite res="space:meteorBrown_big1" origin="50,50" />
             </components>
         </node>
+
     </templates>
 
     <node name="root">
-        <node name="camera" translate="320,240">
+
+        <node name="camera" translate="0,0">
             <components>
                 <camera2d name="cam"/>
                 <lua res="cam" />
-            </components></node>
+            </components>
+        </node>
+        
+        <!-- <node template="meteor" scale="5,5,5" translate="100,100,0" /> -->
+        
         <node name="player" translate="640, 480, 0">
             <components>
                 <lua res="ship"/>

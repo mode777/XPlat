@@ -22,6 +22,10 @@ namespace XPlat.Engine
             batch.End();
         }
 
+        public void OnAttach(Scene scene)
+        {
+        }
+
         public void OnRender(Node n)
         {
             foreach (var c in n.Components)

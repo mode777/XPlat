@@ -20,6 +20,7 @@ namespace XPlat.Graphics
         public float NearPlane = 0.0f;
         public float FarPlane = 100;
         public Matrix4x4 Transformation = Matrix4x4.Identity;
+        public Matrix4x4 TransformationInverse = Matrix4x4.Identity;
         private Vector2 _size;
         private Matrix4x4 _pre;
         private Matrix4x4 _post;
@@ -29,9 +30,8 @@ namespace XPlat.Graphics
             if(Transformation == Matrix4x4.Identity){
                 ViewProjection = ProjectionMatrix * ViewMatrix;
             } else {
-                Matrix4x4 m;
-                Matrix4x4.Invert(Transformation, out m);
-                ViewProjection =  _pre * m * _post * ProjectionMatrix * ViewMatrix;
+                Matrix4x4.Invert(Transformation, out TransformationInverse);
+                ViewProjection =  _pre * TransformationInverse * _post * ProjectionMatrix * ViewMatrix;
             }
         }
 

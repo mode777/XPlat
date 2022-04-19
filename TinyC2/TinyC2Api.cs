@@ -192,9 +192,10 @@ namespace TinyC2
 
             public override Vector2 Center => p;
 
-            public override c2AABB GetBBox(ref Matrix4x4 mat)
+            public override c2AABB GetBBox(ref Matrix4x4 m)
             {
-                var np = Vector2.Transform(p, mat);
+                var np = Vector2.Transform(p, m);
+                var r  = this.r * new Vector3(m.M11, m.M12, m.M13).Length();
                 //var nr = Vector2.Transform(new Vector2(r,r), mat).Length();
 
                 return new c2AABB(new Vector2(np.X - r, np.Y - r), new Vector2(np.X + r, np.Y + r));
@@ -1308,7 +1309,16 @@ namespace TinyC2
         static void c2CircletoCircleManifold(c2Circle A, c2Circle B, c2Manifold m)
         {
             m.count = 0;
-            Vector2 d = B.p - A.p;
+            var d = B.p - A.p;
+            // var dist = distV.Length();
+            // var minDist = B.r + A.r;
+            // if(dist < minDist){
+            //     m.depths1 = minDist - dist;
+            //     m.normal = Vector2.Normalize(distV);
+            //     m.contact_points1 = (A.p + B.p) * 0.5f;
+            //     m.count = 1;
+            // }
+            
             float d2 = Vector2.Dot(d, d);
             float r = A.r + B.r;
             if (d2 < r * r)
