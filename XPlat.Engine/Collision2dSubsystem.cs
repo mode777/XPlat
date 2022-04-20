@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Numerics;
 using TinyC2;
 using XPlat.Core;
@@ -42,18 +43,20 @@ namespace XPlat.Engine
             this.numColls = 0;
             foreach (var bucket in _world)
             {
-                for (int i = 0; i < bucket.Count-1; i++)
+                for (int i = 0; i < bucket.Count - 1; i++)
                 {
                     var a = bucket[i];
-                    for (int j = i+1; j < bucket.Count; j++){
+                    for (int j = i + 1; j < bucket.Count; j++)
+                    {
                         var b = bucket[j];
-                        Collide(a,b);
+                        Collide(a, b);
                         numChecks++;
                     }
                 }
                 numBuckets++;
                 bucket.Clear();
             }
+           
             //System.Console.WriteLine(GetDebugInfo());
         }
 

@@ -32,7 +32,7 @@ return function(node, args)
             self.forward = 0
         end,
         spawnRocks = function(self)
-            for i=1,500 do
+            for i=1,50 do
                 local t = Transform3d()
                 t:Translate(math.random(0,1000), math.random(0,1000), 0)
                 t:SetRotationDeg(0,0,math.random(360))
