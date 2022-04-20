@@ -1,22 +1,11 @@
 using System.Numerics;
 using TinyC2;
+using XPlat.Core;
 using XPlat.Engine.Components;
 using static TinyC2.TinyC2Api;
 
 namespace XPlat.Engine
 {
-    public class CollisionInfo {
-        
-        public CollisionInfo(Node other)
-        {
-            Other = other;
-        }
-
-        public Node Other;
-        public Vector2 Normal;
-        public Vector2 Point;
-        public float Distance;
-    }
 
     public class Collision2dSubsystem : ISubSystem
     {
@@ -37,6 +26,7 @@ namespace XPlat.Engine
 
         private SpatialGrid<Collider2dComponent> _world = new(256);
         private HashSet<CollisionHash> _checks = new();
+        private ObjectPool<CollisionInfo> _infoPool = new();
         private int numBuckets;
         private int numChecks;
         private int numRects;
@@ -92,8 +82,10 @@ namespace XPlat.Engine
             if(man.count > 0){
                 var active = a.Mode == ColliderMode.Active ? a : b;
                 var other = active == a ? b : a;
-                var activeInfo = new CollisionInfo(other.Node);
-                var otherInfo = new CollisionInfo(active.Node);
+                var activeInfo = _infoPool.Get();
+                activeInfo.Other = other.Node;
+                var otherInfo = _infoPool.Get();
+                otherInfo.Other = active.Node;
 
                 var n = otherInfo.Normal = activeInfo.Normal = man.normal;
                 var d = otherInfo.Distance = activeInfo.Distance = man.depths1;
@@ -112,7 +104,7 @@ namespace XPlat.Engine
                         break;
                     case ColliderMode.Passive:
                         var amnt = activeInfo.Normal * activeInfo.Distance;
-                        active.Node.Transform.Translation += new Vector3(amnt, 0);
+                        active.Node.Transform.TranslationVector += new Vector3(amnt, 0);
                         break;
                     case ColliderMode.Active:
                         var totalWeight = active.Weight + other.Weight;
@@ -124,8 +116,8 @@ namespace XPlat.Engine
                             activeWeight = 0.5f;
                             otherWeight = 0.5f;
                         }
-                        active.Node.Transform.Translation += new Vector3(activeInfo.Normal * activeInfo.Distance * activeWeight, 0);
-                        other.Node.Transform.Translation += new Vector3(otherInfo.Normal * otherInfo.Distance * otherWeight, 0);
+                        active.Node.Transform.TranslationVector += new Vector3(activeInfo.Normal * activeInfo.Distance * activeWeight, 0);
+                        other.Node.Transform.TranslationVector += new Vector3(otherInfo.Normal * otherInfo.Distance * otherWeight, 0);
                         break;
                 }
                 active.Node.AddCollision(activeInfo);
@@ -136,6 +128,7 @@ namespace XPlat.Engine
         public void BeforeUpdate()
         {
             _checks.Clear();
+            _infoPool.FreeAll();
         }
 
         public void OnUpdate(Node n)

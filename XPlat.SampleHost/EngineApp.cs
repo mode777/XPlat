@@ -28,7 +28,7 @@ namespace XPlat.SampleHost
                 Name = "Cam",
                 Transform = new Transform3d
                 {
-                    Translation = new Vector3(0, 3, -5),
+                    TranslationVector = new Vector3(0, 3, -5),
                     RotationQuat = Quaternion.CreateFromYawPitchRoll(3, -0.5f, 0)
                 }
             };
@@ -62,7 +62,7 @@ namespace XPlat.SampleHost
                 Name = "Light",
                 Transform = new Transform3d
                 {
-                    Translation = new Vector3(3, 2, -2)
+                    TranslationVector = new Vector3(3, 2, -2)
                 }
             };
             light.AddComponent(new LightComponent());

@@ -28,7 +28,7 @@ namespace XPlat.Engine
 
         public void OnRender(Node n)
         {
-            Matrix4x4 mat = n._globalMatrix * Camera.Camera.TransformationInverse;
+            Matrix4x4 mat = n._globalMatrix * (Camera?.Camera?.TransformationInverse ?? Matrix4x4.Identity);
 
             var s = n.GetComponent<Collider2dComponent>();
             if (s != null)

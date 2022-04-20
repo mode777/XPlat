@@ -237,8 +237,8 @@ namespace XPlat.Gltf
 
         private void ReadTransform(Node node){
             Transform = new Transform3d {
-                Translation = node.LocalTransform.Translation,
-                Scale = node.LocalTransform.Scale,
+                TranslationVector = node.LocalTransform.Translation,
+                ScaleVector = node.LocalTransform.Scale,
                 RotationQuat = node.LocalTransform.Rotation
             };
         }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<scene version="1.0" configuration="2d">
+    <import assembly="XPlat.SampleHost" />
+    <resources>
+        <script name="test" src="../scripts/luatest.lua" watch="true" />
+    </resources>
+    
+    <node name="root">
+
+        <node name="camera" translate="0,0">
+            <components>
+           
+                <lua res="test" />
+            </components>
+        </node>
+        
+        <!-- <node template="meteor" scale="5,5,5" translate="100,100,0" /> -->
+       
+        
+    </node>
+</scene>

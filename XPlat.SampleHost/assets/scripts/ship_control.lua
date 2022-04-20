@@ -26,18 +26,18 @@ return function(node, args)
             self.t:RotateDeg(0,0,z)
         end,
         moveForward = function(self)
-            self.t.Translation = self.t.Translation + (-self.t.Up * self.forward) 
+            self.t:MoveUp(-self.forward) 
         end,
         onCollision = function(self, info)
             self.forward = 0
         end,
         spawnRocks = function(self)
-            for i=1,10 do
+            for i=1,500 do
                 local t = Transform3d()
-                t.Translation = Vector3(math.random(100,500), math.random(100,400), 0)
+                t:Translate(math.random(0,1000), math.random(0,1000), 0)
                 t:SetRotationDeg(0,0,math.random(360))
                 local s = math.random(2,20) / 10
-                t.Scale = Vector3(s,s,s)
+                t:Scale(s)
                 scene:Instantiate(meteor, scene.RootNode, t)
             end
         end

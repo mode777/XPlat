@@ -58,12 +58,12 @@ namespace XPlat.SampleHost
         {
             if(Input.IsKeyDown(Key.D)) transform.RotateDeg(0,0,1);
             if(Input.IsKeyDown(Key.A)) transform.RotateDeg(0,0,-1);
-            if(Input.IsKeyDown(Key.W)) transform.Scale *= 1.01f;
-            if(Input.IsKeyDown(Key.S)) transform.Scale *= 0.99f;
-            if(Input.IsKeyDown(Key.LEFT)) transform.Translation += new Vector3(-1,0,0);
-            if(Input.IsKeyDown(Key.RIGHT)) transform.Translation += new Vector3(1,0,0);
-            if(Input.IsKeyDown(Key.UP)) transform.Translation += new Vector3(0,-1,0);
-            if(Input.IsKeyDown(Key.DOWN)) transform.Translation += new Vector3(0,1,0);
+            if(Input.IsKeyDown(Key.W)) transform.ScaleVector *= 1.01f;
+            if(Input.IsKeyDown(Key.S)) transform.ScaleVector *= 0.99f;
+            if(Input.IsKeyDown(Key.LEFT)) transform.TranslationVector += new Vector3(-1,0,0);
+            if(Input.IsKeyDown(Key.RIGHT)) transform.TranslationVector += new Vector3(1,0,0);
+            if(Input.IsKeyDown(Key.UP)) transform.TranslationVector += new Vector3(0,-1,0);
+            if(Input.IsKeyDown(Key.DOWN)) transform.TranslationVector += new Vector3(0,1,0);
 
             var mat = transform.GetMatrix();
             spriteBatch.Camera.Transformation = mat;

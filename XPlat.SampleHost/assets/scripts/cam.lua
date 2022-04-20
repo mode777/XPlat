@@ -7,9 +7,10 @@ return function(node, args)
             self.player = node.Scene:FindNode("player")
         end,
         update = function(self)
-            if(Input.IsKeyDown(Key.RIGHT)) then t.Translation = t.Translation + Vector3(3,0,0) end
-            if(Input.IsKeyDown(Key.LEFT)) then t.Translation = t.Translation - Vector3(3,0,0) end
-            t.Translation = self.player.Transform.Translation - Vector3(320,240,0)
+            if(Input.IsKeyDown(Key.RIGHT)) then t:Translate(3,0,0) end
+            if(Input.IsKeyDown(Key.LEFT)) then t:Translate(-3,0,0) end
+            node.Transform.X = self.player.Transform.X - 320
+            node.Transform.Y = self.player.Transform.Y - 240
         end
     }
 end

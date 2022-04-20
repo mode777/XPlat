@@ -75,16 +75,16 @@ namespace XPlat.SampleHost
         {
 
             if(Input.IsKeyDown(Key.W)){
-                Node.Transform.Translation -= (Node.Transform.Forward * 0.1f);
+                Node.Transform.TranslationVector -= (Node.Transform.Forward * 0.1f);
             }
             if(Input.IsKeyDown(Key.S)){
-                Node.Transform.Translation += (Node.Transform.Forward * 0.1f);
+                Node.Transform.TranslationVector += (Node.Transform.Forward * 0.1f);
             }
             if(Input.IsKeyDown(Key.D)){
-                Node.Transform.Translation += (Node.Transform.Right * 0.1f);
+                Node.Transform.TranslationVector += (Node.Transform.Right * 0.1f);
             }
             if(Input.IsKeyDown(Key.A)){
-                Node.Transform.Translation -= (Node.Transform.Right * 0.1f);
+                Node.Transform.TranslationVector -= (Node.Transform.Right * 0.1f);
             }
 
             //if(Input.IsKeyDown(Key.LEFT)){

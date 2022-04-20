@@ -189,10 +189,10 @@ namespace XPlat.Engine
 
             if (el.TryGetAttribute("name", out var name)) Name = name;
             if (el.TryGetAttribute("tag", out var tag)) Tag = tag;
-            if (el.TryGetAttribute("translate", out var translate)) Transform.Translation = translate.Vector3();
+            if (el.TryGetAttribute("translate", out var translate)) Transform.TranslationVector = translate.Vector3();
             if (el.TryGetAttribute("rotate", out var rotate)) Transform.SetRotationDeg(rotate.Vector3());
 
-            if (el.TryGetAttribute("scale", out var scale)) Transform.Scale = scale.Vector3();
+            if (el.TryGetAttribute("scale", out var scale)) Transform.ScaleVector = scale.Vector3();
 
             foreach (var c in el.Element("components")?.Elements() ?? Enumerable.Empty<XElement>())
             {

@@ -47,7 +47,7 @@ namespace XPlat.Engine
 
         private void SetupLua(){
             LuaHost = new LuaHost();
-            LuaHost.ImportNamespace("System.Numerics");
+            //LuaHost.ImportNamespace("System.Numerics");
             LuaHost.ImportNamespace(nameof(XPlat)+ "." + nameof(Core));
         }
 

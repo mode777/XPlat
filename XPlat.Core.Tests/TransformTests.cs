@@ -17,16 +17,16 @@ public class TransformTests
     [Fact]
     public async void TransformCreatesFromMat4x4(){
         var t = new Transform3d();
-        t.Translation = new Vector3(1,2,3);
-        t.Scale = new Vector3(1,2,3);
+        t.TranslationVector = new Vector3(1,2,3);
+        t.ScaleVector = new Vector3(1,2,3);
         t.RotationQuat = Quaternion.CreateFromYawPitchRoll(1,2,3);
 
         var mat = t.GetMatrix();
 
         var sut = new Transform3d(mat);
 
-        Assert.Equal(t.Translation, sut.Translation);
-        Assert.Equal(t.Scale, sut.Scale);
+        Assert.Equal(t.TranslationVector, sut.TranslationVector);
+        Assert.Equal(t.ScaleVector, sut.ScaleVector);
         Assert.Equal(t.RotationQuat, sut.RotationQuat);
 
     }
