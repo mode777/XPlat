@@ -103,6 +103,12 @@ namespace XPlat.Engine
             return cl;
         }
 
+        public void Delete(Node node)
+        {
+            ScheduleForDelete(node);
+         
+        }
+
         private void ExecuteLifecycleTasks(){
             while(_nodeTasks.TryDequeue(out var t)){
                 switch (t.Type)

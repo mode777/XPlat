@@ -1,48 +1,61 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <scene version="1.0" configuration="2d">
-    <import assembly="XPlat.SampleHost" />
-    <resources>
-        <atlas name="space" src="../sprites/space" width="1024" height="1024"/>
-        <script name="ship" src="../scripts/ship_control.lua" watch="true" />
-        <script name="meteor" src="../scripts/meteor.lua" watch="true" />
-        <script name="cam" src="../scripts/cam.lua" watch="true" />
-    </resources>
-    
-    <templates>
+  <import assembly="XPlat.SampleHost" />
+  <resources>
+    <atlas name="space" src="../sprites/space" width="1024" height="1024"/>
+    <script name="ship" src="../scripts/ship_control.lua" watch="true" />
+    <script name="meteor" src="../scripts/meteor.lua" watch="true" />
+    <script name="cam" src="../scripts/cam.lua" watch="true" />
+    <script name="laser" src="../scripts/laser.lua" watch="true" />
+    <script name="generator" src="../scripts/generator.lua" watch="true" />
+  </resources>
 
-        <node name="meteor">
-            <components>
-                <collider2d name="collider" mode="active" weight="0">
-                    <circle p="0,-15" r="45" />
-                </collider2d>
-                <lua res="meteor" />
-                <sprite res="space:meteorBrown_big1" origin="50,50" />
-            </components>
-        </node>
+  <templates>
 
-    </templates>
-
-    <node name="root">
-
-        <node name="camera" translate="0,0">
-            <components>
-                <camera2d name="cam"/>
-                <lua res="cam" />
-            </components>
-        </node>
-        
-        <!-- <node template="meteor" scale="5,5,5" translate="100,100,0" /> -->
-        
-        <node name="player" translate="640, 480, 0">
-            <components>
-                <lua res="ship"/>
-                <collider2d mode="active" weight="1">
-                    <!-- <capsule a="0,-30" b="0,10" r="15" /> -->
-                    <circle p="0,-15" r="35" />
-                </collider2d>
-                <sprite res="space:playerShip1_red" origin="50,50" />
-            </components>
-        </node>
-        
+    <node name="meteor">
+      <components>
+        <collider2d name="collider" mode="active" weight="0">
+          <circle p="0,-15" r="45" />
+        </collider2d>
+        <lua res="meteor" />
+        <sprite res="space:meteorBrown_big1" origin="50,50" />
+      </components>
     </node>
+
+    <node name="laser">
+      <components>
+        <collider2d name="collider" mode="ghost" weight="0">
+          <capsule a="0,0" b="0,50" r="5" />
+        </collider2d>
+        <lua res="laser" />
+        <sprite res="space:laserGreen07" origin="5,5" />
+      </components>
+    </node>
+
+  </templates>
+
+  <node name="root">
+    <components>
+      <lua res="generator" />
+    </components>
+    
+    <node name="camera" translate="0,0">
+      <components>
+        <camera2d name="cam"/>
+        <lua res="cam" />
+      </components>
+    </node>
+
+    <node name="player" translate="640, 480, 0">
+      <components>
+        <lua res="ship"/>
+        <collider2d mode="active" weight="1">
+          <!-- <capsule a="0,-30" b="0,10" r="15" /> -->
+          <circle p="0,-15" r="35" />
+        </collider2d>
+        <sprite res="space:playerShip1_red" origin="50,50" />
+      </components>
+    </node>
+
+  </node>
 </scene>
