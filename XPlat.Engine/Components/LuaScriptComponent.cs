@@ -26,7 +26,8 @@ namespace XPlat.Engine.Components
 
         public override void Init()
         {
-            Instantiate();
+            if(Instance == null)
+                Instantiate();
         }
 
         private void Instantiate(){
@@ -66,6 +67,14 @@ namespace XPlat.Engine.Components
         public override void OnCollision(CollisionInfo info)
         {
             Instance?.Call("onCollision", info);
+        }
+
+        public override Component Clone(Node n)
+        {
+            var c = base.Clone(n) as LuaScriptComponent;
+            c.Resource = Resource;
+            c.Instantiate();
+            return c;
         }
     }
 }

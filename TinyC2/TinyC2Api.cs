@@ -244,6 +244,7 @@ namespace TinyC2
             public override c2AABB GetBBox(ref Matrix4x4 mat)
             {
                 var r = new c2AABB(min, max);
+
                 r.Transform(ref mat);
                 return r;
             }
@@ -264,10 +265,9 @@ namespace TinyC2
             {
                 var a = Vector2.Transform(this.a, mat);
                 var b = Vector2.Transform(this.b, mat);
-                //var nr = Vector2.Transform(new Vector2(r,r), mat).Length();
-                var vr = new Vector2(r,r);
-                var min = Vector2.Min(a - vr, b - vr);
-                var max = Vector2.Min(a + vr, b + vr);
+                var nr = r * new Vector3(mat.M11, mat.M12, mat.M13).Length();
+                var min = new Vector2(MathF.Min(a.X - nr, b.X - nr), MathF.Min(a.Y - nr, b.Y - nr));
+                var max = new Vector2(MathF.Max(a.X + nr, b.X + nr), MathF.Max(a.Y + nr, b.Y + nr));
                 return new c2AABB(min, max);
             }
 
@@ -275,6 +275,7 @@ namespace TinyC2
             {
                 a = Vector2.Transform(this.a, mat);
                 b = Vector2.Transform(this.b, mat);
+
                 //r = Vector2.Transform(new Vector2(0,r), mat).Length();
             }
 

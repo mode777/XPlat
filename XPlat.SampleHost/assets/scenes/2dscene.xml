@@ -27,7 +27,7 @@
         <collider2d name="collider" mode="ghost" weight="0">
           <capsule a="0,0" b="0,50" r="5" />
         </collider2d>
-        <lua res="laser" />
+        <lua res="laser" name="script"/>
         <sprite res="space:laserGreen07" origin="5,5" />
       </components>
     </node>

@@ -16,8 +16,8 @@ namespace XPlat.Engine.Components
 
         }
 
-        public override Component Clone(){
-            var c = base.Clone() as Behaviour;
+        public override Component Clone(Node n){
+            var c = base.Clone(n) as Behaviour;
             c.WasInitialized = false;
             return c;
         }

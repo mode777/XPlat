@@ -98,7 +98,9 @@ namespace XPlat.Engine
         }
 
         public Node Instantiate(Node template, Node parent = null, Transform3d transform = null){
+            parent = parent ?? RootNode; 
             var cl = template.Clone(transform);
+            cl.Parent = parent;
             ScheduleForInsert(cl, parent ?? RootNode);
             return cl;
         }
@@ -106,7 +108,6 @@ namespace XPlat.Engine
         public void Delete(Node node)
         {
             ScheduleForDelete(node);
-         
         }
 
         private void ExecuteLifecycleTasks(){

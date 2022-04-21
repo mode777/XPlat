@@ -11,6 +11,7 @@ return function(node, args)
             self.collider = node:GetComponent("Collider2dComponent")
         end,
         update = function(self)
+            --print(node.Tag)
             t:Translate(self.direction.X * self.velocity, self.direction.Y * self.velocity, 0)
             t:RotateDeg(0,0,self.rot)
             self.velocity = math.max(self.velocity - 0.1, 0)
@@ -19,7 +20,7 @@ return function(node, args)
             self.collider.Weight = (self.velocity / 10) * x
         end,
         onCollision = function(self, info)
-            if(info.Other.Tag == "player" or info.Other.Tag == "meteor") then
+            if(info.Other.Tag == "player" or info.Other.Tag == "meteor" or info.Other.Tag == "laser") then
                 self.direction.X = info.NormalX
                 self.direction.Y = info.NormalY
                 self.velocity = 5

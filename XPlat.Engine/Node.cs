@@ -24,7 +24,7 @@ namespace XPlat.Engine
 
         internal Matrix4x4 _globalMatrix;
 
-        public Node? Parent { get; private set; }
+        public Node? Parent { get; internal set; }
         public string Tag { get; set; }
 
         //internal void Init()
@@ -98,7 +98,7 @@ namespace XPlat.Engine
 
         public void AddComponent(Component comp)
         {
-            if (comp.Node != null) comp.Node.RemoveComponent(comp);
+            //if (comp.Node != null) comp.Node.RemoveComponent(comp);
             _components.Add(comp);
             if(comp.Name != null) _componentsById.Add(comp.Name, comp);
             comp.Node = this;
@@ -115,7 +115,7 @@ namespace XPlat.Engine
         public T? GetComponent<T>() where T : Component => _components.FirstOrDefault(x => x is T) as T;
         public Component? GetComponent(Type t) => _components.FirstOrDefault(x => x.GetType() == t);
         public Component? GetComponentByName(string id) => _componentsById.TryGetValue(id, out var v) ? v : null;
-        public LuaTable? GetLuaComponent(string name) => GetComponents<LuaScriptComponent>().Where(x => x.Name == name).Select(x => x.Instance?.Table).FirstOrDefault();
+        public LuaTable? GetLuaComponent(string name) => (GetComponentByName(name) as LuaScriptComponent)?.Instance?.Table;
         public IEnumerable<LuaTable> GetLuaComponents(string name) => GetComponents<LuaScriptComponent>().Where(x => x.Name == name).Select(x => x.Instance.Table);
         public IEnumerable<T> GetComponents<T>() where T : Component => _components.Where(x => x is T).Cast<T>();
         public IEnumerable<Component> GetComponents(string type) => _components.Where(x => x.GetType().Name == type);
@@ -274,7 +274,7 @@ namespace XPlat.Engine
 
             foreach (var comp in source.Components)
             {
-                var cc = comp.Clone();
+                var cc = comp.Clone(this);                
                 AddComponent(cc);
             }
 

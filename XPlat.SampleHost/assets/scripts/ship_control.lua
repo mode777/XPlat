@@ -39,6 +39,8 @@ return function(node, args)
             if self.cooldown == 0 then
                 local l = scene:Instantiate(laser, scene.RootNode, node.Transform)
                 l.Transform:MoveUp(-100)
+                local tab = l:GetLuaComponent("script")
+                tab.speed = tab.speed - self.forward
                 self.cooldown = 10
             end
         end

@@ -15,8 +15,9 @@ namespace XPlat.Engine.Components
             
         }
 
-        public virtual Component Clone(){
+        public virtual Component Clone(Node n){
             var clone = this.MemberwiseClone() as Component;
+            clone.Node = n;
             return clone;
         }
 

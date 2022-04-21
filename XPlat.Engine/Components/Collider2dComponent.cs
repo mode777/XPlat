@@ -65,9 +65,9 @@ namespace XPlat.Engine.Components
         }
 
         // TODO: Make c2Shape a struct to avoid this
-        public override Component Clone()
+        public override Component Clone(Node n)
         {
-            var c = base.Clone() as Collider2dComponent;
+            var c = base.Clone(n) as Collider2dComponent;
             c.Shape = Shape.Clone();
             return c;
         }
