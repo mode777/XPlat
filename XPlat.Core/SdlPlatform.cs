@@ -80,6 +80,7 @@ namespace XPlat.Core
             UpdateWindow();
             UpdateMouse();
             isRunning = true;
+            Window.Platform = this;
         }
 
         private void UpdateMouse()

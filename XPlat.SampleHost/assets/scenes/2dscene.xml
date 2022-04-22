@@ -15,10 +15,10 @@
     <node name="meteor">
       <components>
         <collider2d name="collider" mode="active" weight="0">
-          <circle p="0,-15" r="45" />
+          <circle p="0,0" r="5" />
         </collider2d>
         <lua res="meteor" />
-        <sprite res="space:meteorBrown_big1" origin="50,50" />
+        <sprite name="sprite" res="space:meteorBrown_big1" />
       </components>
     </node>
 
@@ -46,7 +46,7 @@
       </components>
     </node>
 
-    <node name="player" translate="640, 480, 0">
+    <node name="player" translate="0, 0, 0">
       <components>
         <lua res="ship"/>
         <collider2d mode="active" weight="1">
@@ -56,6 +56,10 @@
         <sprite res="space:playerShip1_red" origin="50,50" />
       </components>
     </node>
+
+
+    
+    
 
   </node>
 </scene>

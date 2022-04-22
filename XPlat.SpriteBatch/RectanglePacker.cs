@@ -11,7 +11,7 @@ namespace XPlat.Graphics {
 
         public SpriteSource(Texture texture, Rectangle rect)
         {
-            Texture = texture;
+            Texture = texture ?? throw new NullReferenceException(nameof(texture));
             Rectangle = rect;
         }
     }

@@ -140,6 +140,7 @@ namespace XPlat.Graphics
 
         public void SetSprite(SpriteSource spr)
         {
+            if (spr == null) throw new ArgumentNullException("sprite");
             SetTexture(spr.Texture);
             SetSource(spr.Rectangle);
         }

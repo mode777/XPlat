@@ -4,6 +4,7 @@ return function(node, args)
     local laser = scene.Templates["laser"]
 
     return {
+        turnSpeed = 4,
         init = function(self)
             self.forward = 0
             self.t = node.Transform
@@ -14,8 +15,8 @@ return function(node, args)
         end,
         update = function(self)
             local r = 0
-            if Input.IsKeyDown(Key.D) then r = 8 end
-            if Input.IsKeyDown(Key.A) then r = -8 end
+            if Input.IsKeyDown(Key.D) then r = self.turnSpeed end
+            if Input.IsKeyDown(Key.A) then r = -self.turnSpeed end
             if Input.IsKeyDown(Key.W) then self.forward = math.min(self.forward + 0.4, 10) end
             if Input.IsKeyDown(Key.S) then self.forward = math.max(self.forward - 0.4, 0) end
             if Input.IsKeyDown(Key.SPACE) then self:shootLaser() end 

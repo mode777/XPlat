@@ -10,7 +10,11 @@ namespace XPlat.Engine.Components
     public class SpriteComponent : Component
     {
         public SpriteSource Sprite { get; set; }
-        public Vector2 Origin { get; set; } = Vector2.Zero;
+
+        public Vector2 Origin = Vector2.Zero;
+        public float OriginX { get => Origin.X; set => Origin.X = value; }
+        public float OriginY { get => Origin.Y; set => Origin.Y = value; }
+
         public SpriteAtlasResource Resource { 
             get => _resource; 
             private set { 

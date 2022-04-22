@@ -9,8 +9,8 @@ return function(node, args)
         update = function(self)
             if(Input.IsKeyDown(Key.RIGHT)) then t:Translate(3,0,0) end
             if(Input.IsKeyDown(Key.LEFT)) then t:Translate(-3,0,0) end
-            node.Transform.X = self.player.Transform.X - 320
-            node.Transform.Y = self.player.Transform.Y - 240
+            node.Transform.X = self.player.Transform.X - (Window.Width / 2)
+            node.Transform.Y = self.player.Transform.Y - (Window.Height / 2)
         end
     }
 end

@@ -9,12 +9,12 @@ public class NanoGuiApp : Screen
 {
     private readonly ILogger<NanoGuiApp> logger;
     private readonly ISdlPlatformEvents events;
-    private readonly Window window;
+    private readonly XPlat.NanoGui.Window window;
     private Label label;
     private Label label1;
     private Label label2;
     private Label label3;
-    private Window window2;
+    private XPlat.NanoGui.Window window2;
     private Button button;
 
     public NanoGuiApp(ILogger<NanoGuiApp> logger, ISdlPlatformEvents events, IPlatform info) : base(info, events)
@@ -22,7 +22,7 @@ public class NanoGuiApp : Screen
         this.logger = logger;
         this.events = events;
 
-        this.window = new Window(this, "Metrics Panel");
+        this.window = new XPlat.NanoGui.Window(this, "Metrics Panel");
         window.Position = new Vector2(15, 15);
         window.Layout = new GroupLayout();
 
@@ -74,7 +74,7 @@ public class NanoGuiApp : Screen
         popupLeft.Layout = new GroupLayout();
         new Checkbox(popupLeft, "Another checkbox");
 
-        window = new Window(this, "Basic Widgets");
+        window = new XPlat.NanoGui.Window(this, "Basic Widgets");
         window.Position = new Vector2(200, 15);
         window.Layout = new GroupLayout();
 
