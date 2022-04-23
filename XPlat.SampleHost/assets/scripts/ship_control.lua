@@ -5,8 +5,8 @@ return function(node, args)
 
     return {
         turnSpeed = 4,
+        velocity = 0,
         init = function(self)
-            self.forward = 0
             self.t = node.Transform
             node.Tag = "player"
             self.t:SetRotationDeg(0,0,0)
@@ -15,25 +15,25 @@ return function(node, args)
         end,
         update = function(self)
             local r = 0
-            if Input.IsKeyDown(Key.D) then r = self.turnSpeed end
-            if Input.IsKeyDown(Key.A) then r = -self.turnSpeed end
-            if Input.IsKeyDown(Key.W) then self.forward = math.min(self.forward + 0.4, 10) end
-            if Input.IsKeyDown(Key.S) then self.forward = math.max(self.forward - 0.4, 0) end
+            if Input.IsKeyDown(Key.RIGHT) then r = self.turnSpeed end
+            if Input.IsKeyDown(Key.LEFT) then r = -self.turnSpeed end
+            if Input.IsKeyDown(Key.UP) then self.velocity = math.min(self.velocity + 0.4, 10) end
+            if Input.IsKeyDown(Key.DOWN) then self.velocity = math.max(self.velocity - 0.4, 0) end
             if Input.IsKeyDown(Key.SPACE) then self:shootLaser() end 
             self:rotate(r)
             self:moveForward()
-            self.forward = math.max(self.forward - 0.1, 0) 
+            self.velocity = math.max(self.velocity - 0.1, 0) 
             self.cooldown = math.max(0, self.cooldown-1)
         end,
         rotate = function(self, z)
             self.t:RotateDeg(0,0,z)
         end,
         moveForward = function(self)
-            self.t:MoveUp(-self.forward) 
+            self.t:MoveUp(-self.velocity) 
         end,
         onCollision = function(self, info)
             if info.Other.Tag == "meteor" then
-                self.forward = 0
+                --self.velocity = 0
             end
         end,
         shootLaser = function(self)
@@ -41,7 +41,7 @@ return function(node, args)
                 local l = scene:Instantiate(laser, scene.RootNode, node.Transform)
                 l.Transform:MoveUp(-100)
                 local tab = l:GetLuaComponent("script")
-                tab.speed = tab.speed - self.forward
+                tab.speed = tab.velocity + self.velocity
                 self.cooldown = 10
             end
         end

@@ -116,6 +116,7 @@ namespace XPlat.Engine
         public Component? GetComponent(Type t) => _components.FirstOrDefault(x => x.GetType() == t);
         public Component? GetComponentByName(string id) => _componentsById.TryGetValue(id, out var v) ? v : null;
         public LuaTable? GetLuaComponent(string name) => (GetComponentByName(name) as LuaScriptComponent)?.Instance?.Table;
+        public LuaTable? GetLuaComponent() => GetComponent<LuaScriptComponent>()?.Instance?.Table;
         public IEnumerable<LuaTable> GetLuaComponents(string name) => GetComponents<LuaScriptComponent>().Where(x => x.Name == name).Select(x => x.Instance.Table);
         public IEnumerable<T> GetComponents<T>() where T : Component => _components.Where(x => x is T).Cast<T>();
         public IEnumerable<Component> GetComponents(string type) => _components.Where(x => x.GetType().Name == type);

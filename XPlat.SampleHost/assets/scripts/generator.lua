@@ -39,9 +39,10 @@ return function(node, args)
                 s.OriginX = s.Sprite.Rectangle.Width / 2
                 s.OriginY = s.Sprite.Rectangle.Height / 2
                 
-                local shape = m:GetComponentByName("collider").Shape
+                local collider = m:GetComponentByName("collider")
+                local shape = collider.Shape
                 shape.r = s.Sprite.Rectangle.Height / 2
-
+                collider.Weight = shape.r / 10
             end
         end
     }
