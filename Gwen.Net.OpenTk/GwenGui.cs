@@ -42,7 +42,7 @@ namespace Gwen.Net.OpenTk
             renderer = ResolveRenderer(Settings.Renderer);
             skin = new TexturedBase(renderer, "assets/ui/DefaultSkin2.png")
             {
-                DefaultFont = new Font(renderer, "sans", 11)
+                DefaultFont = new Font(renderer, "sans", 14)
             };
             canvas = new Canvas(skin);
             input = new OpenTkInputTranslator(canvas);

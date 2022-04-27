@@ -51,7 +51,7 @@ namespace Gwen.Net.Skin
         {
             m_Renderer = renderer;
 
-            DefaultFont = new Font(renderer);
+            //DefaultFont = new Font(renderer);
         }
 
         /// <summary>

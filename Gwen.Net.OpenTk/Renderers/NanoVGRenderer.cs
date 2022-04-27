@@ -118,7 +118,12 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override FontMetrics GetFontMetrics(Font font)
         {
-            return new FontMetrics(font);
+            vg.FontFace(font.FaceName);
+            vg.FontSize(font.Size);
+            float asc = 0, desc = 0, line = 0;
+            vg.TextMetrics(ref asc, ref desc, ref line);
+            var fm = new FontMetrics(emHeightPixels: line, ascentPixels: asc, descentPixels: desc, cellHeightPixels: 0, internalLeadingPixels: 0, lineSpacingPixels: line, externalLeadingPixels: 0);
+            return fm;
         }
 
         public override bool LoadFont(Font font)
@@ -167,16 +172,20 @@ namespace Gwen.Net.OpenTk.Renderers
         public override Size MeasureText(Font font, string text)
         {
             vg.FontFace(font.FaceName);
+            vg.FontSize(font.Size);
+            vg.TextAlign((int)VerticalAlignment.Bottom | (int)HorizontalAlignment.Left);
             vg.TextBounds(0, 0, text, bounds);
-            return new Size((int)(bounds[0]- bounds[2]), (int)(bounds[1]-bounds[3]));
+            return new Size((int)MathF.Abs(bounds[0]- bounds[2]), (int)MathF.Abs((bounds[1]-bounds[3])));
         }
 
         public override void RenderText(Font font, Point position, string text)
         {
             vg.FontFace(font.FaceName);
             vg.FontSize(font.Size);
-            vg.FillColor("#000");
-            vg.Text(position.X + RenderOffset.X, position.Y+RenderOffset.Y, text);
+            vg.FillColor(vg.RGBA(DrawColor.R,DrawColor.G,DrawColor.B,DrawColor.A));
+            vg.TextAlign((int)VerticalAlignment.Bottom | (int)HorizontalAlignment.Left);
+            vg.Text(position.X + RenderOffset.X, position.Y+RenderOffset.Y + font.FontMetrics.Baseline, text);
+
             //System.Console.WriteLine($"{position.X + RenderOffset.X},{position.Y+RenderOffset.Y},{text}");
         }
 
