@@ -73,7 +73,7 @@ namespace Gwen.Net
         /// Initializes a new instance of the <see cref="Font"/> class.
         /// </summary>
         public Font(Renderer.RendererBase renderer)
-            : this(renderer, "Arial", 10)
+            : this(renderer, "sans"/*"Arial"*/, 10)
         {
         }
 

@@ -67,6 +67,10 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override void DrawTexturedRect(Texture t, Rectangle targetRect, float u1 = 0, float v1 = 0, float u2 = 1, float v2 = 1)
         {
+            if(t.Failed == true){
+                DrawMissingImage(targetRect);
+                return;
+            } 
             int w = t.Width, h = t.Height;
             var x = targetRect.X + RenderOffset.X;
             var y = targetRect.Y + RenderOffset.Y;
@@ -113,12 +117,12 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override void FreeTexture(Texture t)
         {
-            vg.DeleteImage((int)t.RendererData);
+            vg.DeleteImage(((TextureRendererData)t.RendererData).NvgHandle);
         }
 
         public override FontMetrics GetFontMetrics(Font font)
         {
-            vg.FontFace(font.FaceName);
+            vg.FontFace("sans");
             vg.FontSize(font.Size);
             float asc = 0, desc = 0, line = 0;
             vg.TextMetrics(ref asc, ref desc, ref line);
@@ -139,12 +143,16 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override void LoadTexture(Texture t)
         {
-            var data = new TextureRendererData();
-            data.Pixels = Image.Load<Rgba32>(t.Name);
-            data.NvgHandle = vg.CreateImage(data.Pixels, 0);
-            t.Width = data.Pixels.Width;
-            t.Height = data.Pixels.Height;
-            t.RendererData = data;
+            if(File.Exists(t.Name)){
+                var data = new TextureRendererData();
+                data.Pixels = Image.Load<Rgba32>(t.Name);
+                data.NvgHandle = vg.CreateImage(data.Pixels, 0);
+                t.Width = data.Pixels.Width;
+                t.Height = data.Pixels.Height;
+                t.RendererData = data;
+            } else {
+                t.Failed = true;
+            }
         }
 
         public override void LoadTextureRaw(Texture t, byte[] pixelData)
@@ -171,7 +179,7 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override Size MeasureText(Font font, string text)
         {
-            vg.FontFace(font.FaceName);
+            vg.FontFace("sans");
             vg.FontSize(font.Size);
             vg.TextAlign((int)VerticalAlignment.Bottom | (int)HorizontalAlignment.Left);
             vg.TextBounds(0, 0, text, bounds);
@@ -180,7 +188,7 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override void RenderText(Font font, Point position, string text)
         {
-            vg.FontFace(font.FaceName);
+            vg.FontFace("sans");
             vg.FontSize(font.Size);
             vg.FillColor(vg.RGBA(DrawColor.R,DrawColor.G,DrawColor.B,DrawColor.A));
             vg.TextAlign((int)VerticalAlignment.Bottom | (int)HorizontalAlignment.Left);
