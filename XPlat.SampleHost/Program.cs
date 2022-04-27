@@ -7,16 +7,17 @@ using XPlat.Engine.Serialization;
 using XPlat.SampleHost;
 
 //XPlatApp.RunSdl<SpriteBatchApp>(args);
+//XPlatApp.RunSdl<NanoVgApp>(args);
 //XPlatApp.RunSdl<Tiny2cApp>(args);
 //XPlatApp.RunSdl<EngineXmlApp>(args);
 //XPlatApp.RunSdl<LightsApp>(args);
 //XPlatApp.RunSdl<MinimalApp>(args);
 //XPlatApp.RunSdl<GltfApp>(args);
-//XPlatApp.RunSdl<GuiApp>(args);
+XPlatApp.RunSdl<GwenApp>(args);
 //XPlatApp.RunSdl<LuaApp>(args);
 //XPlatApp.RunSdl<SpriteAtlasApp>(args);
 //XPlatApp.RunSdl<NanoGuiApp>(args);
-XPlatApp.RunSdl<EngineHost>(args, services =>
-{
-    services.AddTransient<SceneReader>();
-});
+// XPlatApp.RunSdl<EngineHost>(args, services =>
+// {
+//     services.AddTransient<SceneReader>();
+// });

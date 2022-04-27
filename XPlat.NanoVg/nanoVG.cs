@@ -3263,6 +3263,18 @@ namespace XPlat.NanoVg
             return image;
         }
 
+        public static int nvgCreateImage(NVGcontext ctx, Image<Rgba32> img, int imageFlags)
+        {
+            //int w, h, n;
+            int image = 0;
+            if (img.TryGetSinglePixelSpan(out var span))
+            {
+                image = nvgCreateImageRGBA(ctx, img.Width, img.Height, imageFlags, span);
+            }
+            //stbi_image_free(img);
+            return image;
+        }
+
         public static bool nvgIsImageIcon(int value)
         {
             return (1024 > value);
@@ -3451,6 +3463,7 @@ namespace XPlat.NanoVg
         public int CreateFont(String internalFontName, Stream stream) => NanoVgApi.nvgCreateFont(this, internalFontName, stream);
         //public byte[] ImageTobyteArray(Image imageIn) => NanoVG.nvgImageTobyteArray(imageIn);
         public int CreateImage(String filename, int imageFlags) => NanoVgApi.nvgCreateImage(this, filename, imageFlags);
+        public int CreateImage(Image<Rgba32> image, int imageFlags) => NanoVgApi.nvgCreateImage(this, image, imageFlags);
         public void FontSize(float size) => NanoVgApi.nvgFontSize(this, size);
         public void FontBlur(float blur) => NanoVgApi.nvgFontBlur(this, blur);
         public void FontFace(String font) => NanoVgApi.nvgFontFace(this, font);

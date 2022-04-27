@@ -29,8 +29,15 @@
     <ProjectReference Include="..\XPlat.Lightmapper\XPlat.Lightmapper.csproj" />
     <ProjectReference Include="..\XPlat.Lua\XPlat.LuaScripting.csproj" />
     <ProjectReference Include="..\TinyC2\TinyC2.csproj" />
+    <ProjectReference Include="..\MicroUI\MicroUI.csproj" />
+    <ProjectReference Include="..\Gwen.Net\Gwen.Net.csproj" />
+    <ProjectReference Include="..\Gwen.Net.OpenTk\Gwen.Net.OpenTk.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="assets\" />
+    <None Remove="assets\assets\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="assets\assets\" />
   </ItemGroup>
 </Project>

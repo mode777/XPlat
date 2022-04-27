@@ -1,0 +1,52 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="GlShader20.frag" />
+    <None Remove="GlShader20.vert" />
+    <None Remove="GlShader40.frag" />
+    <None Remove="GlShader40.vert" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Shaders\gui.gl40.frag" />
+    <EmbeddedResource Include="Shaders\gui.gl40.vert" />
+    <EmbeddedResource Include="Shaders\gui.gl20.frag" />
+    <EmbeddedResource Include="Shaders\gui.gl20.vert" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Gwen.Net\Gwen.Net.csproj" />
+    <ProjectReference Include="..\XPlat.NanoVg\XPlat.NanoVg.csproj" />
+    <ProjectReference Include="..\XPlat.Core\XPlat.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="StringResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>StringResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="StringResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>StringResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

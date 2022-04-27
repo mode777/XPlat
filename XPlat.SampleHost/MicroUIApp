@@ -1,0 +1,24 @@
+// using MicroUI;
+
+// using XPlat.Core;
+
+// namespace XPlat.SampleHost
+// {
+//     internal class MicroUIApp : ISdlApp
+//     {
+
+//         public void Init()
+//         {
+
+//         }
+
+//         public void Update()
+//         {
+//         }
+
+//         public void Render()
+//         {
+
+//         }
+//     }
+// }

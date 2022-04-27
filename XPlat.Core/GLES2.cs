@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -441,6 +441,8 @@ namespace GLES2
         [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl, EntryPoint="glGetFramebufferAttachmentParameteriv")]
         public static unsafe extern void GetFramebufferAttachmentParameteriv(uint target, uint attachment, uint pname, int* paras);
         [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl, EntryPoint="glGetIntegerv")]
+        public static unsafe extern void GetIntegerv(uint pname, out int data);
+        [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "glGetIntegerv")]
         public static unsafe extern void GetIntegerv(uint pname, int* data);
         [DllImport(nativeLibName, CallingConvention = CallingConvention.Cdecl, EntryPoint="glGetProgramiv")]
         public static unsafe extern void GetProgramiv(uint program, uint pname, out int paras);
