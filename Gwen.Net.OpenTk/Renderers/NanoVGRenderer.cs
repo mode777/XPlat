@@ -24,13 +24,13 @@ namespace Gwen.Net.OpenTk.Renderers
             vg.BeginFrame((int)platform.WindowSize.X, (int)platform.WindowSize.Y, platform.RetinaScale);
         }
 
-        private NVGcolor VGcolor => vg.RGBA(DrawColor.A, DrawColor.G, DrawColor.B, DrawColor.A);
+        //private NVGcolor VGcolor => vg.RGBA(DrawColor.A, DrawColor.G, DrawColor.B, DrawColor.A);
 
         public override void DrawFilledRect(Rectangle rect)
         {
             vg.BeginPath();
             vg.Rect(rect.X + RenderOffset.X, rect.Y+RenderOffset.Y, rect.Width, rect.Height);
-            vg.FillColor(VGcolor);
+            vg.FillColor(vg.RGBA(DrawColor.R, DrawColor.G, DrawColor.B, DrawColor.A));
             vg.Fill();
         }
 
@@ -40,7 +40,7 @@ namespace Gwen.Net.OpenTk.Renderers
             vg.MoveTo(x+RenderOffset.X, y+RenderOffset.Y);
             vg.LineTo(a+RenderOffset.X, b+RenderOffset.Y);
             vg.StrokeWidth(1);
-            vg.StrokeColor(VGcolor);
+            vg.StrokeColor(vg.RGBA(DrawColor.R, DrawColor.G, DrawColor.B, DrawColor.A));
             vg.Stroke();
         }
 
@@ -49,7 +49,7 @@ namespace Gwen.Net.OpenTk.Renderers
             vg.BeginPath();
             vg.Rect(rect.X + RenderOffset.X, rect.Y + RenderOffset.Y, rect.Width, rect.Height);
             vg.StrokeWidth(1);
-            vg.StrokeColor(VGcolor);
+            vg.StrokeColor(vg.RGBA(DrawColor.R, DrawColor.G, DrawColor.B, DrawColor.A));
             vg.Stroke();
         }
 
@@ -58,7 +58,7 @@ namespace Gwen.Net.OpenTk.Renderers
             vg.BeginPath();
             vg.RoundedRect(rect.X+RenderOffset.X, rect.Y+RenderOffset.Y, rect.Width, rect.Height, slight ? 5 : 10);
             vg.StrokeWidth(1);
-            vg.StrokeColor(VGcolor);
+            vg.StrokeColor(vg.RGBA(DrawColor.R, DrawColor.G, DrawColor.B, DrawColor.A));
             vg.Stroke();
         }
 
@@ -117,6 +117,7 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override void FreeTexture(Texture t)
         {
+            if (t.Failed) return;
             vg.DeleteImage(((TextureRendererData)t.RendererData).NvgHandle);
         }
 
@@ -158,10 +159,8 @@ namespace Gwen.Net.OpenTk.Renderers
         public override void LoadTextureRaw(Texture t, byte[] pixelData)
         {
             var data = new TextureRendererData();
-            data.Pixels = Image.Load<Rgba32>(pixelData);
+            data.Pixels = Image.LoadPixelData<Rgba32>(pixelData, t.Width, t.Height);
             data.NvgHandle = vg.CreateImage(data.Pixels, 0);
-            t.Width = data.Pixels.Width;
-            t.Height = data.Pixels.Height;
             t.RendererData = data;
         }
 
@@ -213,8 +212,9 @@ namespace Gwen.Net.OpenTk.Renderers
             if(data.Pixels.TryGetSinglePixelSpan(out var span))
             {
                 var pixel = span[(int)(y * data.Pixels.Width + x)];
-                return new Color(pixel.R, pixel.G, pixel.B, pixel.A);
+                return new Color(pixel.A, pixel.R, pixel.G, pixel.B);
             }
+            //throw new InvalidOperationException("Unable to get pixel.");
             return defaultColor;
         }
     }

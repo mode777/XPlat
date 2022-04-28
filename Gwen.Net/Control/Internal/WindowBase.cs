@@ -50,7 +50,11 @@ namespace Gwen.Net.Control.Internal
         /// </summary>
         public override bool IsOnTop
         {
-            get { return Parent.Children.Where(x => x is Window).Last() == this; }
+            get {
+                var last = Parent.Children.Where(x => x is Window).LastOrDefault();
+                if (last == null) return true;
+                return last == this; 
+            }
         }
 
         /// <summary>
