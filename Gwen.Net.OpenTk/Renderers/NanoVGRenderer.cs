@@ -199,7 +199,7 @@ namespace Gwen.Net.OpenTk.Renderers
 
         public override void StartClip()
         {
-            //vg.Scissor(ClipRegion.X, ClipRegion.Y, ClipRegion.Width, ClipRegion.Height);
+            vg.Scissor(ClipRegion.X, ClipRegion.Y, ClipRegion.Width, ClipRegion.Height);
         }
 
         protected override void OnScaleChanged(float oldScale)

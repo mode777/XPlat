@@ -1023,6 +1023,7 @@ namespace XPlat.FontStash
 				}
 			}
 			font.nglyphs++;
+			font.glyphs[font.nglyphs - 1] = font.glyphs[font.nglyphs - 1] ?? new FONSglyph();
 			glyph = font.glyphs[font.nglyphs - 1];
 		}
 
