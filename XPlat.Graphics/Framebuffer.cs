@@ -1,6 +1,7 @@
 ﻿using GLES2;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Numerics;
 using System.Text;
 using XPlat.Core;
@@ -20,7 +21,7 @@ namespace XPlat.Graphics
         private readonly Texture texture;
         private readonly GlFramebufferHandle handle;
 
-        public Vector2 Size => texture.Size;
+        public Size Size => texture.Size;
         public Texture Texture => texture;
 
         public Framebuffer(Texture texture, FramebufferAttachments attachments = FramebufferAttachments.Color)
@@ -33,7 +34,7 @@ namespace XPlat.Graphics
         {
             var vp = GlUtil.GetViewport();
             GL.BindFramebuffer(GL.FRAMEBUFFER, handle.Handle);
-            GL.Viewport(0, 0, (uint)texture.Size.X, (uint)texture.Size.Y);
+            GL.Viewport(0, 0, (uint)texture.Width, (uint)texture.Height);
             GL.ClearColor(0, 0, 0, 0.0f);
             GL.Clear(GL.COLOR_BUFFER_BIT);
             fn();

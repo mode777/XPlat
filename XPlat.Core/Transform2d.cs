@@ -40,8 +40,9 @@ namespace XPlat.Core {
         public float ScaleX { get; set; } = 1;
         public float ScaleY { get; set; } = 1;
 
-        public void GetMatrix(ref Matrix3x2 matrix)
+        public Matrix3x2 GetMatrix()
         {
+            var matrix = new Matrix3x2();
             matrix.M11 = ScaleX * _cos;
             matrix.M12 = ScaleX * _sin;
 
@@ -50,12 +51,15 @@ namespace XPlat.Core {
 
             matrix.M31 = -OriginX * ScaleX * _cos + -OriginY * ScaleY * -_sin + X;
             matrix.M32 = -OriginX * ScaleX * _sin + -OriginY * ScaleY * _cos + Y;
+            return matrix;
+        }
+
+        public Matrix4x4 GetMatrix4x4(){
+            return new Matrix4x4(GetMatrix());
         }
 
         public Vector2 TransformPoint(Vector2 vec){
-            var mat = new Matrix3x2();
-            GetMatrix(ref mat);
-            return Vector2.Transform(vec, mat);
+            return Vector2.Transform(vec, GetMatrix());
         }
 
     }

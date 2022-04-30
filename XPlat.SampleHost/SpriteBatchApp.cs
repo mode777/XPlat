@@ -14,8 +14,8 @@ namespace XPlat.SampleHost
             Texture = texture;
             Trajectory = new Vector2((Ran-0.5f) * 10, (Ran-0.5f) * 10);
             Rotation = (Ran - 0.5f) * 20;
-            Transform.OriginX = texture.Size.X / 2;
-            Transform.OriginY = texture.Size.Y / 2;
+            Transform.OriginX = texture.Width / 2;
+            Transform.OriginY = texture.Height / 2;
             Transform.X = pos.X;
             Transform.Y = pos.Y;
             var s = (Ran + 0.5f) * 0.3f;
@@ -39,7 +39,7 @@ namespace XPlat.SampleHost
 
         public void Draw(SpriteBatch b)
         {
-            Transform.GetMatrix(ref _mat);
+            _mat = Transform.GetMatrix();
             b.SetTexture(Texture);
             b.Draw(ref _mat);
         }
@@ -67,8 +67,8 @@ namespace XPlat.SampleHost
             transform = new Transform2d();
             particles = Enumerable.Repeat(0, 4096).Select(x => new Particle(texture, platform.RendererSize/2)).ToArray();
 
-            transform.OriginX = texture.Size.X / 2;
-            transform.OriginY = texture.Size.Y / 2;
+            transform.OriginX = texture.Width / (float)2;
+            transform.OriginY = texture.Height / (float)2;
             transform.ScaleX = 0.5f;
             transform.ScaleY = 0.5f;
         }
@@ -78,7 +78,7 @@ namespace XPlat.SampleHost
             transform.Rotation += 0.01f;
             transform.X = platform.RendererSize.X / 2;
             transform.Y = platform.RendererSize.Y / 2;
-            transform.GetMatrix(ref mat);
+            mat = transform.GetMatrix();
 
             GL.ClearColor(1, 0, 0, 1);
             GL.Clear(GL.COLOR_BUFFER_BIT);

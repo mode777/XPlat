@@ -10,8 +10,81 @@ using XPlat.Graphics;
 namespace XPlat.Graphics
 {
 
+
     internal struct Quad
     {
+        public Quad(int ax, int ay, int bx, int by, int cx, int cy, int dx, int dy, Rectangle r, Color c)
+        {
+            A = new Vertex
+            {
+                X = (short)ax,
+                Y = (short)ay,
+                U = (ushort)r.X,
+                V = (ushort)(r.Y + r.Height),
+                Color = c
+            };
+            B = new Vertex
+            {
+                X = (short)bx,
+                Y = (short)by,
+                U = (ushort)r.X,
+                V = (ushort)r.Y,
+                Color = c
+            };
+            C = new Vertex
+            {
+                X = (short)cx,
+                Y = (short)cy,
+                U = (ushort)(r.X + r.Width),
+                V = (ushort)r.Y,
+                Color = c
+            };
+            D = new Vertex
+            {
+                X = (short)dx,
+                Y = (short)dy,
+                U = (ushort)(r.X + r.Width),
+                V = (ushort)(r.Y + r.Height),
+                Color = c
+            };
+        }
+
+        public Quad(Vector2 a, Vector2 b, Vector2 c, Vector2 d, Rectangle r, Color color)
+        {
+            A = new Vertex
+            {
+                X = (short)a.X,
+                Y = (short)a.Y,
+                U = (ushort)r.X,
+                V = (ushort)(r.Y + r.Height),
+                Color = color
+            };
+            B = new Vertex
+            {
+                X = (short)b.X,
+                Y = (short)b.Y,
+                U = (ushort)r.X,
+                V = (ushort)r.Y,
+                Color = color
+            };
+            C = new Vertex
+            {
+                X = (short)c.X,
+                Y = (short)c.Y,
+                U = (ushort)(r.X + r.Width),
+                V = (ushort)r.Y,
+                Color = color
+            };
+            D = new Vertex
+            {
+                X = (short)d.X,
+                Y = (short)d.Y,
+                U = (ushort)(r.X + r.Width),
+                V = (ushort)(r.Y + r.Height),
+                Color = color
+            };
+        }
+
         public Vertex A;
         public Vertex B;
         public Vertex C;
@@ -20,7 +93,9 @@ namespace XPlat.Graphics
 
     public struct Color
     {
-        public Color(byte r, byte g, byte b, byte a = 255){
+        public static readonly Color White = new Color(255,255,255);
+        public Color(byte r, byte g, byte b, byte a = 255)
+        {
             R = r;
             G = g;
             B = b;
@@ -47,13 +122,15 @@ namespace XPlat.Graphics
         public int Start;
         public int Size;
         public Texture Texture;
+        public Matrix4x4 Transform;
     }
 
     public class SpriteBatch : IDisposable
     {
-        const int MAX_SPRITES = ushort.MaxValue >> 2;
+        public const int MAX_SPRITES = ushort.MaxValue >> 2;
 
-        private static Lazy<VertexIndices> __spriteIndices = new Lazy<VertexIndices>(() => {
+        private static Lazy<VertexIndices> __spriteIndices = new Lazy<VertexIndices>(() =>
+        {
             ushort[] indices = new ushort[MAX_SPRITES * 6];
             for (int i = 0; i < MAX_SPRITES; i++)
             {
@@ -89,7 +166,7 @@ namespace XPlat.Graphics
             data = new Quad[Capacity];
             drawCalls = new List<DrawCall>();
             glBuffer = GlUtil.CreateBuffer(GL.ARRAY_BUFFER, data, GL.STREAM_DRAW);
-            
+
             primitive = new Primitive(new VertexAttribute[]
             {
                 new VertexAttribute(Attribute.Position, glBuffer, PositionDescriptor),
@@ -110,6 +187,7 @@ namespace XPlat.Graphics
         private int currentStart = 0;
         private Texture currentTexture = null;
         private Rectangle currentSource = Rectangle.Empty;
+        private Matrix4x4 currentTransform = Matrix4x4.Identity;
 
 
         private Quad[] data;
@@ -123,7 +201,18 @@ namespace XPlat.Graphics
 
             AddCall();
             currentTexture = material;
-            currentSource = new Rectangle(0, 0, (int)material.Size.X, (int)material.Size.Y);
+            currentSource = new Rectangle(0, 0, (int)material.Width, (int)material.Height);
+        }
+
+        public void SetTransform(Matrix4x4 mat){
+            AddCall();
+            currentTransform = mat;
+        }
+
+        public void ClearTransform(){
+            if(currentTransform.IsIdentity) return;
+            AddCall();
+            currentTransform = Matrix4x4.Identity;
         }
 
         public void SetSource(Rectangle source)
@@ -154,42 +243,14 @@ namespace XPlat.Graphics
 
         public void Draw(int x, int y)
         {
-            if(Count >= Capacity) Resize(Math.Min(Capacity * 2, MAX_SPRITES));
-            data[Count] = new Quad
-            {
-                A = new Vertex
-                {
-                    X = (short)x,
-                    Y = (short)(y + currentSource.Height),
-                    U = (ushort)currentSource.X,
-                    V = (ushort)(currentSource.Y + currentSource.Height),
-                    Color = color
-                },
-                B = new Vertex
-                {
-                    X = (short)x,
-                    Y = (short)y,
-                    U = (ushort)currentSource.X,
-                    V = (ushort)currentSource.Y,
-                    Color = color
-                },
-                C = new Vertex
-                {
-                    X = (short)(x + currentSource.Width),
-                    Y = (short)y,
-                    U = (ushort)(currentSource.X + currentSource.Width),
-                    V = (ushort)currentSource.Y,
-                    Color = color
-                },
-                D = new Vertex
-                {
-                    X = (short)(x + currentSource.Width),
-                    Y = (short)(y + currentSource.Height),
-                    U = (ushort)(currentSource.X + currentSource.Width),
-                    V = (ushort)(currentSource.Y + currentSource.Height),
-                    Color = color
-                }
-            };
+            if (Count >= Capacity) Resize(Math.Min(Capacity * 2, MAX_SPRITES));
+            data[Count] = new Quad(
+                x, y + currentSource.Height,
+                x, y,
+                x + currentSource.Width, y,
+                x + currentSource.Width, y + currentSource.Height,
+                currentSource,
+                color);
             Count++;
             currentCount++;
         }
@@ -202,41 +263,8 @@ namespace XPlat.Graphics
             Vector2 c = Vector2.Transform(new Vector2(currentSource.Width, 0), mat);
             Vector2 d = Vector2.Transform(new Vector2(currentSource.Width, currentSource.Height), mat);
 
-            data[Count] = new Quad
-            {
-                A = new Vertex
-                {
-                    X = (short)a.X,
-                    Y = (short)a.Y,
-                    U = (ushort)currentSource.X,
-                    V = (ushort)(currentSource.Y + currentSource.Height),
-                    Color = color
-                },
-                B = new Vertex
-                {
-                    X = (short)b.X,
-                    Y = (short)b.Y,
-                    U = (ushort)currentSource.X,
-                    V = (ushort)currentSource.Y,
-                    Color = color
-                },
-                C = new Vertex
-                {
-                    X = (short)c.X,
-                    Y = (short)c.Y,
-                    U = (ushort)(currentSource.X + currentSource.Width),
-                    V = (ushort)currentSource.Y,
-                    Color = color
-                },
-                D = new Vertex
-                {
-                    X = (short)d.X,
-                    Y = (short)d.Y,
-                    U = (ushort)(currentSource.X + currentSource.Width),
-                    V = (ushort)(currentSource.Y + currentSource.Height),
-                    Color = color
-                }
-            };
+            data[Count] = new Quad(a, b, c, d, currentSource, color);
+
             Count++;
             currentCount++;
         }
@@ -249,43 +277,22 @@ namespace XPlat.Graphics
             Vector2 c = Vector2.Transform(new Vector2(currentSource.Width, 0), mat);
             Vector2 d = Vector2.Transform(new Vector2(currentSource.Width, currentSource.Height), mat);
 
-            data[Count] = new Quad
-            {
-                A = new Vertex
-                {
-                    X = (short)a.X,
-                    Y = (short)a.Y,
-                    U = (ushort)currentSource.X,
-                    V = (ushort)(currentSource.Y + currentSource.Height),
-                    Color = color
-                },
-                B = new Vertex
-                {
-                    X = (short)b.X,
-                    Y = (short)b.Y,
-                    U = (ushort)currentSource.X,
-                    V = (ushort)currentSource.Y,
-                    Color = color
-                },
-                C = new Vertex
-                {
-                    X = (short)c.X,
-                    Y = (short)c.Y,
-                    U = (ushort)(currentSource.X + currentSource.Width),
-                    V = (ushort)currentSource.Y,
-                    Color = color
-                },
-                D = new Vertex
-                {
-                    X = (short)d.X,
-                    Y = (short)d.Y,
-                    U = (ushort)(currentSource.X + currentSource.Width),
-                    V = (ushort)(currentSource.Y + currentSource.Height),
-                    Color = color
-                }
-            };
+            data[Count] = new Quad(a, b, c, d, currentSource, color);
+
             Count++;
             currentCount++;
+        }
+
+        public void Draw(SpriteBuffer buffer, ref Matrix4x4 transform){
+            SetTexture(buffer.Texture);
+            SetTransform(transform);
+            if(Count+buffer.Count >= Capacity) Resize(Math.Min(Math.Max(Capacity * 2, Capacity + buffer.Count), MAX_SPRITES));
+
+            Array.Copy(buffer.quads, 0, data, Count, buffer.Count);
+
+            Count += buffer.Count;
+            currentCount += buffer.Count;
+            ClearTransform();
         }
 
         public void Begin(int width, int height)
@@ -296,18 +303,21 @@ namespace XPlat.Graphics
             currentCount = 0;
             currentStart = 0;
             currentTexture = null;
-            color = new Color(255,255,255);
+            currentTransform = Matrix4x4.Identity;
+            color = new Color(255, 255, 255);
         }
 
         private void AddCall()
         {
             if (currentTexture == null) return;
+            if(currentCount == 0) return;
 
             drawCalls.Add(new DrawCall
             {
                 Size = currentCount,
                 Start = currentStart,
-                Texture = currentTexture
+                Texture = currentTexture,
+                Transform = currentTransform
             });
             currentCount = 0;
             currentStart = Count;
@@ -333,7 +343,9 @@ namespace XPlat.Graphics
 
             foreach (var call in drawCalls)
             {
-                shader.SetUniform(Uniform.TextureSize, call.Texture.Size);
+                Matrix4x4 mat = call.Transform;
+                shader.SetUniform(Uniform.ModelMatrix, ref mat);
+                shader.SetUniform(Uniform.TextureSize, new Vector2(call.Texture.Width, call.Texture.Height));
                 GL.BindTexture(GL.TEXTURE_2D, call.Texture.GlTexture.Handle);
                 primitive.DrawWithShader(shader, call.Size * 6, call.Start * 6 * 2);
             }

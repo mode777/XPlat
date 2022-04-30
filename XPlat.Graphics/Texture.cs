@@ -18,11 +18,13 @@ namespace XPlat.Graphics
     {
         private bool disposedValue;
 
-        public Vector2 Size { get; private set; }
+        public System.Drawing.Size Size { get; private set; }
+        public int Width => Size.Width;
+        public int Height => Size.Height;
 
         public Texture(Image<Rgba32> image, TextureUsage usage = TextureUsage.Graphics3d)
         {
-            Size = new Vector2(image.Width, image.Height);
+            Size = new System.Drawing.Size(image.Width, image.Height);
             GlTexture = GlUtil.CreateTexture2d(image);
             SetProperties(usage);
         }
@@ -35,7 +37,7 @@ namespace XPlat.Graphics
 
         public Texture(int width, int height, TextureUsage usage = TextureUsage.Graphics3d)
         {
-            Size = new Vector2(width, height);
+            Size = new System.Drawing.Size(width, height);
             GlTexture = GlUtil.CreateTexture2d(width, height);
             SetProperties(usage);
         }

@@ -4,6 +4,7 @@ return function(node, args)
 
     return {
         init = function(self)
+            node.Tag = "camera"
             self.player = node.Scene:FindNode("player")
         end,
         update = function(self)

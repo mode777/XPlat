@@ -8,6 +8,7 @@
     <script name="cam" src="../scripts/cam.lua" watch="true" />
     <script name="laser" src="../scripts/laser.lua" watch="true" />
     <script name="generator" src="../scripts/generator.lua" watch="true" />
+    <script name="starfield" src="../scripts/starfield.lua" watch="true" />
   </resources>
 
   <templates>
@@ -38,6 +39,14 @@
     <components>
       <lua res="generator" />
     </components>
+
+    <node name="starfield">
+      <components>
+        <sprite res="space:star1" origin="10, 20" />
+        <sprite res="space:star2" origin="40, 20" />
+        <sprite res="space:star3" origin="10, 10" />
+      </components>
+    </node>
     
     <node name="camera" translate="0,0">
       <components>

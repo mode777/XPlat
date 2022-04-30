@@ -14,6 +14,12 @@ namespace XPlat.Graphics {
             Texture = texture ?? throw new NullReferenceException(nameof(texture));
             Rectangle = rect;
         }
+
+		public SpriteSource(Texture texture)
+        {
+            Texture = texture ?? throw new NullReferenceException(nameof(texture));
+            Rectangle = new Rectangle(0,0,texture.Width,texture.Height);
+        }
     }
 
 	public class SpriteAtlas

@@ -19,7 +19,7 @@ namespace XPlat.SampleHost
             
             var texture = new Texture(1024,1024, TextureUsage.Graphics2d);
             atlas = new SpriteAtlas(texture);
-            var packer = new RectanglePacker((int)texture.Size.X, (int)texture.Size.Y);
+            var packer = new RectanglePacker((int)texture.Width, (int)texture.Height);
             foreach (var file in CollectImages("assets/sprites/space"))
             {
                 using(var img = Image.Load<Rgba32>(file))

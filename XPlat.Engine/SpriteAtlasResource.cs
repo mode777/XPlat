@@ -30,7 +30,7 @@ namespace XPlat.Engine
         {
             var texture = new Texture(Width, Height, TextureUsage.Graphics2d);
             var atlas = new SpriteAtlas(texture);
-            var packer = new RectanglePacker((int)texture.Size.X, (int)texture.Size.Y);
+            var packer = new RectanglePacker((int)texture.Width, (int)texture.Height);
             foreach (var file in CollectImages(Filename))
             {
                 using(var img = Image.Load<Rgba32>(file))
