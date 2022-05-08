@@ -28,9 +28,8 @@ namespace XPlat.SampleHost
             buffer = new SpriteBuffer(texture, SpriteBatch.MAX_SPRITES);
             transform = new Transform2d();
 
-            for (int i = 0; i < buffer.Capacity; i++)
+            for (int i = 0; i < buffer.Size; i++)
             {
-                buffer.Add();
                 Reset(i);
             }
 
@@ -55,7 +54,7 @@ namespace XPlat.SampleHost
             var mat = transform.GetMatrix4x4();
             //mat = Matrix4x4.Identity;
 
-            for (int i = 0; i < buffer.Count; i++)
+            for (int i = 0; i < buffer.Size; i++)
             {
                 var x = buffer.GetX(i);
                 var y = buffer.GetY(i);

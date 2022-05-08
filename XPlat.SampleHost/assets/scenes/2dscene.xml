@@ -42,9 +42,8 @@
 
     <node name="starfield">
       <components>
-        <sprite res="space:star1" origin="10, 20" />
-        <sprite res="space:star2" origin="40, 20" />
-        <sprite res="space:star3" origin="10, 10" />
+        <lua res="starfield" />
+        <spritebuffer name="buffer" res="space" origin="10, 20" />
       </components>
     </node>
     

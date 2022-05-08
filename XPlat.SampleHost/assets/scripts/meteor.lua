@@ -11,7 +11,6 @@ return function(node, args)
         init = function(self)
             node.Tag = "meteor"
             self.weight = node:GetComponent("Collider2dComponent").Weight / 5
-            print(self.weight)
         end,
         update = function(self)
             self.wait = math.max(self.wait-1,0)

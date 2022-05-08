@@ -30,19 +30,31 @@ namespace XPlat.Engine
         {
             foreach (var c in n.Components)
             {
-                if(c is SpriteComponent s){
-                    batch.SetSprite(s.Sprite);
-                    if(s.Origin != Vector2.Zero){
-                        var mat = Matrix4x4.CreateTranslation(new Vector3(-s.Origin, 0)) * n._globalMatrix;
-                        batch.Draw(ref mat);
-                    } else {
-                        batch.Draw(ref n._globalMatrix);
-                    }
+                switch (c)
+                {
+                    case SpriteComponent s:
+                        batch.SetSprite(s.Sprite);
+                        if(s.Origin != Vector2.Zero){
+                            var mat = Matrix4x4.CreateTranslation(new Vector3(-s.Origin, 0)) * n._globalMatrix;
+                            batch.Draw(ref mat);
+                        } else {
+                            batch.Draw(ref n._globalMatrix);
+                        }
+                        break;
+                    case Camera2dComponent cam:
+                        batch.Camera = cam.Camera;
+                        cam.Camera.Transformation = n._globalMatrix;
+                        break;
+                    case SpriteBufferComponent b:
+                        if(b.Origin != Vector2.Zero){
+                            var mat = Matrix4x4.CreateTranslation(new Vector3(-b.Origin, 0)) * n._globalMatrix;
+                            batch.Draw(b.Buffer, ref mat);
+                        } else {
+                            batch.Draw(b.Buffer, ref n._globalMatrix);
+                        }
+                        break;
                 }
-                if(c is Camera2dComponent cam){
-                    batch.Camera = cam.Camera;
-                    cam.Camera.Transformation = n._globalMatrix;
-                }
+
             }
         }
 

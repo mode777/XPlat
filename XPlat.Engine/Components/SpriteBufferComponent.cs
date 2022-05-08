@@ -5,15 +5,9 @@ using XPlat.Graphics;
 
 namespace XPlat.Engine.Components
 {
-    [SceneElement("sprite")]
-    public class SpriteComponent : Component
+    [SceneElement("spritebuffer")]
+    public class SpriteBufferComponent : Component
     {
-        public SpriteSource Sprite { get; set; }
-
-        public Vector2 Origin = Vector2.Zero;
-        public float OriginX { get => Origin.X; set => Origin.X = value; }
-        public float OriginY { get => Origin.Y; set => Origin.Y = value; }
-
         public SpriteAtlasResource Resource { 
             get => _resource; 
             private set { 
@@ -24,19 +18,21 @@ namespace XPlat.Engine.Components
 
         private bool reload;
         private SpriteAtlasResource _resource;
+        public SpriteAtlas Atlas => _resource.Atlas;
+        public Vector2 Origin = Vector2.Zero;
+        public float OriginX { get => Origin.X; set => Origin.X = value; }
+        public float OriginY { get => Origin.Y; set => Origin.Y = value; }
+        public SpriteBuffer Buffer { get; set; }
 
         public override void Parse(XElement el, SceneReader reader)
         {
             if (el.TryGetAttribute("res", out var res)) { 
-                var split = res.Split(':');
-                var resName = split[0];
-                var resId = split[1];
-                Resource = (SpriteAtlasResource)reader.Scene.Resources.Load(resName);
-                Sprite = Resource.Atlas[resId] ?? throw new InvalidDataException($"Sprite '{resId}' not found");
+                Resource = (SpriteAtlasResource)reader.Scene.Resources.Load(res);
             }
-            else if (el.TryGetAttribute("src", out var src)) throw new NotImplementedException("Src attribute is not yet supported for sprites");
+            else if (el.TryGetAttribute("src", out var src)) throw new NotImplementedException("Src attribute is not yet supported for spritesbuffers");
             else throw new InvalidDataException("script resource needs 'ref' attribute");
             if(el.TryGetAttribute("origin", out var o)) Origin = o.Vector2();
+            Buffer = new SpriteBuffer(Resource.Atlas.Texture, 64);
 
             base.Parse(el, reader);
         }

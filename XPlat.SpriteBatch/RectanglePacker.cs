@@ -2,39 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace XPlat.Graphics {
+namespace XPlat.Graphics
+{
 
-	public class SpriteSource
+    public class SpriteAtlas
     {
-        public readonly Rectangle Rectangle;
-		public readonly Texture Texture;
-
-        public SpriteSource(Texture texture, Rectangle rect)
-        {
-            Texture = texture ?? throw new NullReferenceException(nameof(texture));
-            Rectangle = rect;
-        }
-
-		public SpriteSource(Texture texture)
-        {
-            Texture = texture ?? throw new NullReferenceException(nameof(texture));
-            Rectangle = new Rectangle(0,0,texture.Width,texture.Height);
-        }
-    }
-
-	public class SpriteAtlas
-    {
-        private readonly Texture texture;
+        public readonly Texture Texture;
 		private readonly Dictionary<string, SpriteSource> sprites = new Dictionary<string, SpriteSource>();
 
         public SpriteAtlas(Texture texture)
         {
-            this.texture = texture;
+            this.Texture = texture;
         }
 
 		public void Add(string name, int x, int y, int w, int h)
         {
-			sprites[name] = new SpriteSource(texture, new Rectangle(x, y, w, h));
+			sprites[name] = new SpriteSource(Texture, new Rectangle(x, y, w, h));
         }
 
 		public SpriteSource this[string name]

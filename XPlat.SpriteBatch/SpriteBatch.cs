@@ -286,12 +286,12 @@ namespace XPlat.Graphics
         public void Draw(SpriteBuffer buffer, ref Matrix4x4 transform){
             SetTexture(buffer.Texture);
             SetTransform(transform);
-            if(Count+buffer.Count >= Capacity) Resize(Math.Min(Math.Max(Capacity * 2, Capacity + buffer.Count), MAX_SPRITES));
+            if(Count+buffer.Size >= Capacity) Resize(Math.Min(Math.Max(Capacity * 2, Capacity + buffer.Size), MAX_SPRITES));
 
-            Array.Copy(buffer.quads, 0, data, Count, buffer.Count);
+            Array.Copy(buffer.quads, 0, data, Count, buffer.Size);
 
-            Count += buffer.Count;
-            currentCount += buffer.Count;
+            Count += buffer.Size;
+            currentCount += buffer.Size;
             ClearTransform();
         }
 
