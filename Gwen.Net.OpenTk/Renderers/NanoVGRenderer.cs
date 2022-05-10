@@ -160,6 +160,7 @@ namespace Gwen.Net.OpenTk.Renderers
         {
             var data = new TextureRendererData();
             data.Pixels = Image.LoadPixelData<Rgba32>(pixelData, t.Width, t.Height);
+            //data.Pixels.Save($"{DateTime.Now.Ticks.ToString()}.png");
             data.NvgHandle = vg.CreateImage(data.Pixels, 0);
             t.RendererData = data;
         }
