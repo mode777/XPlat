@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gwen.Net", "Gwen.Net\Gwen.N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gwen.Net.OpenTk", "Gwen.Net.OpenTk\Gwen.Net.OpenTk.csproj", "{BAF5C816-AEFB-437E-ABB8-65E81B8C9603}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzgaarMapReader", "AzgaarMapReader\AzgaarMapReader.csproj", "{01453C9C-F6E2-416B-8C78-7B131840C656}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,10 @@ Global
 		{BAF5C816-AEFB-437E-ABB8-65E81B8C9603}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAF5C816-AEFB-437E-ABB8-65E81B8C9603}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAF5C816-AEFB-437E-ABB8-65E81B8C9603}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01453C9C-F6E2-416B-8C78-7B131840C656}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01453C9C-F6E2-416B-8C78-7B131840C656}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01453C9C-F6E2-416B-8C78-7B131840C656}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01453C9C-F6E2-416B-8C78-7B131840C656}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

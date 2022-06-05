@@ -187,6 +187,8 @@ namespace XPlat.Engine
 
         private void ParseResources(XElement el, SceneReader reader)
         {
+            var vg = (_renderPasses.FirstOrDefault(x => x is CanvasRenderPass) as CanvasRenderPass)?.Context;
+
             var resources = el.Element("resources");
             if (resources != null)
             {
@@ -204,6 +206,18 @@ namespace XPlat.Engine
                         else
                         {
                             throw new InvalidDataException("Script needs a name attribute");
+                        }
+                    }
+                    if(type == typeof(FontResource) && vg != null){
+                        if (r.TryGetAttribute("name", out var id))
+                        {
+                            var font = new FontResource(id, null, vg);
+                            font.Parse(r, reader);
+                            Resources.Store(font);
+                        }
+                        else
+                        {
+                            throw new InvalidDataException("Font needs a name attribute");
                         }
                     }
                     if (type == typeof(SpriteAtlasResource))

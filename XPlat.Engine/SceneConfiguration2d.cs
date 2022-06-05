@@ -8,6 +8,7 @@ namespace XPlat.Engine
             AddSubSystem(new BehaviourSubsystem());
             AddSubSystem(new Collision2dSubsystem());
             AddRenderPass(new RenderPass2d(platform));
+            AddRenderPass(new CanvasRenderPass(platform));
             //AddRenderPass(new DebugRenderPass(platform));
         }
     }

@@ -3,12 +3,14 @@
   <import assembly="XPlat.SampleHost" />
   <resources>
     <atlas name="space" src="../sprites/space" width="1024" height="1024"/>
+    <font name="merriweather" src="../fonts/Merriweather-Regular.ttf" />
     <script name="ship" src="../scripts/ship_control.lua" watch="true" />
     <script name="meteor" src="../scripts/meteor.lua" watch="true" />
     <script name="cam" src="../scripts/cam.lua" watch="true" />
     <script name="laser" src="../scripts/laser.lua" watch="true" />
     <script name="generator" src="../scripts/generator.lua" watch="true" />
     <script name="starfield" src="../scripts/starfield.lua" watch="true" />
+    <script name="canvas" src="../scripts/canvas.lua" watch="true" />
   </resources>
 
   <templates>
@@ -37,7 +39,9 @@
 
   <node name="root">
     <components>
-      <lua res="generator" />
+      <lua name="genrator" res="generator" />
+      <lua name="draw" res="canvas" />
+      <canvas name="canvas" />
     </components>
 
     <node name="starfield">

@@ -16,6 +16,17 @@
             "console": "internalConsole"
         },
         {
+            "name": "AzgaarMapReader",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build_azgaar",
+            "program": "${workspaceFolder}/AzgaarMapReader/bin/Debug/net6.0/AzgaarMapReader.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/AzgaarMapReader",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
             "name": "Run SampleHost Release",
             "type": "coreclr",
             "request": "launch",

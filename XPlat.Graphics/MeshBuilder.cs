@@ -35,11 +35,19 @@ namespace XPlat.Graphics
             return _vertices.Count - 1;
         }
 
-        public void SetPosition(float x, float y, float z) => _position = new Vector3(x, y, z);
-        public void SetNormal(float x, float y, float z) => _normal = new Vector3(x, y, z);
-        public void SetUv(float x, float y) => _uv = new Vector2(x, y);
-        
+        public void AddTriangle(int a, int b, int c){
+            _indices.Add((ushort)a);
+            _indices.Add((ushort)b);
+            _indices.Add((ushort)c);
+        }
 
+        public void SetPosition(float x, float y, float z) => _position = new Vector3(x, y, z);
+        public void SetPosition(Vector3 pos) => _position = pos;
+        public void SetNormal(float x, float y, float z) => _normal = new Vector3(x, y, z);
+        public void SetNormal(Vector3 norm) => _normal = norm;
+        public void SetUv(float x, float y) => _uv = new Vector2(x, y);
+        public void SetUv(Vector2 uv) => _uv = uv;
+        
         public Mesh Build(uint usage = GL.STATIC_DRAW)
         {
             unsafe
