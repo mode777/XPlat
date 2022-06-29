@@ -12,7 +12,7 @@ namespace XPlat.Core
         Vector2 WindowSize { get; set; }
         Vector2 MousePosition { get; }
         float RetinaScale { get; }
-        Vector3 ClearColor { get; }
+        Vector3 ClearColor { get; set; }
         string WindowTitle { get; set; }
         void SwapBuffers();
         void Clear();

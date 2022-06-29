@@ -47,6 +47,12 @@ namespace XPlat.Graphics
             GlUtil.UpdateTexture2d(GlTexture, x, y, image);
         }
 
+        public void SetRepeat(){
+            GL.BindTexture(GL.TEXTURE_2D, GlTexture.Handle);
+            GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, (int)GL.REPEAT);
+            GL.TexParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, (int)GL.REPEAT);
+        }
+
         private void SetProperties(TextureUsage usage)
         {
             switch (usage)

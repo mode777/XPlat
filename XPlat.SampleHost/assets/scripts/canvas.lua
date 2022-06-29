@@ -6,9 +6,6 @@
             c.OnDraw:Add(self.draw)
         end,
         draw = function(obj, vg) 
-            -- print(vg)
-            -- vg:BeginPath()
-            -- vg:Rect(0,0,100,100)
             vg:FillColor('#aef')
             vg:FontFace('merriweather')
             vg:FontSize(40);

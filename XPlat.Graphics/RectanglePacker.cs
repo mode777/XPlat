@@ -1,41 +1,17 @@
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace XPlat.Graphics
 {
 
-    public class SpriteAtlas
-    {
-        public readonly Texture Texture;
-		private readonly Dictionary<string, SpriteSource> sprites = new Dictionary<string, SpriteSource>();
-
-        public SpriteAtlas(Texture texture)
-        {
-            this.Texture = texture;
-        }
-
-		public void Add(string name, int x, int y, int w, int h)
-        {
-			sprites[name] = new SpriteSource(Texture, new Rectangle(x, y, w, h));
-        }
-
-		public SpriteSource this[string name]
-		{
-			get { return sprites[name]; }
-		}
-
-	}
-
     public class RectanglePacker {
 
-        public class FONSatlasNode
+        public struct Node
         {
             public short x, y, width;
         }
 
 	    public int width, height;
-		public FONSatlasNode[] nodes;
+		public Node[] nodes;
 		public int nnodes;
 		public int cnodes;
 
@@ -45,9 +21,9 @@ namespace XPlat.Graphics
 			height = h;
 
 			// Allocate space for skyline nodes
-			nodes = new FONSatlasNode[nnodes];
+			nodes = new Node[nnodes];
 			for (int cont = 0; cont < nnodes; cont++)
-				nodes[cont] = new FONSatlasNode();
+				nodes[cont] = new Node();
 
 			this.nnodes = 0;
 			cnodes = nnodes;

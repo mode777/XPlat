@@ -12,10 +12,17 @@ uniform mat4 uModel;
 uniform mat4 uView;
 uniform mat4 uProjection;
 uniform mat4 uNormal;
+uniform vec2 uTextureSize;
 
 void main()
 {
-    vUv = aUv;
+    vec2 uv = aUv;
+
+    #ifdef PIXEL_SCALE_UV
+    uv = uv / uTextureSize;
+    #endif
+    
+    vUv = uv;
     vFragPos = (uModel * vec4(aPos, 1.0)).xyz;
     vNormal = (uNormal * vec4(aNormal, 1.0)).xyz;  
     

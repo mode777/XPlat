@@ -12,9 +12,10 @@ namespace XPlat.Engine
         private readonly IPlatform platform;
         private LightId lightId;
 
-        public RenderPass3d(IPlatform platform)
+        public RenderPass3d(IPlatform platform, params string[] flags)
         {
-            this.shader = new PhongShader();
+            var prefix = string.Join('\n', flags.Select(x => $"#define {x} 1"));
+            this.shader = new PhongShader(prefix);
             this.platform = platform;
         }
 

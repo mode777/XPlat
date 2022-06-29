@@ -1,12 +1,7 @@
-using System.Numerics;
 using GLES2;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using XPlat.Core;
 
 namespace XPlat.Graphics
 {
-
     public class PhongMaterial : Material
     {
         private readonly Texture texture;
@@ -31,6 +26,7 @@ namespace XPlat.Graphics
 
             shader.SetUniform(Uniform.Material_Metallic, Metallic);
             shader.SetUniform(Uniform.Material_Roughness, Roughness);
+            shader.SetUniform(Uniform.TextureSize, new System.Numerics.Vector2(texture.Width, texture.Height));
         }
     }
 }

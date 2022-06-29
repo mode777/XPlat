@@ -6,10 +6,10 @@ namespace XPlat.Graphics
 {
     public class PhongShader : Shader
     {
-        public PhongShader()
+        public PhongShader(string vprefix = "", string fprefix = "")
             : base(
-                File.ReadAllText("shader/phong.vertex.glsl"),
-                File.ReadAllText("shader/phong.fragment.glsl"),
+                vprefix + "\n" + File.ReadAllText("shader/phong.vertex.glsl"),
+                fprefix + "\n" + File.ReadAllText("shader/phong.fragment.glsl"),
                 //Resource.LoadResourceString<PhongShader>("phong.vertex.glsl"), 
                 //Resource.LoadResourceString<PhongShader>("phong.fragment.glsl"),
                 new Dictionary<Attribute, string>
@@ -28,6 +28,7 @@ namespace XPlat.Graphics
                     [Uniform.CameraPositon] = "uViewPos",
                     [Uniform.Material_Metallic] = "uMetallic",
                     [Uniform.Material_Roughness] = "uRoughness",
+                    [Uniform.TextureSize] = "uTextureSize",
                     [Uniform.PointLight_Pos_0] = "uPointLights[0].position",
                     [Uniform.PointLight_Col_0] = "uPointLights[0].color",
                     [Uniform.PointLight_Range_0] = "uPointLights[0].range",

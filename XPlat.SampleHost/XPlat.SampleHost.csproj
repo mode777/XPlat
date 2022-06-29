@@ -32,6 +32,7 @@
     <ProjectReference Include="..\MicroUI\MicroUI.csproj" />
     <ProjectReference Include="..\Gwen.Net\Gwen.Net.csproj" />
     <ProjectReference Include="..\Gwen.Net.OpenTk\Gwen.Net.OpenTk.csproj" />
+    <ProjectReference Include="..\XPlat.Voxels\XPlat.Voxels.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="assets\" />

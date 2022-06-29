@@ -200,6 +200,10 @@ namespace XPlat.Core
             }
         }
 
+        public static GlTextureHandle CreateColorTexture(int r, int g, int b, int a){
+            return CreateTexture2d(new Image<Rgba32>(1,1, new Rgba32(r,g,b,a)));
+        }
+
         public static GlTextureHandle CreateTexture2d(int width, int height, uint colorFormat = GL.RGBA)
         {
             unsafe
