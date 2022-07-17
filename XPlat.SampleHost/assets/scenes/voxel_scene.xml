@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<scene version="1.0">
+<!-- <scene version="1.0" configuration="2d"> -->
+  <import assembly="XPlat.Voxels" />
+  <configuration template="voxel" />
+  <resources>
+    <vox name="stan" src="../models/stan.vox" />
+  </resources>
+
+  <node name="root">
+
+    <node name="Cam" translate="0,25,30" rotate="-0.5,3,0">
+      <components>
+        <camera farplane="1000" />
+      </components>
+    </node>
+
+    <node name="Vox">
+      <components>
+        <mesh res="stan"/>
+      </components>
+    </node>
+
+    <node name="Light" translate="30,20,-20" >
+      <components>
+        <light intensity="200" />
+      </components>
+    </node>
+
+  </node>
+</scene>

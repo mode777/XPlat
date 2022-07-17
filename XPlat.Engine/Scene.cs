@@ -238,25 +238,37 @@ namespace XPlat.Engine
         }
 
         private void ParseConfiguration(XElement el, SceneReader reader){
-            if(el.TryGetAttribute("configuration", out var template)) {
-                switch(template){
-                    case "2d":
-                        new SceneConfiguration2d(reader.Services.GetRequiredService<IPlatform>())
-                            .Apply(this);
-                        break;
-                    case "3d":
-                        new SceneConfiguration3d(reader.Services.GetRequiredService<IPlatform>())
-                            .Apply(this);
-                        break;
-                    default:
-                        throw new InvalidDataException($"No app configuration found called '{template}'");
+            var config = el.Element("configuration");
+            if(config != null){
+                if(config.TryGetAttribute("template", out var template)){
+                    reader.BuildSceneConfigurationFromTemplate(template)
+                        .Apply(this);
                 }
-            } else {
-                // TODO: Load custom pipeline config
-                new SceneConfiguration3d(reader.Services.GetRequiredService<IPlatform>())
+            }
+            else if(el.TryGetAttribute("configuration", out var template)) {
+                reader.BuildSceneConfigurationFromTemplate(template)
+                    .Apply(this);
+            }   
+            else {
+                reader.BuildSceneConfigurationFromTemplate("3d")
                     .Apply(this);
             }
         }
+
+        // private void LoadConfigurationTemplate(string template, IPlatform platform){
+        //     switch(template){
+        //         case "2d":
+        //             new SceneConfiguration2d(platform)
+        //                 .Apply(this);
+        //             break;
+        //         case "3d":
+        //             new SceneConfiguration3d(platform)
+        //                 .Apply(this);
+        //             break;
+        //         default:
+        //             throw new InvalidDataException($"No scene configuration found called '{template}'");
+        //     }
+        // }
 
         protected virtual void Dispose(bool disposing)
         {

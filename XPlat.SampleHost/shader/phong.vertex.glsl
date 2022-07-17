@@ -17,10 +17,6 @@ uniform vec2 uTextureSize;
 void main()
 {
     vec2 uv = aUv;
-
-    #ifdef PIXEL_SCALE_UV
-    uv = uv / uTextureSize;
-    #endif
     
     vUv = uv;
     vFragPos = (uModel * vec4(aPos, 1.0)).xyz;

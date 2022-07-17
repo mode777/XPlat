@@ -14,6 +14,7 @@ namespace XPlat.Engine.Components
         public override void Parse(XElement el, SceneReader reader)
         {
             if(el.TryGetAttribute("color", out var color)) Light.Color = color.Vector3();
+            if(el.TryGetAttribute("intensity", out var raw) && float.TryParse(raw, out var intensity)) Light.Intensity = intensity;
         }
     }
 }

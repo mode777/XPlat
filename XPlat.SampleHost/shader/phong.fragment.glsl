@@ -47,6 +47,7 @@ uniform vec3 uViewPos;
 //uniform DirLight dirLight;
 uniform PointLight uPointLights[NR_POINT_LIGHTS];
 //uniform SpotLight spotLight;
+uniform vec2 uTextureSize;
 
 //uniform Material material;
 const vec3 uAmbientColor = vec3(0.25, 0.27, 0.30);
@@ -60,7 +61,13 @@ vec3 CalcPointLight(vec4 tex, PointLight light, vec3 normal, vec3 fragPos, vec3 
 //vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main()
-{    
+{   
+    vec2 uv = vUv;
+
+    #ifdef PIXEL_SCALE_UV
+    uv = uv / uTextureSize;
+    #endif
+
     // properties
     vec3 norm = normalize(vNormal);
     vec3 viewDir = normalize(uViewPos - vFragPos);
@@ -71,7 +78,30 @@ void main()
     // per lamp. In the main() function we take all the calculated colors and sum them up for
     // this fragment's final color.
     // == =====================================================
-    vec4 tex = texture2D(uTexture, vUv);
+    vec4 tex = texture2D(uTexture, uv);
+
+    #ifdef ALPHA_AO
+
+    float enc = tex.a * 255.0;
+    enc = 128.0;
+    tex = vec4(tex.rgb, 1.0);
+    
+    float ul = mod(enc,4.0) / 3.0;
+    float ur = mod(floor(enc / 4.0),4.0) / 3.0;
+    float dr = mod(floor(enc / 16.0),4.0) / 3.0;
+    float dl = mod(floor(enc / 64.0),4.0) / 3.0;
+
+    vec2 fr = fract(vUv);
+
+    float val = (mix(ul,1.0,fr.x) + mix(ul,1.0,fr.y)) *
+        (mix(1.0,ur,fr.x) + mix(ur,1.0,fr.y)) * 
+        (mix(dl,1.0,fr.x) + mix(1.0,dl,fr.y)) * 
+        (mix(1.0,dr,fr.x) + mix(1.0,dr,fr.y));
+     
+    tex *= (val / 8.0);
+    
+    #endif
+
     vec3 result;
 
     // phase 1: directional lighting

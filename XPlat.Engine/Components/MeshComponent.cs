@@ -15,6 +15,12 @@ namespace XPlat.Engine.Components
                 var split = src.Split(':');
                 Mesh = reader.LoadGltfNode(split[0], split[1])?.ReadMesh();
             }
+
+            if(el.TryGetAttribute("res", out var res)) { 
+                var resource = reader.Scene.Resources.Load(res);
+                Mesh = resource.GetValue<Mesh>();
+                resource.Changed += (s,a) => Mesh = resource.GetValue<Mesh>();
+            }
         }
     }
 }

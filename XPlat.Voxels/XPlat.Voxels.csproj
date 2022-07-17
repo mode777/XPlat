@@ -3,6 +3,7 @@
   <ItemGroup>
     <ProjectReference Include="..\XPlat.Core\XPlat.Core.csproj" />
     <ProjectReference Include="..\XPlat.Graphics\XPlat.Graphics.csproj" />
+    <ProjectReference Include="..\XPlat.Engine\XPlat.Engine.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

@@ -13,19 +13,8 @@ namespace XPlat.Voxels
         private RectanglePacker packer = new RectanglePacker(256,256);
         private Image<Rgba32> image = new Image<Rgba32>(256,256, new Rgba32(255,0,255));
         private int face = 0;
-        public void Face(int x, int y, int z, FaceDirection dir, int color, int w = 1, int h = 1){
-            var p = ReserveRectangle(w,h);
-            
-            for (int ty = 0; ty < h; ty++)
-            {
-                for (int tx = 0; tx < w; tx++)
-                {
-                    var c = new Rgba32((byte)Random.Shared.Next(256),(byte)Random.Shared.Next(256),(byte)Random.Shared.Next(256));
-                    SetPixel(p.X+tx, p.Y+ty, c);
-                }
-            }
-
-            faces.Add(new VoxelFace(x,y,z,dir,w,h,p.X,p.Y));
+        public void Face(int x, int y, int z, FaceDirection dir, Rgba32 color, int w = 1, int h = 1, int tx = 0, int ty = 0){
+            faces.Add(new VoxelFace(x,y,z,dir,w,h,tx,ty));
             var o = face*4;
             indices.Add((ushort)(o+0));
             indices.Add((ushort)(o+1));
@@ -36,12 +25,12 @@ namespace XPlat.Voxels
             face++;
         }
 
-        Point ReserveRectangle(int w, int h){
+        public Point ReserveRectangle(int w, int h){
             packer.AddRect(w,h,out var x, out var y);
             return new Point(x,y);
         }
 
-        void SetPixel(int x, int y, Rgba32 pixel){
+        public void SetPixel(int x, int y, Rgba32 pixel){
             image.GetPixelRowSpan(y)[x] = pixel;
         }
 

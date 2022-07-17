@@ -1,5 +1,8 @@
 using System.Reflection;
 using System.Xml.Linq;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using XPlat.Core;
 using XPlat.Gltf;
 using XPlat.Graphics;
 
@@ -9,6 +12,7 @@ namespace XPlat.Engine.Serialization
     {
 
         public Dictionary<string, Type> SceneElements { get; } = new Dictionary<string, Type>();
+        public Dictionary<string, Type> SceneTemplates { get; } = new Dictionary<string, Type>();
         public XElement XElement { get; private set; }
 
         public string Directory => root;
@@ -18,7 +22,7 @@ namespace XPlat.Engine.Serialization
 
         public SceneReader(IServiceProvider provider)
         {
-            this.Services = provider;
+            Services = provider;
             LoadElementsFromAssembly(typeof(SceneReader).Assembly);
         }
 
@@ -32,6 +36,14 @@ namespace XPlat.Engine.Serialization
         {
             var scene = GltfReader.Load(ResolvePath(file));
             return scene;
+        }
+
+        public SceneConfiguration BuildSceneConfigurationFromTemplate(string name){
+            if(SceneTemplates.TryGetValue(name, out var type)){
+                return (SceneConfiguration)Activator.CreateInstance(type, Services);
+            } else {
+                throw new InvalidDataException($"Template '{name}' not found.");
+            }
         }
 
         public string ResolvePath(string path)
@@ -81,6 +93,16 @@ namespace XPlat.Engine.Serialization
             foreach (var kv in pairs)
             {
                 SceneElements.Add(kv.Key, kv.Value);
+            }
+
+            var templates = asm.ExportedTypes
+                .Where(x => typeof(SceneConfiguration).IsAssignableFrom(x))
+                .Select(x => new KeyValuePair<string, Type>(x.GetCustomAttribute<SceneTemplateAttribute>()?.Name ?? x.Name, x));
+
+            foreach (var kv in templates)
+            {
+                SceneTemplates.Add(kv.Key, kv.Value);
+                
             }
         }
 

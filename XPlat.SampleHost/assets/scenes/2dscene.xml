@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<scene version="1.0" configuration="2d">
+<scene version="1.0">
+<!-- <scene version="1.0" configuration="2d"> -->
   <import assembly="XPlat.SampleHost" />
+  <configuration template="2d" />
   <resources>
     <atlas name="space" src="../sprites/space" width="1024" height="1024"/>
     <font name="merriweather" src="../fonts/Merriweather-Regular.ttf" />

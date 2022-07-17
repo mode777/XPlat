@@ -7,6 +7,9 @@ namespace XPlat.Voxels
 {
     public class VoxelMesh {
         private readonly byte[,,] data;
+
+        // TODO: load default palette
+        public Rgba32[] Palette { get; set; }
         private readonly FaceAdjacency[,,] adj;
 
         public int SizeX => data.GetLength(0);
@@ -133,10 +136,32 @@ namespace XPlat.Voxels
             }
         }
 
-        void MergeCells(FaceAdjacency flag_, int a, int b, int depth_, int size_a_, int size_b_, out int w, out int h){
+        Rgba32 GetPixel(FaceAdjacency f, int a, int b, int d){
+            int value = 0;
+            switch (f)
+            {
+                case FaceAdjacency.Front:
+                case FaceAdjacency.Back:
+                    value = data[a,b,d];
+                    break;
+                case FaceAdjacency.Top:
+                case FaceAdjacency.Bottom:
+                    value = data[a,d,b];
+                    break;
+                case FaceAdjacency.Right:
+                case FaceAdjacency.Left:
+                    value = data[d,a,b];
+                    break;
+                default:
+                throw new InvalidOperationException();
+            }
+            return Palette[value];
+        }
+
+        Rectangle MergeCells(FaceAdjacency flag_, int a, int b, int depth_, int size_a_, int size_b_, VoxelBuffer buffer){
             
-            w = 1;
-            h = 1;
+            int w = 1;
+            int h = 1;
 
             for(int ca = a+1; ca < size_a_; ca++){
                 if(ReadFlag(flag_, ca, b, depth_)) w++;
@@ -153,11 +178,18 @@ namespace XPlat.Voxels
                 if(!stop) h++;
                 else break;
             }
+
+            var p = buffer.ReserveRectangle(w,h);
+
             for(int cb = b; cb < b+h; cb++){
                 for(int ca = a; ca < a+w; ca++){
                     ClearFlag(flag_, ca, cb, depth_);
+                    var color = GetPixel(flag_, ca, cb, depth_);
+                    buffer.SetPixel(p.X + ca - a, p.Y + cb - b, color);
                 }
             }
+
+            return new Rectangle(p.X,p.Y,w,h);
         }
 
         public void WriteTo(VoxelBuffer buffer){
@@ -168,37 +200,40 @@ namespace XPlat.Voxels
                 {
                     for (int x = 0; x < data.GetLength(0); x++)
                     {
-                        var a = adj[x,y,z];               
+                        var a = adj[x,y,z];         
+                        var v = data[x,y,z];      
+                        
                         if(a == FaceAdjacency.None) continue;
+                        var c = Palette[v];
 
                         if(a.HasFlag(FaceAdjacency.Front)){
-                            MergeCells(FaceAdjacency.Front, x, y, z, SizeX, SizeY, out var w, out var h);
-                            buffer.Face(x,y,z,FaceDirection.Front, 1, w, h);
+                            var r = MergeCells(FaceAdjacency.Front, x, y, z, SizeX, SizeY, buffer);
+                            buffer.Face(x,y,z,FaceDirection.Front, c, r.Width, r.Height, r.X, r.Y);
                         }
 
                         if(a.HasFlag(FaceAdjacency.Back)){
-                            MergeCells(FaceAdjacency.Back, x, y, z, SizeX, SizeY, out var w, out var h);
-                            buffer.Face(x,y,z,FaceDirection.Back, 1, w, h);
+                            var r = MergeCells(FaceAdjacency.Back, x, y, z, SizeX, SizeY, buffer);
+                            buffer.Face(x,y,z,FaceDirection.Back, c, r.Width, r.Height, r.X, r.Y);
                         }
 
                         if(a.HasFlag(FaceAdjacency.Top)){
-                            MergeCells(FaceAdjacency.Top, x, z, y, SizeX, SizeZ, out var w, out var h);
-                            buffer.Face(x,y,z,FaceDirection.Top, 1, w, h);
+                            var r = MergeCells(FaceAdjacency.Top, x, z, y, SizeX, SizeZ, buffer);
+                            buffer.Face(x,y,z,FaceDirection.Top, c, r.Width, r.Height, r.X, r.Y);
                         }
 
                         if(a.HasFlag(FaceAdjacency.Bottom)){
-                            MergeCells(FaceAdjacency.Bottom, x, z, y, SizeX, SizeZ, out var w, out var h);
-                            buffer.Face(x,y,z,FaceDirection.Bottom, 1, w, h);
+                            var r = MergeCells(FaceAdjacency.Bottom, x, z, y, SizeX, SizeZ, buffer);
+                            buffer.Face(x,y,z,FaceDirection.Bottom, c, r.Width, r.Height, r.X, r.Y);
                         }
 
                         if(a.HasFlag(FaceAdjacency.Left)){
-                            MergeCells(FaceAdjacency.Left, y, z, x, SizeY, SizeZ, out var w, out var h);
-                            buffer.Face(x,y,z,FaceDirection.Left, 1, w, h);
+                            var r = MergeCells(FaceAdjacency.Left, y, z, x, SizeY, SizeZ, buffer);
+                            buffer.Face(x,y,z,FaceDirection.Left, c, r.Width, r.Height, r.X, r.Y);
                         }
 
                         if(a.HasFlag(FaceAdjacency.Right)){
-                            MergeCells(FaceAdjacency.Right, y, z, x, SizeY, SizeZ, out var w, out var h);
-                            buffer.Face(x,y,z,FaceDirection.Right, 1, w, h);
+                            var r = MergeCells(FaceAdjacency.Right, y, z, x, SizeY, SizeZ, buffer);
+                            buffer.Face(x,y,z,FaceDirection.Right, c, r.Width, r.Height, r.X, r.Y);
                         }
                     }
                 }
@@ -209,36 +244,28 @@ namespace XPlat.Voxels
     public class VoxLoader : IVoxLoader
     {
         private VoxelBuffer buffer;
+        private Rgba32[] palette;
+        private VoxelMesh voxel;
 
         public VoxLoader()
         {
             this.buffer = new VoxelBuffer();
         }
 
-        private void Iterate(int sx, int sy, int sz, Action<int,int,int> action){
-            for (int z = 0; z < sz; z++)
-            {
-                for (int y = 0; y < sy; y++)
-                {
-                    for (int x = 0; x < sx; x++)
-                    {
-                        action(x,y,z);
-                    }
-                }
-            }
-        }
-
-        
-
         public void LoadModel(int sizeX, int sizeY, int sizeZ, byte[,,] data)
         {
-            var m = new VoxelMesh(data);
-            m.WriteTo(buffer);
+            this.voxel = new VoxelMesh(data);
+            
         }
 
         public void LoadPalette(uint[] palette)
         {
-            //throw new NotImplementedException();
+            voxel.Palette = palette.Select(x =>
+            {
+                var b = BitConverter.GetBytes(x);
+                var c = new Rgba32(b[2],b[1],b[0],b[3]);
+                return c;
+            }).ToArray();
         }
 
         public void NewGroupNode(int id, Dictionary<string, byte[]> attributes, int[] childrenIds)
@@ -289,6 +316,7 @@ namespace XPlat.Voxels
         // }
 
         public Primitive GetPrimitive(){
+            voxel.WriteTo(buffer);
             return buffer.ToPrimitive();
         }
     }

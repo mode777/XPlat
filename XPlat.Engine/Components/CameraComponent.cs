@@ -16,7 +16,9 @@ namespace XPlat.Engine.Components
 
         public override void Parse(XElement el, SceneReader reader)
         {
-            // TODO
+            if(el.TryGetAttribute("farplane", out var raw) && float.TryParse(raw, out var farplane)) Camera.FarPlane = farplane;
+            if(el.TryGetAttribute("nearplane", out var raw2) && float.TryParse(raw2, out var nearplane)) Camera.NearPlane = nearplane;
+            if(el.TryGetAttribute("fov", out var raw3) && float.TryParse(raw3, out var fov)) Camera.Fov = fov;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace XPlat.Engine
         public RenderPass3d(IPlatform platform, params string[] flags)
         {
             var prefix = string.Join('\n', flags.Select(x => $"#define {x} 1"));
-            this.shader = new PhongShader(prefix);
+            this.shader = new PhongShader(prefix, prefix);
             this.platform = platform;
         }
 

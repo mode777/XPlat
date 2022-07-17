@@ -9,20 +9,24 @@ namespace XPlat.Engine
 
     public class EngineHost : ISdlApp
     {
-        private readonly AppConfiguration config;
+        private readonly EngineConfiguration config;
         private readonly SceneResource resource;
         private readonly IPlatform platform;
         private readonly ISdlPlatformEvents events;
         private readonly IServiceProvider services;
         private readonly ILogger<EngineHost> logger;
 
-        public EngineHost(ILogger<EngineHost> logger, IServiceProvider services, IPlatform platform, IConfiguration config, ISdlPlatformEvents events)
+        public EngineHost(ILogger<EngineHost> logger, 
+            IServiceProvider services, 
+            IPlatform platform, 
+            IConfiguration config, 
+            ISdlPlatformEvents events)
         {
             this.logger = logger;
             this.services = services;
             this.events = events;
             this.platform = platform;
-            this.config = config.GetSection("App").Get<AppConfiguration>();
+            this.config = config.GetSection("Engine").Get<EngineConfiguration>();
             //config.GetReloadToken()
             this.resource = new SceneResource(services, "_scene", this.config.InitialScene);
             if (this.config.Debug) resource.Watch();

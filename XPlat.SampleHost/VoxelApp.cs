@@ -1,5 +1,8 @@
 using System.Numerics;
 using CsharpVoxReader;
+using Microsoft.Extensions.DependencyInjection;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using XPlat.Core;
 using XPlat.Engine;
 using XPlat.Engine.Components;
@@ -9,6 +12,7 @@ using Attribute = XPlat.Graphics.Attribute;
 
 namespace XPlat.SampleHost
 {
+
 
     public class VoxelApp : ISdlApp
     {
@@ -25,10 +29,8 @@ namespace XPlat.SampleHost
 
         public void Init()
         {
-            var config = new SceneConfiguration();
-            config.AddSubSystem(new BehaviourSubsystem());
-            config.AddRenderPass(new RenderPass3d(platform, "PIXEL_SCALE_UV"));
-            scene = new Scene(config);
+            
+            scene = new Scene(new VoxelConfig(services));
 
             var camera = new Node(scene)
             {
@@ -36,11 +38,13 @@ namespace XPlat.SampleHost
                 Name = "Cam",
                 Transform = new Transform3d
                 {
-                    TranslationVector = new Vector3(0, 15, -30),
+                    TranslationVector = new Vector3(0, 25, -30),
                     RotationQuat = Quaternion.CreateFromYawPitchRoll(3, -0.5f, 0)
                 }
             };
-            camera.AddComponent(new CameraComponent());
+            var c = new CameraComponent();
+            c.Camera.FarPlane = 1000;
+            camera.AddComponent(c);
             scene.RootNode.AddChild(camera);
 
             var cube = new Node(scene)
@@ -49,7 +53,7 @@ namespace XPlat.SampleHost
             };
             cube.AddComponent(new MeshComponent
             {
-                Mesh = new Mesh(LoadVox("assets/models/monastery.vox"))
+                Mesh = new Mesh(LoadVox("assets/models/stan.vox"))
             });
             float r = 0;
             cube.AddComponent(new ActionComponent(null, c =>
@@ -72,14 +76,16 @@ namespace XPlat.SampleHost
             };
             light.AddComponent(new LightComponent{
                 Light = new PointLight {
-                    Intensity = 100
+                    Intensity = 200
                 }
             });
             scene.RootNode.AddChild(light);
         }
 
         private Primitive LoadVox(string filename){
+            //var img = Image.Load<Rgba32>(paletteFilename);
             var loader = new VoxLoader();
+            //loader.SetPalette(img.GetPixelRowSpan(0).ToArray());
             var r = new VoxReader(filename, loader);
             r.Read();
             
