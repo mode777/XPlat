@@ -1,22 +1,27 @@
 ﻿using XPlat.Engine.Components;
+using XPlat.LuaScripting;
 
 namespace XPlat.Engine
 {
 
     public class BehaviourSubsystem : ISubSystem
     {
-        public void AfterUpdate(){}
+        public void AfterUpdate() { }
 
-        public void BeforeUpdate(){}
+        public void BeforeUpdate() { }
 
-        public void Init(){}
+        public void Init()
+        {
+        }
 
         public void OnUpdate(Node n)
         {
             foreach (var comp in n.Components)
             {
-                if(comp is Behaviour b){
-                    if(!b.WasInitialized){
+                if (comp is Behaviour b)
+                {
+                    if (!b.WasInitialized)
+                    {
                         b.Init();
                         b.WasInitialized = true;
                     }
@@ -24,7 +29,7 @@ namespace XPlat.Engine
                     {
                         b.OnCollision(c);
                     }
-                    if(b.IsEnabled) b.Update();
+                    if (b.IsEnabled) b.Update();
                 }
             }
         }

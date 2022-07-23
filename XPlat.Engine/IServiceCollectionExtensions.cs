@@ -32,6 +32,10 @@ public static class IServiceCollectionExtensions
             if(!item.Value.IsAbstract && !item.Value.IsInterface)
                 services.AddTransient(item.Value, item.Value);
 
+        foreach (var item in tr.Resources)
+            if(!item.Value.IsAbstract && !item.Value.IsInterface)
+                services.AddTransient(item.Value, item.Value);
+
         services.AddScoped<LuaHost>(s => {
             var l = new LuaHost();
             l.ImportNamespace(nameof(XPlat)+ "." + nameof(Core));

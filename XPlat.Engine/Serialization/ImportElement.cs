@@ -3,6 +3,7 @@ using System.Xml.Linq;
 
 namespace XPlat.Engine.Serialization
 {
+    // Deprecated
     [SceneElement("import")]
     public class ImportElement : ISceneElement
     {
@@ -10,7 +11,7 @@ namespace XPlat.Engine.Serialization
         {
             var assembly = el.Attribute("assembly")?.Value ?? throw new InvalidDataException("Import element must have assembly attribute");
             var asm = LoadAssembly(assembly);
-            reader.LoadElementsFromAssembly(asm);
+            //reader.LoadElementsFromAssembly(asm);
         }
 
         private Assembly LoadAssembly(string name){

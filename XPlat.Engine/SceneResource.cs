@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using XPlat.Core;
 using XPlat.Engine.Serialization;
 
@@ -6,20 +7,21 @@ namespace XPlat.Engine
     public class SceneResource : FileResource
     {
         public Scene Scene => Value as Scene;
-        private readonly IServiceProvider services;
+        private readonly SceneReader reader;
 
-        public SceneResource(IServiceProvider services, string id, string file) : base(id, file)
+        public SceneResource(SceneReader reader) : base()
         {
-            this.services = services;
+            this.reader = reader;
         }
         protected override object LoadFile()
         {
             if (Scene != null) Scene.Dispose();
-            var scene = new SceneReader(services).Read(Filename);
+            var scene = reader.Read(Filename);
             return scene;
         }
 
-        public void Unload(){
+        public void Unload()
+        {
             Scene?.Dispose();
             Value = null;
         }

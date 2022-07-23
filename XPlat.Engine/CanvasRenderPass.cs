@@ -15,10 +15,10 @@ namespace XPlat.Engine
 
         public NVGcontext Context => vg;
 
-        public CanvasRenderPass(IPlatform platform)
+        public CanvasRenderPass(IPlatform platform, NVGcontext vg)
         {
             this.Platform = platform;
-            this.vg = NVGcontext.CreateGl();
+            this.vg = vg;
         }
 
         public void FinishFrame()

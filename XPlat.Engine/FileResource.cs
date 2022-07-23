@@ -3,12 +3,11 @@ namespace XPlat.Engine
     public abstract class FileResource : Resource
     {
         private FileSystemWatcher watcher;
-        public string Filename { get; protected set; }
+        public string Filename { get; set; }
         public bool FileChanged { get; private set; } = true;
 
-        public FileResource(string id, string path) : base(id)
+        public FileResource() : base()
         {
-            this.Filename = path;
         }
 
         public void Load(){

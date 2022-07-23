@@ -8,12 +8,14 @@ namespace XPlat.Engine.Components
     [SceneElement("lua")]
     public class LuaScriptComponent : Behaviour
     {
-        public ScriptResource Resource { 
-            get => _resource; 
-            private set { 
+        public ScriptResource Resource
+        {
+            get => _resource;
+            private set
+            {
                 _resource = value;
-                _resource.Changed += (s,a) => reload = true;
-            } 
+                _resource.Changed += (s, a) => reload = true;
+            }
         }
 
         public string Name { get; private set; }
@@ -23,36 +25,46 @@ namespace XPlat.Engine.Components
         private bool reload;
         private bool initialized;
         private ScriptResource _resource;
+        private readonly LuaHost host;
+
+        public LuaScriptComponent(LuaHost host)
+        {
+            this.host = host;
+
+        }
 
         public override void Init()
         {
-            if(Instance == null)
+            if (Instance == null)
                 Instantiate();
         }
 
-        private void Instantiate(){
-            if(Resource == null) return;
+        private void Instantiate()
+        {
+            if (Resource == null) return;
             Instance = Resource.Script.Instantiate(Node, Arguments);
-            if(Instance == null) return;
-            Instance.OnError += (s,e) => System.Console.WriteLine($"({Name}):{e.Message}");
+            if (Instance == null) return;
+            Instance.OnError += (s, e) => System.Console.WriteLine($"({Name}):{e.Message}");
             reload = false;
             initialized = false;
         }
 
-        private void Initialize(){
+        private void Initialize()
+        {
             Instance?.Init();
             initialized = true;
         }
 
         public override void Parse(XElement el, SceneReader reader)
         {
-            if (el.TryGetAttribute("res", out var res)) { 
-                Resource = (ScriptResource)reader.Scene.Resources.Load(res);
+            if (el.TryGetAttribute("res", out var res))
+            {
+                Resource = (ScriptResource)reader.Resources.Load(res);
                 Name = res;
             }
             else throw new InvalidDataException("script resource needs 'ref' attribute");
 
-            if(el.TryGetAttribute("args", out var args)) Arguments = reader.Scene.LuaHost.ParseTable(args) ?? throw new InvalidDataException("Unable to parse script arguments");
+            if (el.TryGetAttribute("args", out var args)) Arguments = host.ParseTable(args) ?? throw new InvalidDataException("Unable to parse script arguments");
             if (el.TryGetAttribute("src", out var src)) throw new NotImplementedException("Src attribute is no longer supported for scripts");
             base.Parse(el, reader);
         }
@@ -60,7 +72,7 @@ namespace XPlat.Engine.Components
         public override void Update()
         {
             if (reload) Instantiate();
-            if(!initialized) Initialize();
+            if (!initialized) Initialize();
             Instance?.Update();
         }
 

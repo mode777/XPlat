@@ -34,22 +34,16 @@ namespace XPlat.Engine
         private List<IRenderPass> _renderPasses = new();
         private Queue<NodeLifecycleTask> _nodeTasks = new();
         public Node RootNode { get; private set; }
-        public ResourceManager Resources { get; } = new();
-        public LuaHost LuaHost { get; private set; }
+        //public LuaHost LuaHost { get; private set; }
         public TemplateCollection Templates { get; set; } = new();
 
         public Scene(SceneConfiguration config)
         {
             RootNode = new Node(this);
-            SetupLua();
             config?.Apply(this);
         }
 
-        private void SetupLua(){
-            LuaHost = new LuaHost();
-            //LuaHost.ImportNamespace("System.Numerics");
-            LuaHost.ImportNamespace(nameof(XPlat)+ "." + nameof(Core));
-        }
+
 
         public Node FindNode(string name) => RootNode.Find(name);
 
@@ -89,12 +83,13 @@ namespace XPlat.Engine
                 sub.AfterUpdate();
             }
 
-            foreach (var res in Resources)
-            {
-                if(res is FileResource f && f.FileChanged){
-                    f.Load();
-                }
-            }
+            // TODO
+            // foreach (var res in Resources)
+            // {
+            //     if(res is FileResource f && f.FileChanged){
+            //         f.Load();
+            //     }
+            // }
         }
 
         public Node Instantiate(Node template, Node parent = null, Transform3d transform = null){
@@ -162,98 +157,12 @@ namespace XPlat.Engine
 
         public void Parse(XElement el, SceneReader reader)
         {
-            ParseImports(el, reader);
-            ParseConfiguration(el, reader);
-            ParseResources(el, reader);
-            ParseTemplates(el, reader);
-
             var rootEl = el.Element("node") ?? throw new InvalidDataException("A scene needs a root note element");
             RootNode.Parse(rootEl, reader);
         }
 
-        private void ParseTemplates(XElement el, SceneReader reader)
-        {
-            var templates = el.Element("templates");
-            if (templates != null) Templates.Parse(templates, reader);
-        }
 
-        private static void ParseImports(XElement el, SceneReader reader)
-        {
-            foreach (var i in el.Elements("import"))
-            {
-                reader.ReadElement(i);
-            }
-        }
 
-        private void ParseResources(XElement el, SceneReader reader)
-        {
-            var vg = (_renderPasses.FirstOrDefault(x => x is CanvasRenderPass) as CanvasRenderPass)?.Context;
-
-            var resources = el.Element("resources");
-            if (resources != null)
-            {
-                foreach (var r in resources.Elements())
-                {
-                    var type = reader.GetTargetType(r);
-                    if (type == typeof(ScriptResource))
-                    {
-                        if (r.TryGetAttribute("name", out var id))
-                        {
-                            var script = new ScriptResource(id, null, LuaHost);
-                            script.Parse(r, reader);
-                            Resources.Store(script);
-                        }
-                        else
-                        {
-                            throw new InvalidDataException("Script needs a name attribute");
-                        }
-                    }
-                    if(type == typeof(FontResource) && vg != null){
-                        if (r.TryGetAttribute("name", out var id))
-                        {
-                            var font = new FontResource(id, null, vg);
-                            font.Parse(r, reader);
-                            Resources.Store(font);
-                        }
-                        else
-                        {
-                            throw new InvalidDataException("Font needs a name attribute");
-                        }
-                    }
-                    if (type == typeof(SpriteAtlasResource))
-                    {
-                        if (r.TryGetAttribute("name", out var id))
-                        {
-                            var atlas = new SpriteAtlasResource(id, null);
-                            atlas.Parse(r, reader);
-                            Resources.Store(atlas);
-                        }
-                        else
-                        {
-                            throw new InvalidDataException("Script needs a name attribute");
-                        }
-                    }
-                }
-            }
-        }
-
-        private void ParseConfiguration(XElement el, SceneReader reader){
-            var config = el.Element("configuration");
-            if(config != null){
-                if(config.TryGetAttribute("template", out var template)){
-                    reader.BuildSceneConfigurationFromTemplate(template)
-                        .Apply(this);
-                }
-            }
-            else if(el.TryGetAttribute("configuration", out var template)) {
-                reader.BuildSceneConfigurationFromTemplate(template)
-                    .Apply(this);
-            }   
-            else {
-                reader.BuildSceneConfigurationFromTemplate("3d")
-                    .Apply(this);
-            }
-        }
 
         // private void LoadConfigurationTemplate(string template, IPlatform platform){
         //     switch(template){

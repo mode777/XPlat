@@ -83,7 +83,7 @@ void main()
     #ifdef ALPHA_AO
 
     float enc = tex.a * 255.0;
-    enc = 128.0;
+    enc = 255.0;
     tex = vec4(tex.rgb, 1.0);
     
     float ul = mod(enc,4.0) / 3.0;
@@ -126,9 +126,11 @@ void main()
 //     vec3 lightDir = normalize(-light.direction);
 //     // diffuse shading
 //     float diff = max(dot(normal, lightDir), 0.0);
+
 //     // specular shading
 //     vec3 reflectDir = reflect(-lightDir, normal);
 //     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+
 //     // combine results
 //     vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
 //     vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));

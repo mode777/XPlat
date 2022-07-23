@@ -18,9 +18,11 @@ namespace XPlat.SampleHost
         private readonly IPlatform platform;
         private readonly ISdlPlatformEvents events;
         int i = 0;
+        private readonly SceneReader reader;
 
-        public EngineXmlApp(IServiceProvider services, IPlatform platform, ISdlPlatformEvents events)
+        public EngineXmlApp(IServiceProvider services, IPlatform platform, ISdlPlatformEvents events, SceneReader reader)
         {
+            this.reader = reader;
             this.services = services;
             //platform.AutoSwap = false;
             this.platform = platform;
@@ -41,10 +43,10 @@ namespace XPlat.SampleHost
 
         private void LoadScene()
         {
-            if(scene != null) scene.Dispose();
+            if (scene != null) scene.Dispose();
             //scene = SceneReader.Load("assets/scenes/gltf_scene_2.xml");
-            scene = new SceneReader(services).Read("assets/scenes/2dscene.xml");
-            
+            scene = reader.Read("assets/scenes/2dscene.xml");
+
             scene.Init();
         }
 
@@ -74,16 +76,20 @@ namespace XPlat.SampleHost
         public override void Update()
         {
 
-            if(Input.IsKeyDown(Key.W)){
+            if (Input.IsKeyDown(Key.W))
+            {
                 Node.Transform.TranslationVector -= (Node.Transform.Forward * 0.1f);
             }
-            if(Input.IsKeyDown(Key.S)){
+            if (Input.IsKeyDown(Key.S))
+            {
                 Node.Transform.TranslationVector += (Node.Transform.Forward * 0.1f);
             }
-            if(Input.IsKeyDown(Key.D)){
+            if (Input.IsKeyDown(Key.D))
+            {
                 Node.Transform.TranslationVector += (Node.Transform.Right * 0.1f);
             }
-            if(Input.IsKeyDown(Key.A)){
+            if (Input.IsKeyDown(Key.A))
+            {
                 Node.Transform.TranslationVector -= (Node.Transform.Right * 0.1f);
             }
 
@@ -146,7 +152,7 @@ namespace XPlat.SampleHost
         {
             vg.BeginFrame((int)platform.WindowSize.X, (int)platform.WindowSize.Y, platform.RetinaScale);
             DrawBackdrop();
-            
+
             vg.FontFace("sans");
             vg.FontSize(18);
             vg.FillColor("#fff");
@@ -157,7 +163,8 @@ namespace XPlat.SampleHost
             vg.EndFrame();
         }
 
-        private void DrawNode(Node n, float x, ref float y){
+        private void DrawNode(Node n, float x, ref float y)
+        {
             vg.Text(x, y, n.Name);
             x += 15;
             foreach (var c in n.Children)
@@ -167,7 +174,8 @@ namespace XPlat.SampleHost
             }
         }
 
-        private void DrawBackdrop(){
+        private void DrawBackdrop()
+        {
             vg.RoundedRect(10, 10, 200, 600, 10);
             vg.FillColor("#00000088");
             vg.Fill();

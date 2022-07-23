@@ -6,11 +6,11 @@ using XPlat.NanoVg;
 namespace XPlat.Engine
 {
     [SceneElement("font")]
-    public class FontResource : FileResource, ISceneElement
+    public class FontResource : FileResource, ISerializableResource
     {
         private readonly NVGcontext vg;
 
-        public FontResource(string id, string path, NVGcontext vg) : base(id, path)
+        public FontResource(NVGcontext vg) : base()
         {
             this.vg = vg;
         }

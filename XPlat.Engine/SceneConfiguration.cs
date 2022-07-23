@@ -2,13 +2,6 @@ namespace XPlat.Engine
 {
     public class SceneConfiguration
     {
-        public IServiceProvider Services { get; }
-        public SceneConfiguration(IServiceProvider services)
-        {
-            this.Services = services;
-
-        }
-
         private List<IRenderPass> _renderPasses = new();
         private List<ISubSystem> _subsystems = new();
 

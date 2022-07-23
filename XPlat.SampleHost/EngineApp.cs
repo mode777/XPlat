@@ -9,17 +9,16 @@ namespace XPlat.SampleHost
     public class EngineApp : ISdlApp
     {
         private Scene scene;
-        private readonly IServiceProvider services;
+        private readonly SceneConfiguration3d config;
 
-        public EngineApp(IPlatform platform, IServiceProvider services)
+        public EngineApp(IPlatform platform, SceneConfiguration3d config)
         {
-            this.services = services;
+            this.config = config;
             this.platform = platform;
         }
 
         public void Init()
         {
-            var config = new SceneConfiguration3d(services);
             scene = new Scene(config);
 
             var camera = new Node(scene)

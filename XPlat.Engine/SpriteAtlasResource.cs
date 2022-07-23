@@ -7,13 +7,13 @@ using XPlat.Graphics;
 namespace XPlat.Engine
 {
     [SceneElement("atlas")]
-    public class SpriteAtlasResource : FileResource, ISceneElement
+    public class SpriteAtlasResource : FileResource, ISerializableResource
     {
         public int Width { get; set; } = 1024;
         public int Height { get; set; } = 1024;
         public SpriteAtlas Atlas => Value as SpriteAtlas;
 
-        public SpriteAtlasResource(string id, string path) : base(id, path)
+        public SpriteAtlasResource() : base()
         {
         }
 

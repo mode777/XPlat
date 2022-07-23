@@ -17,7 +17,7 @@ namespace XPlat.Engine.Components
             }
 
             if(el.TryGetAttribute("res", out var res)) { 
-                var resource = reader.Scene.Resources.Load(res);
+                var resource = reader.Resources.Load(res);
                 Mesh = resource.GetValue<Mesh>();
                 resource.Changed += (s,a) => Mesh = resource.GetValue<Mesh>();
             }

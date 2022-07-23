@@ -5,10 +5,10 @@ using XPlat.LuaScripting;
 namespace XPlat.Engine
 {
     [SceneElement("script")]
-    public class ScriptResource : FileResource, ISceneElement
+    public class ScriptResource : FileResource, ISerializableResource
     {
         public LuaScript Script => Value as LuaScript;
-        public ScriptResource(string id, string path, LuaHost host) : base(id, path)
+        public ScriptResource(LuaHost host) : base()
         {
             Value = host.CreateScript();
             Script.OnError += (s,e) => System.Console.WriteLine(e.Message);

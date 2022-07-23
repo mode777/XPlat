@@ -19,18 +19,19 @@ namespace XPlat.SampleHost
         private Scene scene;
         private readonly IServiceProvider services;
         private readonly IPlatform platform;
+        private readonly VoxelConfig config;
 
-        public VoxelApp(IPlatform platform, IServiceProvider services)
+        public VoxelApp(IPlatform platform, VoxelConfig config)
         {
-            platform.ClearColor = new Vector3(1,0,0);
-            this.services = services;
+            this.config = config;
+            platform.ClearColor = new Vector3(1, 0, 0);
             this.platform = platform;
         }
 
         public void Init()
         {
-            
-            scene = new Scene(new VoxelConfig(services));
+
+            scene = new Scene(config);
 
             var camera = new Node(scene)
             {
@@ -58,10 +59,10 @@ namespace XPlat.SampleHost
             float r = 0;
             cube.AddComponent(new ActionComponent(null, c =>
             {
-                if(Input.IsKeyDown(Key.SPACE))
+                if (Input.IsKeyDown(Key.SPACE))
                 {
-                    r+=0.03f;
-                    c.Node.Transform.RotationQuat = Quaternion.CreateFromYawPitchRoll(r/2, 0, 0);
+                    r += 0.03f;
+                    c.Node.Transform.RotationQuat = Quaternion.CreateFromYawPitchRoll(r / 2, 0, 0);
                 }
             }));
             scene.RootNode.AddChild(cube);
@@ -74,21 +75,24 @@ namespace XPlat.SampleHost
                     TranslationVector = new Vector3(30, 20, -20)
                 }
             };
-            light.AddComponent(new LightComponent{
-                Light = new PointLight {
+            light.AddComponent(new LightComponent
+            {
+                Light = new PointLight
+                {
                     Intensity = 200
                 }
             });
             scene.RootNode.AddChild(light);
         }
 
-        private Primitive LoadVox(string filename){
+        private Primitive LoadVox(string filename)
+        {
             //var img = Image.Load<Rgba32>(paletteFilename);
             var loader = new VoxLoader();
             //loader.SetPalette(img.GetPixelRowSpan(0).ToArray());
             var r = new VoxReader(filename, loader);
             r.Read();
-            
+
             var prim = loader.GetPrimitive();
             //prim.Material = loader.GetMaterial();
             return prim;

@@ -31,7 +31,7 @@ namespace XPlat.Engine.Components
                 var split = res.Split(':');
                 var resName = split[0];
                 var resId = split[1];
-                Resource = (SpriteAtlasResource)reader.Scene.Resources.Load(resName);
+                Resource = (SpriteAtlasResource)reader.Resources.Load(resName);
                 Sprite = Resource.Atlas[resId] ?? throw new InvalidDataException($"Sprite '{resId}' not found");
             }
             else if (el.TryGetAttribute("src", out var src)) throw new NotImplementedException("Src attribute is not yet supported for sprites");

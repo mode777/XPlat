@@ -7,12 +7,12 @@ using XPlat.Graphics;
 namespace XPlat.Voxels;
 
 [SceneElement("vox")]
-public class VoxResource : FileResource, ISceneElement
+public class VoxResource : FileResource, ISerializableResource
 {
     public Mesh Mesh => Value as Mesh;
     private readonly IServiceProvider services;
 
-    public VoxResource(string id, string file) : base(id, file)
+    public VoxResource() : base()
     {
     }
     protected override object LoadFile()

@@ -197,41 +197,54 @@ namespace XPlat.Engine
 
             foreach (var c in el.Element("components")?.Elements() ?? Enumerable.Empty<XElement>())
             {
-                var cname = c.TryGetAttribute("name", out var cid) ? cid : null;
-
-                Component component = null;
-                if(cname != null) component = GetComponentByName(cname);
-                else {
-                    var target = reader.GetTargetType(c);
-                    component = GetComponent(target);
-                }
-                
-                if (component != null)
-                {
-                    component.Parse(c, reader);
-                }
-                else
-                {
-                    component = reader.ReadElement(c) as Component ?? throw new InvalidDataException($"{reader.GetTargetType(c).Name} is not a component");
-                    component.Name = cname;
-                    AddComponent(component);
-                }
+                ParseComponent(c, reader);
             }
 
-            foreach (var c in el.Elements("node"))
+            foreach (var c in el.Elements())
             {
-                if (c.TryGetAttribute("name", out var n))
-                {
-                    var child = Children.FirstOrDefault(x => x.Name == n);
-                    if (child != null)
+                if(c.Name == "node"){
+                    if (c.TryGetAttribute("name", out var n))
                     {
-                        child.Parse(c, reader);
-                        continue;
+                        var child = Children.FirstOrDefault(x => x.Name == n);
+                        if (child != null)
+                        {
+                            child.Parse(c, reader);
+                            continue;
+                        }
                     }
+                    var node = new Node(Scene);
+                    node.Parse(c, reader);
+                    AddChild(node);
+                } else if(c.Name == "components") {
+                    foreach (var co in c.Elements())
+                    {
+                        ParseComponent(co, reader);
+                    }
+                } else {
+                    ParseComponent(c, reader);
                 }
-                var node = new Node(Scene);
-                node.Parse(c, reader);
-                AddChild(node);
+            }
+        }
+
+        private void ParseComponent(XElement c, SceneReader reader){
+            var cname = c.TryGetAttribute("name", out var cid) ? cid : null;
+
+            Component component = null;
+            if(cname != null) component = GetComponentByName(cname);
+            else {
+                var target = reader.GetTargetType(c);
+                component = GetComponent(target);
+            }
+            
+            if (component != null)
+            {
+                component.Parse(c, reader);
+            }
+            else
+            {
+                component = reader.ReadElement(c) as Component ?? throw new InvalidDataException($"{reader.GetTargetType(c).Name} is not a component");
+                component.Name = cname;
+                AddComponent(component);
             }
         }
 

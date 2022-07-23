@@ -10,9 +10,14 @@ using XPlat.SampleHost;
 //XPlatApp.RunSdl<SpriteBatchApp>(args);
 //XPlatApp.RunSdl<NanoVgApp>(args);
 //XPlatApp.RunSdl<Tiny2cApp>(args);
-//XPlatApp.RunSdl<EngineXmlApp>(args);
+//XPlatApp.RunSdl<EngineXmlApp>(args), services =>
+//{
+//    services.AddEngineServices();
+//});
 //XPlatApp.RunSdl<EngineApp>(args);
-//XPlatApp.RunSdl<VoxelApp>(args);
+// XPlatApp.RunSdl<VoxelApp>(args, services => {
+//     services.AddEngineServices();
+// });
 //XPlatApp.RunSdl<LightsApp>(args);
 //XPlatApp.RunSdl<MinimalApp>(args);
 //XPlatApp.RunSdl<GltfApp>(args);
@@ -22,8 +27,6 @@ using XPlat.SampleHost;
 //XPlatApp.RunSdl<NanoGuiApp>(args);
 //XPlatApp.RunSdl<Graphics3dApp>(args);
 //XPlatApp.RunSdl<MeshBuilderApp>(args);
-XPlatApp.RunSdl<EngineHost>(args, services =>
-{
+XPlatApp.RunSdl<EngineHost>(args, services => {
     services.AddEngineServices();
-
 });

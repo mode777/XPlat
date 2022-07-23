@@ -27,7 +27,7 @@ namespace XPlat.Engine.Components
         public override void Parse(XElement el, SceneReader reader)
         {
             if (el.TryGetAttribute("res", out var res)) { 
-                Resource = (SpriteAtlasResource)reader.Scene.Resources.Load(res);
+                Resource = (SpriteAtlasResource)reader.Resources.Load(res);
             }
             else if (el.TryGetAttribute("src", out var src)) throw new NotImplementedException("Src attribute is not yet supported for spritesbuffers");
             else throw new InvalidDataException("script resource needs 'ref' attribute");

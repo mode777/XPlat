@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <scene version="1.0">
-<!-- <scene version="1.0" configuration="2d"> -->
-  <import assembly="XPlat.SampleHost" />
   <configuration template="2d" />
   <resources>
     <atlas name="space" src="../sprites/space" width="1024" height="1024"/>
@@ -18,62 +16,46 @@
   <templates>
 
     <node name="meteor">
-      <components>
-        <collider2d name="collider" mode="active" weight="0">
-          <circle p="0,0" r="5" />
-        </collider2d>
-        <lua res="meteor" />
-        <sprite name="sprite" res="space:meteorBrown_big1" />
-      </components>
+      <collider2d name="collider" mode="active" weight="0">
+        <circle p="0,0" r="5" />
+      </collider2d>
+      <lua res="meteor" />
+      <sprite name="sprite" res="space:meteorBrown_big1" />
     </node>
 
-    <node name="laser">
-      <components>
-        <collider2d name="collider" mode="ghost" weight="0">
-          <capsule a="0,0" b="0,50" r="5" />
-        </collider2d>
-        <lua res="laser" name="script"/>
-        <sprite res="space:laserGreen07" origin="5,5" />
-      </components>
+    <node name="laser">      
+      <collider2d name="collider" mode="ghost" weight="0">
+        <capsule a="0,0" b="0,50" r="5" />
+      </collider2d>
+      <lua res="laser" name="script"/>
+      <sprite res="space:laserGreen07" origin="5,5" />
     </node>
 
   </templates>
 
   <node name="root">
-    <components>
-      <lua name="genrator" res="generator" />
-      <lua name="draw" res="canvas" />
-      <canvas name="canvas" />
-    </components>
-
+    <lua name="genrator" res="generator" />
+    <lua name="draw" res="canvas" />
+    <canvas name="canvas" />
+    
     <node name="starfield">
-      <components>
-        <lua res="starfield" />
-        <spritebuffer name="buffer" res="space" origin="10, 20" />
-      </components>
+      <lua res="starfield" />
+      <spritebuffer name="buffer" res="space" origin="10, 20" />
     </node>
     
     <node name="camera" translate="0,0">
-      <components>
-        <camera2d name="cam"/>
-        <lua res="cam" />
-      </components>
+      <camera2d name="cam"/>
+      <lua res="cam" />
     </node>
 
-    <node name="player" translate="0, 0, 0">
-      <components>
-        <lua res="ship"/>
-        <collider2d mode="active" weight="1">
-          <!-- <capsule a="0,-30" b="0,10" r="15" /> -->
-          <circle p="0,-15" r="35" />
-        </collider2d>
-        <sprite res="space:playerShip1_red" origin="50,50" />
-      </components>
+    <node name="player" translate="0, 0, 0">      
+      <lua res="ship"/>
+      <collider2d mode="active" weight="1">
+        <!-- <capsule a="0,-30" b="0,10" r="15" /> -->
+        <circle p="0,-15" r="35" />
+      </collider2d>
+      <sprite res="space:playerShip1_red" origin="50,50" />
     </node>
-
-
-    
-    
 
   </node>
 </scene>

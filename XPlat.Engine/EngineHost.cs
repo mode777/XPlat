@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SDL2;
 using XPlat.Core;
+using XPlat.Engine.Serialization;
 
 namespace XPlat.Engine
 {
@@ -13,22 +14,21 @@ namespace XPlat.Engine
         private readonly SceneResource resource;
         private readonly IPlatform platform;
         private readonly ISdlPlatformEvents events;
-        private readonly IServiceProvider services;
         private readonly ILogger<EngineHost> logger;
 
-        public EngineHost(ILogger<EngineHost> logger, 
-            IServiceProvider services, 
+        public EngineHost(ILogger<EngineHost> logger,
             IPlatform platform, 
             IConfiguration config, 
-            ISdlPlatformEvents events)
+            ISdlPlatformEvents events,
+            SceneResource sceneRes)
         {
             this.logger = logger;
-            this.services = services;
             this.events = events;
             this.platform = platform;
             this.config = config.GetSection("Engine").Get<EngineConfiguration>();
             //config.GetReloadToken()
-            this.resource = new SceneResource(services, "_scene", this.config.InitialScene);
+            sceneRes.Filename = this.config.InitialScene;
+            this.resource = sceneRes;
             if (this.config.Debug) resource.Watch();
 
             events.Subscribe(SDL.SDL_EventType.SDL_KEYUP, OnKeyUp);
