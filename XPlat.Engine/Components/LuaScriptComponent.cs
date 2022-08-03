@@ -18,7 +18,6 @@ namespace XPlat.Engine.Components
             }
         }
 
-        public string Name { get; private set; }
         public LuaScriptInstance Instance { get; private set; }
         public LuaTable Arguments { get; private set; }
 
@@ -60,7 +59,7 @@ namespace XPlat.Engine.Components
             if (el.TryGetAttribute("res", out var res))
             {
                 Resource = (ScriptResource)reader.Resources.Load(res);
-                Name = res;
+                //Name = res;
             }
             else throw new InvalidDataException("script resource needs 'ref' attribute");
 

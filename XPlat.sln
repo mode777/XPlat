@@ -43,6 +43,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzgaarMapReader", "AzgaarMa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.Voxels", "XPlat.Voxels\XPlat.Voxels.csproj", "{4BDF93F3-B48E-457C-AD82-B43284DFEE35}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.WrenScripting", "XPlat.WrenScripting\XPlat.WrenScripting.csproj", "{A54C0E83-23E8-44BE-952D-A13B5D2743E5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IronWren", "IronWren", "{F93E5172-F9AA-4565-9365-A8B7E510518E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronWren", "IronWren\IronWren\IronWren.csproj", "{5095004B-3F46-449F-9579-72FA50A419C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -129,11 +135,22 @@ Global
 		{4BDF93F3-B48E-457C-AD82-B43284DFEE35}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BDF93F3-B48E-457C-AD82-B43284DFEE35}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BDF93F3-B48E-457C-AD82-B43284DFEE35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A54C0E83-23E8-44BE-952D-A13B5D2743E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A54C0E83-23E8-44BE-952D-A13B5D2743E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A54C0E83-23E8-44BE-952D-A13B5D2743E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A54C0E83-23E8-44BE-952D-A13B5D2743E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5095004B-3F46-449F-9579-72FA50A419C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5095004B-3F46-449F-9579-72FA50A419C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5095004B-3F46-449F-9579-72FA50A419C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5095004B-3F46-449F-9579-72FA50A419C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A26DF3B-3FA2-46D2-9572-E4A244CA4C51}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5095004B-3F46-449F-9579-72FA50A419C2} = {F93E5172-F9AA-4565-9365-A8B7E510518E}
 	EndGlobalSection
 EndGlobal

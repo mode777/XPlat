@@ -30,3 +30,4 @@ using XPlat.SampleHost;
 XPlatApp.RunSdl<EngineHost>(args, services => {
     services.AddEngineServices();
 });
+//XPlatApp.RunSdl<WrenApp>(args);

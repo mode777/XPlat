@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using XPlat.Engine.Serialization;
 using XPlat.LuaScripting;
 using XPlat.NanoVg;
+using XPlat.WrenScripting;
 
 namespace XPlat.Engine;
 
@@ -40,6 +41,12 @@ public static class IServiceCollectionExtensions
             var l = new LuaHost();
             l.ImportNamespace(nameof(XPlat)+ "." + nameof(Core));
             return l;
+        });
+        services.AddScoped<WrenVm>(s => {
+            var vm = new WrenVm();
+            vm.Interpret("XPlat.Engine", File.ReadAllText("assets/wren/XPlat.Engine.wren"));
+            vm.Interpret("XPlat.Core", File.ReadAllText("assets/wren/XPlat.Core.wren"));
+            return vm;
         });
         services.AddScoped<ResourceManager>();
         services.AddScoped<NVGcontext>(s => NVGcontext.CreateGl());

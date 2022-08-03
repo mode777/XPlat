@@ -33,6 +33,7 @@
     <ProjectReference Include="..\Gwen.Net\Gwen.Net.csproj" />
     <ProjectReference Include="..\Gwen.Net.OpenTk\Gwen.Net.OpenTk.csproj" />
     <ProjectReference Include="..\XPlat.Voxels\XPlat.Voxels.csproj" />
+    <ProjectReference Include="..\XPlat.WrenScripting\XPlat.WrenScripting.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="assets\" />

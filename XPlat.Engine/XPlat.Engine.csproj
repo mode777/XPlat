@@ -8,6 +8,7 @@
     <ProjectReference Include="..\XPlat.NanoVg\XPlat.NanoVg.csproj" />
     <ProjectReference Include="..\XPlat.SpriteBatch\XPlat.SpriteBatch.csproj" />
     <ProjectReference Include="..\TinyC2\TinyC2.csproj" />
+    <ProjectReference Include="..\XPlat.WrenScripting\XPlat.WrenScripting.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

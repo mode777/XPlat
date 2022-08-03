@@ -1,21 +1,21 @@
 using System.Xml.Linq;
 using XPlat.Engine.Serialization;
-using XPlat.LuaScripting;
+using XPlat.WrenScripting;
 
 namespace XPlat.Engine
 {
-    [SceneElement("script")]
-    public class ScriptResource : FileResource, ISerializableResource
+    [SceneElement("wren-script")]
+    public class WrenScriptResource : FileResource, ISerializableResource
     {
-        public LuaScript Script => Value as LuaScript;
-        public ScriptResource(LuaHost host) : base()
+        private readonly WrenVm vm;
+        public WrenScriptResource(WrenVm vm)
         {
-            Value = host.CreateScript();
-            Script.OnError += (s, e) => System.Console.WriteLine(e.Message);
+            this.vm = vm;
         }
 
         public void Parse(XElement el, SceneReader reader)
         {
+            if (el.TryGetAttribute("name", out var name)) { Name = name; }
             if (el.TryGetAttribute("src", out var src)) { Filename = reader.ResolvePath(src); Load(); }
             if (el.TryGetAttribute("watch", out var value) && bool.TryParse(value, out var watch) && watch) { Watch(); }
         }
@@ -23,8 +23,9 @@ namespace XPlat.Engine
         protected override object LoadFile()
         {
             var str = File.ReadAllText(Filename);
-            (Value as LuaScript).Load(str);
-            return Value;
+            vm.Interpret(Name, str);
+            return null;
         }
+        public string Name { get; set; }
     }
 }

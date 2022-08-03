@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<scene version="1.0">
+  <configuration template="2d" />
+  <resources>
+    <atlas name="space" src="../sprites/space" width="1024" height="1024"/>
+    <font name="merriweather" src="../fonts/Merriweather-Regular.ttf" />
+    <wren-script name="ship" src="../wren/ship.wren" watch="true" />
+  </resources>
+
+  <node name="root">
+    <canvas name="canvas" />
+        
+    <node name="camera" translate="0,0">
+      <camera2d name="cam"/>
+    </node>
+
+    <node name="player" translate="0, 0, 0">      
+      <wren res="ship:ShipControl" />
+      <collider2d mode="active" weight="1">
+        <!-- <capsule a="0,-30" b="0,10" r="15" /> -->
+        <circle p="0,-15" r="35" />
+      </collider2d>
+      <sprite res="space:playerShip1_red" origin="50,50" />
+    </node>
+
+  </node>
+</scene>

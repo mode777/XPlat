@@ -185,11 +185,16 @@ namespace XPlat.Voxels
                 for(int ca = a; ca < a+w; ca++){
                     ClearFlag(flag_, ca, cb, depth_);
                     var color = GetPixel(flag_, ca, cb, depth_);
+                    color.A = EncodeAo(2,2,3,3);
                     buffer.SetPixel(p.X + ca - a, p.Y + cb - b, color);
                 }
             }
 
             return new Rectangle(p.X,p.Y,w,h);
+        }
+
+        private byte EncodeAo(int ul, int ur, int dr, int dl) {
+            return (byte)(ul | (ur<<2) | (dr<<4) | (dl<<6));
         }
 
         public void WriteTo(VoxelBuffer buffer){

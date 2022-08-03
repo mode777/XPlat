@@ -83,7 +83,7 @@ void main()
     #ifdef ALPHA_AO
 
     float enc = tex.a * 255.0;
-    enc = 255.0;
+    //enc = 255.0;
     tex = vec4(tex.rgb, 1.0);
     
     float ul = mod(enc,4.0) / 3.0;
