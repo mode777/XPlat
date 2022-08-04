@@ -3,51 +3,47 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31808.319
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.Core", "XPlat.Core\XPlat.Core.csproj", "{A2E01F11-8533-469B-83AE-891A13153BB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.Core", "XPlat.Core\XPlat.Core.csproj", "{A2E01F11-8533-469B-83AE-891A13153BB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.SampleHost", "XPlat.SampleHost\XPlat.SampleHost.csproj", "{09C11ED9-1227-4CDC-AF9D-BAB853802102}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.SampleHost", "XPlat.SampleHost\XPlat.SampleHost.csproj", "{09C11ED9-1227-4CDC-AF9D-BAB853802102}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "net6test", "net6test\net6test.csproj", "{0CBA7AC9-8251-40A3-A327-29F43913DB29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "net6test", "net6test\net6test.csproj", "{0CBA7AC9-8251-40A3-A327-29F43913DB29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.NanoVg", "XPlat.NanoVg\XPlat.NanoVg.csproj", "{066E101E-C6E6-4583-9FBC-624955B83F2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.NanoVg", "XPlat.NanoVg\XPlat.NanoVg.csproj", "{066E101E-C6E6-4583-9FBC-624955B83F2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.NanoGui", "XPlat.NanoGui\XPlat.NanoGui.csproj", "{9A0F5FD0-6DD8-41FE-817E-5B290E316FB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.NanoGui", "XPlat.NanoGui\XPlat.NanoGui.csproj", "{9A0F5FD0-6DD8-41FE-817E-5B290E316FB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.Graphics", "XPlat.Graphics\XPlat.Graphics.csproj", "{8C337603-2CF9-47B1-A827-D483494F8723}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.Graphics", "XPlat.Graphics\XPlat.Graphics.csproj", "{8C337603-2CF9-47B1-A827-D483494F8723}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.SpriteBatch", "XPlat.SpriteBatch\XPlat.SpriteBatch.csproj", "{94C6055E-2730-4D88-BD0D-665211A767B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.SpriteBatch", "XPlat.SpriteBatch\XPlat.SpriteBatch.csproj", "{94C6055E-2730-4D88-BD0D-665211A767B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.Core.Tests", "XPlat.Core.Tests\XPlat.Core.Tests.csproj", "{685441FB-9B23-475B-90C9-7C01867F6F20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.Core.Tests", "XPlat.Core.Tests\XPlat.Core.Tests.csproj", "{685441FB-9B23-475B-90C9-7C01867F6F20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.Svg", "XPlat.Svg\XPlat.Svg.csproj", "{389B1E68-F27E-42BC-9B80-242F63BCAD77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.Svg", "XPlat.Svg\XPlat.Svg.csproj", "{389B1E68-F27E-42BC-9B80-242F63BCAD77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.Engine", "XPlat.Engine\XPlat.Engine.csproj", "{4F6515C8-807B-4A0F-930A-C9272D6CEBF1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.Engine", "XPlat.Engine\XPlat.Engine.csproj", "{4F6515C8-807B-4A0F-930A-C9272D6CEBF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.Gltf", "XPlat.Gltf\XPlat.Gltf.csproj", "{4E0FE34A-B2EB-48F9-A367-DEB02AB4E7AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.Gltf", "XPlat.Gltf\XPlat.Gltf.csproj", "{4E0FE34A-B2EB-48F9-A367-DEB02AB4E7AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.Gui", "XPlat.Gui\XPlat.Gui.csproj", "{D09B52CB-9FB8-4FBD-BEE0-AA46928460C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.Gui", "XPlat.Gui\XPlat.Gui.csproj", "{D09B52CB-9FB8-4FBD-BEE0-AA46928460C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.Lightmapper", "XPlat.Lightmapper\XPlat.Lightmapper.csproj", "{DA5BC79B-3221-44AE-B024-072359FAB0ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.Lightmapper", "XPlat.Lightmapper\XPlat.Lightmapper.csproj", "{DA5BC79B-3221-44AE-B024-072359FAB0ED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.LuaScripting", "XPlat.Lua\XPlat.LuaScripting.csproj", "{712C3BB8-3B15-4350-8750-E10B05AC5834}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.LuaScripting", "XPlat.Lua\XPlat.LuaScripting.csproj", "{712C3BB8-3B15-4350-8750-E10B05AC5834}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TinyC2", "TinyC2\TinyC2.csproj", "{0E3414EA-39FA-4122-B073-E2C7A1D093EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyC2", "TinyC2\TinyC2.csproj", "{0E3414EA-39FA-4122-B073-E2C7A1D093EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroUI", "MicroUI\MicroUI.csproj", "{82A161AF-2DDD-40EA-B2F0-2898E6C537AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MicroUI", "MicroUI\MicroUI.csproj", "{82A161AF-2DDD-40EA-B2F0-2898E6C537AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gwen.Net", "Gwen.Net\Gwen.Net.csproj", "{8CD714BE-D8E9-4775-B41E-2274F485E88B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gwen.Net", "Gwen.Net\Gwen.Net.csproj", "{8CD714BE-D8E9-4775-B41E-2274F485E88B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gwen.Net.OpenTk", "Gwen.Net.OpenTk\Gwen.Net.OpenTk.csproj", "{BAF5C816-AEFB-437E-ABB8-65E81B8C9603}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gwen.Net.OpenTk", "Gwen.Net.OpenTk\Gwen.Net.OpenTk.csproj", "{BAF5C816-AEFB-437E-ABB8-65E81B8C9603}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzgaarMapReader", "AzgaarMapReader\AzgaarMapReader.csproj", "{01453C9C-F6E2-416B-8C78-7B131840C656}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzgaarMapReader", "AzgaarMapReader\AzgaarMapReader.csproj", "{01453C9C-F6E2-416B-8C78-7B131840C656}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.Voxels", "XPlat.Voxels\XPlat.Voxels.csproj", "{4BDF93F3-B48E-457C-AD82-B43284DFEE35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.Voxels", "XPlat.Voxels\XPlat.Voxels.csproj", "{4BDF93F3-B48E-457C-AD82-B43284DFEE35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.WrenScripting", "XPlat.WrenScripting\XPlat.WrenScripting.csproj", "{A54C0E83-23E8-44BE-952D-A13B5D2743E5}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IronWren", "IronWren", "{F93E5172-F9AA-4565-9365-A8B7E510518E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronWren", "IronWren\IronWren\IronWren.csproj", "{5095004B-3F46-449F-9579-72FA50A419C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.WrenScripting", "XPlat.WrenScripting\XPlat.WrenScripting.csproj", "{A54C0E83-23E8-44BE-952D-A13B5D2743E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -139,18 +135,11 @@ Global
 		{A54C0E83-23E8-44BE-952D-A13B5D2743E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A54C0E83-23E8-44BE-952D-A13B5D2743E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A54C0E83-23E8-44BE-952D-A13B5D2743E5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5095004B-3F46-449F-9579-72FA50A419C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5095004B-3F46-449F-9579-72FA50A419C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5095004B-3F46-449F-9579-72FA50A419C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5095004B-3F46-449F-9579-72FA50A419C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A26DF3B-3FA2-46D2-9572-E4A244CA4C51}
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{5095004B-3F46-449F-9579-72FA50A419C2} = {F93E5172-F9AA-4565-9365-A8B7E510518E}
 	EndGlobalSection
 EndGlobal
