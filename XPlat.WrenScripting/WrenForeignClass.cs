@@ -14,6 +14,8 @@ internal class WrenForeignClass : IDisposable
         this.className = className;
         this.type = type;
         this.factory = factory;
+        this.FinalizeFn = Finalize;
+        this.AllocateFn = Allocate;
         classHandle = new(() =>
         {
             var start = WrenNative.wrenGetSlotCount(vm.handle);
@@ -22,12 +24,15 @@ internal class WrenForeignClass : IDisposable
             return WrenNative.wrenGetSlotHandle(vm.handle, start);
         });
     }
-    internal void Allocate(IntPtr vm){
+
+    internal readonly WrenNative.WrenForeignMethodFn AllocateFn;
+    private void Allocate(IntPtr vm){
         IntPtr foreign = WrenNative.wrenSetSlotNewForeign(vm, 0,0, (IntPtr)IntPtr.Size);   
         Marshal.WriteIntPtr(foreign, (IntPtr)GCHandle.Alloc(factory()));
     }
 
-    internal void Finalize(IntPtr data){
+    internal readonly WrenNative.WrenFinalizerFn FinalizeFn;
+    private void Finalize(IntPtr data){
         GCHandle handle = (GCHandle)Marshal.ReadIntPtr(data);
         handle.Free();
     }
@@ -61,7 +66,7 @@ internal class WrenForeignClass : IDisposable
 
     public WrenNative.WrenForeignMethodFn GetMethodFn(string signature, bool isStatic){
         var m = GetMethod(signature, isStatic);
-        return m.Invoke;
+        return m.ForeignDelegate;
     }
 
     private bool disposedValue;
