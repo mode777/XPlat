@@ -68,7 +68,7 @@ public unsafe static class WrenNative {
         [MarshalAs(UnmanagedType.FunctionPtr)]
         public WrenForeignMethodFn allocate;
         [MarshalAs(UnmanagedType.FunctionPtr)]
-        public WrenForeignMethodFn finalize;
+        public WrenFinalizerFn finalize;
     }
 
     public enum WrenErrorType

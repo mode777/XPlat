@@ -37,6 +37,17 @@ public class WrenVm : IDisposable
         }
     }
 
+    internal WrenNative.WrenType[] Stack => GetStack();
+
+    internal WrenNative.WrenType[] GetStack(){
+        var stack = new WrenNative.WrenType[WrenNative.wrenGetSlotCount(handle)];
+        for (int i = 0; i < stack.Length; i++)
+        {
+            stack[i] = WrenNative.wrenGetSlotType(handle, i);
+        }
+        return stack;
+    }
+
     internal WrenForeignClass GetForeignClass(Type t)
     {
         return GetClass(t);
@@ -76,8 +87,9 @@ public class WrenVm : IDisposable
         
         var c = new WrenForeignClass(this, module, className, type, () => null);
 
-        fcm.allocate = c.Allocate;
-        fcm.finalize = c.Finalize;
+        fcm.allocate = c.AllocateFn;
+        fcm.finalize = c.FinalizeFn;
+        
         classRegistry.Add($"{module}.{className}",c);
         return fcm;
     }
@@ -111,10 +123,17 @@ public class WrenVm : IDisposable
         {
             if (disposing)
             {
+                foreach (var item in classRegistry)
+                {
+                    item.Value.Dispose();
+                }
+                foreach(var item in objectLookup){
+                    item.Value.Dispose();
+                }
                 Lookup.Remove(handle);
             }
-
             WrenNative.wrenFreeVM(handle);
+
             disposedValue = true;
         }
     }

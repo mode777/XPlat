@@ -10,7 +10,10 @@ internal abstract class WrenForeignInvokeable {
     public WrenForeignInvokeable(WrenVm vm)
     {
         this.vm = vm;
+        ForeignDelegate = Invoke;
     }
+
+    public readonly WrenNative.WrenForeignMethodFn ForeignDelegate;
 
     public abstract void Invoke(IntPtr vm);
 
