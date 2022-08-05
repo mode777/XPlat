@@ -12,7 +12,7 @@ public unsafe static class WrenNative {
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void WrenFinalizerFn(IntPtr data);
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate string WrenResolveModuleFn(IntPtr vm, string importer, string name);
+    public delegate IntPtr WrenResolveModuleFn(IntPtr vm, string importer, IntPtr name);
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate void WrenLoadModuleCompleteFn(IntPtr vm, string name, WrenLoadModuleResult result);
 

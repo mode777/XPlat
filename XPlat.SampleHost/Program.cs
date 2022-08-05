@@ -27,7 +27,8 @@ using XPlat.SampleHost;
 //XPlatApp.RunSdl<NanoGuiApp>(args);
 //XPlatApp.RunSdl<Graphics3dApp>(args);
 //XPlatApp.RunSdl<MeshBuilderApp>(args);
-XPlatApp.RunSdl<EngineHost>(args, services => {
+XPlatApp.RunSdl<EngineHost>(args, services =>
+{
     services.AddEngineServices();
 });
 //XPlatApp.RunSdl<WrenApp>(args);
