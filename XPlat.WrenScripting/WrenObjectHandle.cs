@@ -4,13 +4,18 @@ namespace XPlat.WrenScripting;
 
 public class WrenObjectHandle : IDisposable {
     internal readonly IntPtr handle;
+    //private readonly int no;
     private readonly WrenVm vm;
     private bool disposedValue;
+    //private static int ctr = 0;
 
     internal WrenObjectHandle(WrenVm vm, int slot)
     {
         this.vm = vm;
         this.handle = WrenNative.wrenGetSlotHandle(vm.handle,slot);
+        //this.no = ctr++;
+        //System.Console.WriteLine($"Allocate {no}");
+        vm.RegisterHandle(this);
     }
 
     public void Call(string signature, params object[] parameters){
@@ -45,6 +50,8 @@ public class WrenObjectHandle : IDisposable {
         {
             WrenNative.wrenReleaseHandle(vm.handle, handle);
             disposedValue = true;
+            //System.Console.WriteLine($"Dispose {no}");
+
         }
     }
 

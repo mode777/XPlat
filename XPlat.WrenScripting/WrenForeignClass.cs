@@ -21,6 +21,7 @@ internal class WrenForeignClass : IDisposable
             var start = WrenNative.wrenGetSlotCount(vm.handle);
             WrenNative.wrenEnsureSlots(vm.handle, start+1);
             WrenNative.wrenGetVariable(vm.handle, module, className, start);
+            //System.Console.WriteLine($"Allocate {module}.{className}");
             return WrenNative.wrenGetSlotHandle(vm.handle, start);
         });
     }
@@ -85,7 +86,10 @@ internal class WrenForeignClass : IDisposable
                 // TODO: dispose managed state (managed objects)
             }
 
-            if(classHandle.IsValueCreated) WrenNative.wrenReleaseHandle(vm.handle, classHandle.Value);
+            if(classHandle.IsValueCreated) { 
+                WrenNative.wrenReleaseHandle(vm.handle, classHandle.Value);
+                //System.Console.WriteLine($"Dispose {module}.{className}");
+            }
             disposedValue = true;
         }
     }

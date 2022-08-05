@@ -9,6 +9,8 @@ public class WrenVm : IDisposable
 {
     static void WriteStatic(IntPtr vm, string str) => System.Console.Write(str);
     static void ErrorStatic(IntPtr vm, WrenNative.WrenErrorType type, string module, int line, string message) => throw new WrenScriptException(vm, type, module, line, message);
+
+
     static WrenNative.WrenForeignClassMethods BindForeignClassStatic(IntPtr vm, string module, string className) => GetVm(vm).BindForeignClass(module, className);
     static WrenNative.WrenForeignMethodFn BindForeignMethodStatic(IntPtr vm, string module, string className, bool isStatic, string signature) => GetVm(vm).BindForeignMethod(module, className, isStatic, signature);
     static WrenNative.WrenLoadModuleResult LoadModuleStatic(IntPtr vm, string name) {
@@ -25,14 +27,20 @@ public class WrenVm : IDisposable
      public static WrenVm GetVm(IntPtr ptr){
         return Lookup[ptr];
      }
-    private readonly ConditionalWeakTable<object, WrenObjectHandle> objectLookup = new();
+    private readonly ConditionalWeakTable<object, WrenObjectHandle> foreignObjectsLookup = new();
+    private readonly HashSet<WeakReference> wrenObjectHandles = new();
+    internal void RegisterHandle(WrenObjectHandle wrenObjectHandle)
+    {
+        var h = new WeakReference(wrenObjectHandle);
+        wrenObjectHandles.Add(h);
+    }
 
     internal WrenObjectHandle GetWrenObject(Type t, object obj){
-        if(objectLookup.TryGetValue(obj, out var handle)) return handle;
+        if(foreignObjectsLookup.TryGetValue(obj, out var handle)) return handle;
         else {
             var c = GetForeignClass(t);
             var m = c.WrapManagedObject(obj);
-            objectLookup.Add(obj, m);
+            foreignObjectsLookup.Add(obj, m);
             return m;
         }
     }
@@ -123,12 +131,19 @@ public class WrenVm : IDisposable
         {
             if (disposing)
             {
+                foreach (var item in callHandleCache)
+                {
+                    WrenNative.wrenReleaseHandle(handle, item.Value);
+                }
                 foreach (var item in classRegistry)
                 {
                     item.Value.Dispose();
                 }
-                foreach(var item in objectLookup){
+                foreach(var item in foreignObjectsLookup){
                     item.Value.Dispose();
+                }
+                foreach(var item in wrenObjectHandles){
+                    if(item.IsAlive) (item.Target as WrenObjectHandle)?.Dispose();
                 }
                 Lookup.Remove(handle);
             }
