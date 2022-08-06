@@ -7,11 +7,21 @@
     <wren-script name="ship" src="../wren/ship.wren" watch="true" />
   </resources>
 
+  <templates>
+      <node name="laser">      
+        <collider2d name="collider" mode="ghost" weight="0">
+          <capsule a="0,0" b="0,50" r="5" />
+        </collider2d>
+        <sprite res="space:laserGreen07" origin="5,5" />
+      </node>
+  </templates>
+
   <node name="root">
     <canvas name="canvas" />
         
     <node name="camera" translate="0,0">
       <camera2d name="cam"/>
+      <wren res="ship:CameraControl" />
     </node>
 
     <node name="player" translate="0, 0, 0">      

@@ -1,5 +1,6 @@
 using System.Runtime.ExceptionServices;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SDL2;
 using XPlat.Core;
@@ -11,26 +12,31 @@ namespace XPlat.Engine
     public class EngineHost : ISdlApp
     {
         private readonly EngineConfiguration config;
-        private readonly SceneResource resource;
         private readonly IPlatform platform;
         private readonly ISdlPlatformEvents events;
+        private readonly IServiceProvider provider;
+        private IServiceScope scope;
         private readonly ILogger<EngineHost> logger;
+        private readonly SimpleFileWatcher watcher;
+        private Scene scene;
+        private bool sceneChanged = true;
 
         public EngineHost(ILogger<EngineHost> logger,
             IPlatform platform, 
             IConfiguration config, 
             ISdlPlatformEvents events,
-            SceneResource sceneRes)
+            IServiceProvider provider)
         {
             this.logger = logger;
             this.events = events;
+            this.provider = provider;
             this.platform = platform;
             this.config = config.GetSection("Engine").Get<EngineConfiguration>();
             //config.GetReloadToken()
-            sceneRes.Filename = this.config.InitialScene;
-            this.resource = sceneRes;
-            if (this.config.Debug) resource.Watch();
-
+            if(this.config.Debug){
+                this.watcher = new SimpleFileWatcher(this.config.InitialScene);
+                this.watcher.FileChanged += (a,b) => sceneChanged = true;
+            }
             events.Subscribe(SDL.SDL_EventType.SDL_KEYUP, OnKeyUp);
         }
 
@@ -49,7 +55,7 @@ namespace XPlat.Engine
 
         public void Update()
         {
-            if (resource.FileChanged)
+            if (sceneChanged)
             {
                 Init();
             }
@@ -69,17 +75,22 @@ namespace XPlat.Engine
         }
 
         private void InitRaw(){
-            resource.Load();
-            resource.Scene?.Init();
+            scope?.Dispose();
+            //resource.Scene?.Dispose();
+            scope = provider.CreateScope();
+            var reader = scope.ServiceProvider.GetRequiredService<SceneReader>();
+            scene = reader.Read(config.InitialScene);
+            scene.Init();
+            sceneChanged = false;
         }
 
         private void UpdateRaw(){
-            resource.Scene?.Update();
-            resource.Scene?.Render();
+            scene?.Update();
+            scene?.Render();
         }
 
         private void OnError(Exception e){
-            resource.Unload();   
+            scene.Dispose();   
             logger.LogError(e.ToString());
         }
     }

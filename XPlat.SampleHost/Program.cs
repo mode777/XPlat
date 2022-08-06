@@ -1,10 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using System.Numerics;
-using Microsoft.Extensions.DependencyInjection;
 using XPlat.Core;
 using XPlat.Engine;
-using XPlat.Engine.Serialization;
-using XPlat.SampleHost;
 
 //XPlatApp.RunSdl<SpriteBufferApp>(args);
 //XPlatApp.RunSdl<SpriteBatchApp>(args);

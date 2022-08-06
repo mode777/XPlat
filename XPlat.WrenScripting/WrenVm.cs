@@ -9,8 +9,6 @@ public class WrenVm : IDisposable
 {
     static void WriteStatic(IntPtr vm, string str) => System.Console.Write(str);
     static void ErrorStatic(IntPtr vm, WrenNative.WrenErrorType type, string module, int line, string message) => throw new WrenScriptException(vm, type, module, line, message);
-
-
     static WrenNative.WrenForeignClassMethods BindForeignClassStatic(IntPtr vm, string module, string className) => GetVm(vm).BindForeignClass(module, className);
     static WrenNative.WrenForeignMethodFn BindForeignMethodStatic(IntPtr vm, string module, string className, bool isStatic, string signature) => GetVm(vm).BindForeignMethod(module, className, isStatic, signature);
     static WrenNative.WrenLoadModuleResult LoadModuleStatic(IntPtr vm, string name) {

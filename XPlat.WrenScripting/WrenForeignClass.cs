@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Runtime.InteropServices;
 //using IronWren;
 
@@ -52,14 +53,24 @@ internal class WrenForeignClass : IDisposable
 
     WrenForeignInvokeable GetMethod(string signature, bool isStatic){
         WrenForeignInvokeable method = null;
+
+        BindingFlags flags = isStatic ? BindingFlags.Static : BindingFlags.Instance;
+        flags |= (BindingFlags.Public | BindingFlags.IgnoreCase);
+        
         if(signature.Contains('(')){
             var spl = signature.Split('(');
-            //int count = spl[1].Count(f => f == '_');
-            var m = type.GetMethod(spl[0]);
-            method = new WrenForeignMethod(vm, m);
+            int count = spl[1].Count(f => f == '_');
+            var m = type.GetMethods(flags)
+                .FirstOrDefault(x => 
+                    x.Name.Equals(spl[0], StringComparison.OrdinalIgnoreCase) && 
+                    x.GetParameters().Length == count);
+            method = new WrenForeignMethod(vm, this, isStatic, m);
+        } else if(signature.Contains('[')) {
+            var p = type.GetProperties(flags).First(x => x.GetIndexParameters().Length > 0);
+            method = new WrenForeignIndexer(vm, this, isStatic, p, false);
         } else {
-            var p = type.GetProperty(signature);
-            method = new WrenForeignProperty(vm, p, false);
+            var p = type.GetProperty(signature, flags);
+            method = new WrenForeignProperty(vm, this, isStatic, p, false);
         }
         methodRegistry.Add(signature, method);
         return method;

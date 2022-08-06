@@ -46,9 +46,6 @@ public static class IServiceCollectionExtensions
             var vm = new WrenVm();
             vm.Interpret("XPlat.Engine", File.ReadAllText("assets/wren/XPlat.Engine.wren"));
             vm.Interpret("XPlat.Core", File.ReadAllText("assets/wren/XPlat.Core.wren"));
-            GC.Collect();
-            GC.Collect();
-            GC.Collect();
             return vm;
         });
         services.AddScoped<ResourceManager>();

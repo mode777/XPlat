@@ -7,13 +7,18 @@ namespace XPlat.WrenScripting;
 internal abstract class WrenForeignInvokeable {
     private readonly WrenVm vm;
 
-    public WrenForeignInvokeable(WrenVm vm)
+    public WrenForeignInvokeable(WrenVm vm, WrenForeignClass owner, bool isStatic)
     {
         this.vm = vm;
+        Owner = owner;
+        IsStatic = isStatic;
         ForeignDelegate = Invoke;
     }
 
     public readonly WrenNative.WrenForeignMethodFn ForeignDelegate;
+
+    internal WrenForeignClass Owner { get; }
+    public bool IsStatic { get; }
 
     public abstract void Invoke(IntPtr vm);
 
@@ -23,6 +28,8 @@ internal abstract class WrenForeignInvokeable {
         else if(type == typeof(double)) WrenNative.wrenSetSlotDouble(vmHandle, slot, (double)value);
         else if(type == typeof(int)) WrenNative.wrenSetSlotDouble(vmHandle, slot, (double)value);
         else if(type == typeof(float)) WrenNative.wrenSetSlotDouble(vmHandle, slot, (double)value);
+        else if(type == typeof(bool)) 
+            WrenNative.wrenSetSlotBool(vmHandle, slot, (bool)value);
         else {
             var wrenObj = vm.GetWrenObject(type, value);
             WrenNative.wrenSetSlotHandle(vmHandle, slot, wrenObj.handle);
@@ -30,31 +37,63 @@ internal abstract class WrenForeignInvokeable {
         //else throw new InvalidOperationException($"Unconvertable Type: {type.Name}");
     }
 
+    protected object GetWrenSlot(IntPtr vm, Type type, int slot){
+        if(type == typeof(string)) return Marshal.PtrToStringAnsi(WrenNative.wrenGetSlotString(vm, slot));
+        else if(type == typeof(double)) return WrenNative.wrenGetSlotDouble(vm, slot);
+        else if(type == typeof(int)) return (int)WrenNative.wrenGetSlotDouble(vm, slot);
+        else if(type == typeof(float)) return (float)WrenNative.wrenGetSlotDouble(vm, slot);
+        else if(type.IsEnum) return (int)WrenNative.wrenGetSlotDouble(vm, slot);
+        else throw new InvalidOperationException($"Unconvertable Type: {type.Name}");
+    }
+
     protected object GetTarget(IntPtr vmHandle){
+        if(IsStatic){
+            return null;
+        }
         IntPtr ptr = WrenNative.wrenGetSlotForeign(vmHandle, 0);
         var handle = (GCHandle)Marshal.ReadIntPtr(ptr);
         return handle.Target;
     }
 }
 
-internal class WrenForeignProperty : WrenForeignInvokeable {
-    private readonly PropertyInfo info;
-    private readonly bool isSetter;
-    private readonly Type propertyType;
+internal class WrenForeignIndexer : WrenForeignProperty
+{
+    private readonly ParameterInfo[] indexParamsInfo;
+    private readonly object[] indexParams;
 
-    public WrenForeignProperty(WrenVm vm, PropertyInfo info, bool isSetter) : base(vm)
+    public WrenForeignIndexer(WrenVm vm, WrenForeignClass owner, bool isStatic, PropertyInfo info, bool isSetter) : base(vm, owner, isStatic, info, isSetter)
     {
-        this.info = info;
+        this.indexParamsInfo = info.GetIndexParameters();
+        this.indexParams = new object[indexParamsInfo.Length];
+    }
+
+    protected override void Get(IntPtr vm, object target)
+    {
+        var indexType = indexParamsInfo[0];
+        indexParams[0] = GetWrenSlot(vm, indexType.ParameterType, 1);
+        var val = info.GetValue(target, indexParams);
+        SetWrenSlot(vm, propertyType, val, 0);
+    }
+}
+
+internal class WrenForeignProperty : WrenForeignInvokeable {
+    protected readonly PropertyInfo info;
+    private readonly bool isSetter;
+    protected readonly Type propertyType;
+
+    public WrenForeignProperty(WrenVm vm, WrenForeignClass owner, bool isStatic, PropertyInfo info, bool isSetter) : base(vm, owner, isStatic)
+    {
+        this.info = info ?? throw new ArgumentNullException("PropertyInfo");
         this.isSetter = isSetter;
         this.propertyType = info.PropertyType;
     }
 
-    private void Get(IntPtr vm, object target){
+    protected virtual void Get(IntPtr vm, object target){
         var val = info.GetValue(target);
         SetWrenSlot(vm, propertyType, val, 0);
     }
 
-    private void Set(IntPtr vm, object target){
+    protected virtual void Set(IntPtr vm, object target){
         throw new NotImplementedException();
     }
 
@@ -70,7 +109,7 @@ internal class WrenForeignProperty : WrenForeignInvokeable {
 
 internal class WrenForeignMethod : WrenForeignInvokeable {
 
-    public WrenForeignMethod(WrenVm vm, MethodInfo info) : base(vm)
+    public WrenForeignMethod(WrenVm vm, WrenForeignClass owner, bool isStatic, MethodInfo info) : base(vm, owner, isStatic)
     {
         this.info = info;
         this.parameterInfo = this.info.GetParameters();
@@ -88,14 +127,6 @@ internal class WrenForeignMethod : WrenForeignInvokeable {
         if(ret != null){
             SetWrenSlot(vm, returnType, ret, 0);
         }
-    }
-
-    private object GetWrenSlot(IntPtr vm, Type type, int slot){
-        if(type == typeof(string)) return Marshal.PtrToStringAnsi(WrenNative.wrenGetSlotString(vm, slot));
-        else if(type == typeof(double)) return WrenNative.wrenGetSlotDouble(vm, slot);
-        else if(type == typeof(int)) return (int)WrenNative.wrenGetSlotDouble(vm, slot);
-        else if(type == typeof(float)) return (float)WrenNative.wrenGetSlotDouble(vm, slot);
-        else throw new InvalidOperationException($"Unconvertable Type: {type.Name}");
     }
 
     private readonly MethodInfo info;

@@ -1,5 +1,11 @@
 foreign class Node {
-    foreign Transform
+    foreign transform
+    foreign scene
+    foreign name
+}
+
+foreign class Scene {
+    foreign templates
 }
 
 class Component {
@@ -8,3 +14,8 @@ class Component {
     update(){}
     init(){}
 }
+
+foreign class TemplateCollection {
+    foreign [name]
+}
+
