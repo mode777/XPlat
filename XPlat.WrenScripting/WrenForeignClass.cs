@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 namespace XPlat.WrenScripting;
 
 
-internal class WrenForeignClass : IDisposable
+public class WrenForeignClass : IDisposable
 {
     private readonly Lazy<IntPtr> classHandle;
     internal WrenForeignClass(WrenVm vm, string module, string className, Type type, Func<object> factory)
@@ -29,8 +29,27 @@ internal class WrenForeignClass : IDisposable
 
     internal readonly WrenNative.WrenForeignMethodFn AllocateFn;
     private void Allocate(IntPtr vm){
-        IntPtr foreign = WrenNative.wrenSetSlotNewForeign(vm, 0,0, (IntPtr)IntPtr.Size);   
-        Marshal.WriteIntPtr(foreign, (IntPtr)GCHandle.Alloc(factory()));
+        var ctor = GetConstructor(vm);
+        ctor.Invoke(vm);
+    }
+
+    private readonly Dictionary<int, WrenForeignConstructor> ctorCache = new();
+
+    private WrenForeignConstructor GetConstructor(IntPtr vmHandle){
+        var numArgs = WrenNative.wrenGetSlotCount(vmHandle) - 1;
+        if(ctorCache.TryGetValue(numArgs, out var ctor)){
+            return ctor;
+        } else {
+            var ctorInfo = type.GetConstructors().FirstOrDefault(x =>
+            {
+                var para = x.GetParameters();
+                return para.Length == numArgs || para.Where(y => !y.IsOptional).Count() == numArgs;
+            });
+            ctor = new WrenForeignConstructor(vm, this, ctorInfo, false);
+            ctorCache.Add(numArgs, ctor);
+            return ctor;
+        }
+
     }
 
     internal readonly WrenNative.WrenFinalizerFn FinalizeFn;
@@ -57,7 +76,12 @@ internal class WrenForeignClass : IDisposable
         BindingFlags flags = isStatic ? BindingFlags.Static : BindingFlags.Instance;
         flags |= (BindingFlags.Public | BindingFlags.IgnoreCase);
         
-        if(signature.Contains('(')){
+        if(signature.Contains("=(")){
+            var spl = signature.Split("=");
+            var p = type.GetProperty(spl[0], flags);
+            method = new WrenForeignProperty(vm, this, isStatic, p, true);
+        }
+        else if(signature.Contains('(')){
             var spl = signature.Split('(');
             int count = spl[1].Count(f => f == '_');
             var m = type.GetMethods(flags)
@@ -72,8 +96,13 @@ internal class WrenForeignClass : IDisposable
             var p = type.GetProperty(signature, flags);
             method = new WrenForeignProperty(vm, this, isStatic, p, false);
         }
+
         methodRegistry.Add(signature, method);
         return method;
+    }
+
+    public void RegisterCustomBinding(string signature, WrenForeignInvokeable method){
+        methodRegistry[signature] = method;
     }
 
     public WrenNative.WrenForeignMethodFn GetMethodFn(string signature, bool isStatic){

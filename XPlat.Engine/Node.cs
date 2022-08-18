@@ -5,6 +5,7 @@ using XPlat.Core;
 using XPlat.Engine.Components;
 using XPlat.Engine.Serialization;
 using XPlat.Gltf;
+using XPlat.WrenScripting;
 
 namespace XPlat.Engine
 {
@@ -15,6 +16,7 @@ namespace XPlat.Engine
         public string? Name { get; set; }
         private List<Node> _children = new();
         private List<Component> _components = new();
+        private Queue<object> _messages = new();
         private Dictionary<string, Component> _componentsById = new();
         private bool disposedValue;
         internal Dictionary<Node, CollisionInfo> _collisions = new();
@@ -102,6 +104,7 @@ namespace XPlat.Engine
             _components.Add(comp);
             if(comp.Name != null) _componentsById.Add(comp.Name, comp);
             comp.Node = this;
+            comp.OnAttach();
         }
 
         public void RemoveComponent(Component comp)
@@ -115,6 +118,18 @@ namespace XPlat.Engine
         public T? GetComponent<T>() where T : Component => _components.FirstOrDefault(x => x is T) as T;
         public Component? GetComponent(Type t) => _components.FirstOrDefault(x => x.GetType() == t);
         public Component? GetComponentByName(string id) => _componentsById.TryGetValue(id, out var v) ? v : null;
+        public WrenObjectHandle? GetWrenComponent(string name) {
+            var c = GetComponentByName(name) as WrenScriptComponent;
+            if(c == null) return null;
+            //if(c.InstanceHandle == null) c.Instantiate();
+            return c.InstanceHandle;
+        } 
+        public WrenObjectHandle? GetWrenComponent() {
+            var c = GetComponent<WrenScriptComponent>();
+            if(c == null) return null;
+            //if(c.InstanceHandle == null) c.Instantiate();
+            return c.InstanceHandle;
+        } 
         public LuaTable? GetLuaComponent(string name) => (GetComponentByName(name) as LuaScriptComponent)?.Instance?.Table;
         public LuaTable? GetLuaComponent() => GetComponent<LuaScriptComponent>()?.Instance?.Table;
         public IEnumerable<LuaTable> GetLuaComponents(string name) => GetComponents<LuaScriptComponent>().Where(x => x.Name == name).Select(x => x.Instance.Table);
@@ -253,6 +268,7 @@ namespace XPlat.Engine
             _collisions[info.Other] = info;
         }
         public IEnumerable<CollisionInfo> Collisions => _collisions.Values;
+        public IEnumerable<object> Messages => _messages;
         public bool TryGetCollision(Node n, out CollisionInfo info) => _collisions.TryGetValue(n, out info);
 
 
@@ -297,7 +313,14 @@ namespace XPlat.Engine
                 var cc = child.Clone();
                 AddChild(cc);
             }
+        }
 
+        public void SendMessage(object message){
+            _messages.Enqueue(message);
+        }
+
+        internal void ResetMessages(){
+            _messages.Clear();
         }
 
         //public 

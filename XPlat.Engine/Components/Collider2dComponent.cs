@@ -31,6 +31,33 @@ namespace XPlat.Engine.Components
             ShapeTransformed = Shape.GetTransformed(ref mat);
         }
 
+        public float Radius {
+            set {
+                if(Shape == null) return;
+                switch(Shape){
+                    case c2Circle c:
+                        c.r = value;
+                        break;
+                    case c2Capsule ca:
+                        ca.r = value;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            get {
+                if(Shape == null) return 0;
+                switch(Shape){
+                    case c2Circle c:
+                        return c.r;
+                    case c2Capsule ca:
+                        return ca.r;
+                    default:
+                        return 0;
+                }
+            }
+        }
+
         public override void Parse(XElement el, SceneReader reader)
         {
             if(el.TryGetAttribute("weight", out var valS) && float.TryParse(valS, out var weight)) Weight = weight;

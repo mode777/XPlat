@@ -3494,8 +3494,8 @@ namespace XPlat.NanoVg
         public void LineTo(float x, float y) => NanoVgApi.nvgLineTo(this, x, y);
         public void LineCap(int cap) => NanoVgApi.nvgLineCap(this, cap);
         public void FillPaint(NVGpaint paint) => NanoVgApi.nvgFillPaint(this, paint);
-        public void FillColor(NVGcolor color) => NanoVgApi.nvgFillColor(this, color);
         public void FillColor(string color) => NanoVgApi.nvgFillColor(this, (NVGcolor)color);
+        public void FillColor(NVGcolor color) => NanoVgApi.nvgFillColor(this, color);
     }
 
     public struct NVGcompositeOperationState

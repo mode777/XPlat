@@ -10,6 +10,7 @@ namespace XPlat.Engine.Components
         private readonly WrenVm vm;
         private readonly ResourceManager resources;
         private WrenObjectHandle instance;
+        public WrenObjectHandle InstanceHandle => instance;
 
         public WrenScriptComponent(WrenVm vm, ResourceManager resources)
         {
@@ -20,7 +21,8 @@ namespace XPlat.Engine.Components
         public override void Init()
         {
             Instantiate();
-            instance.Call("init()");
+            //instance.Call("init()");
+            instance.Call("initInternal()");
         }
 
         public void Instantiate()
@@ -32,7 +34,21 @@ namespace XPlat.Engine.Components
 
         public override void Update()
         {
-            instance.Call("update()");
+            instance.Call("updateFibers()");
+            //instance.Call("update()");
+        }
+
+        public override void OnMessage(object message)
+        {
+            if(message is WrenObjectHandle){
+                instance.Call("onMessageInternal(_)", message);
+            }
+        }
+
+        public override void OnCollision(CollisionInfo info)
+        {
+            base.OnCollision(info);
+            instance.Call("onCollisionInternal(_)", info);
         }
 
         public override void Parse(XElement el, SceneReader reader)

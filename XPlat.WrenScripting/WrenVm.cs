@@ -87,6 +87,8 @@ public class WrenVm : IDisposable
 
     public WrenNative.WrenForeignClassMethods BindForeignClass(string module, string className){
         var fcm = new WrenNative.WrenForeignClassMethods();
+        if(module == "random")
+            return fcm;
 
         var type = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.ExportedTypes).FirstOrDefault(x => x.Namespace == module && x.Name == className);
         if(type == null) throw new InvalidOperationException($"Did not find .NET type '{module}.{className}'");
@@ -101,11 +103,13 @@ public class WrenVm : IDisposable
     }
 
     public WrenNative.WrenForeignMethodFn BindForeignMethod(string module, string className, bool isStatic, string signature){
+        if(module == "random")
+            return null;
         var c = GetClass(module, className);
         return c.GetMethodFn(signature, isStatic);
     }
 
-    private WrenForeignClass GetClass(string module, string className){
+    public WrenForeignClass GetClass(string module, string className){
         if(classRegistry.TryGetValue($"{module}.{className}", out var c)) return c;
         else throw new KeyNotFoundException($"Unable to find foreign class {module}.{className}");
     }

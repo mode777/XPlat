@@ -90,7 +90,7 @@ namespace XPlat.Engine
         }
 
         private void OnError(Exception e){
-            scene.Dispose();   
+            scene?.Dispose();   
             logger.LogError(e.ToString());
         }
     }

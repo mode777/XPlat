@@ -1,11 +1,28 @@
 foreign class Transform3d {
+    construct new() {}
     foreign setRotationDeg(x,y,z)
     foreign rotateDeg(x,y,z)
     foreign moveUp(amnt)
+    foreign translate(x,y,z)
+    foreign x
+    foreign x=(v)
+    foreign y
+    foreign y=(v)
+    foreign z
+    foreign z=(v)
+}
+
+foreign class Window {
+    foreign static width
+    foreign static height
 }
 
 foreign class Input {
     foreign static isKeyDown(key)
+}
+
+foreign class Time {
+    foreign static runningTime
 }
 
 class Key {
@@ -248,4 +265,15 @@ class Key {
     static APP2 { 1073742108 }
     static AUDIOREWIND { 1073742109 }
     static AUDIOFASTFORWARD { 1073742110 }
+}
+
+class Vector2 {
+    x { _x }
+    y { _y }
+    x=(v) { _x = v }
+    y=(v) { _y = v }
+    construct new(x,y){
+        _x = x
+        _y = y
+    }
 }

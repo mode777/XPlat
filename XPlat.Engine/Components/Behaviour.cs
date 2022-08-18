@@ -16,6 +16,10 @@ namespace XPlat.Engine.Components
 
         }
 
+        public virtual void OnMessage(object message){
+            
+        }
+
         public override Component Clone(Node n){
             var c = base.Clone(n) as Behaviour;
             c.WasInitialized = false;

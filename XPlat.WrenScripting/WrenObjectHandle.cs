@@ -36,10 +36,15 @@ public class WrenObjectHandle : IDisposable {
         {
             var p = parameters[i];
             var t = p.GetType();
-            // todo handle primitives
-            var m = vm.GetWrenObject(t, p);
 
-            WrenNative.wrenSetSlotHandle(vm.handle, i+1, m.handle);
+            if(p is WrenObjectHandle obj){
+                WrenNative.wrenSetSlotHandle(vm.handle, i+1, obj.handle);
+            // todo: handle primitives
+            } else {
+                var m = vm.GetWrenObject(t, p);
+                WrenNative.wrenSetSlotHandle(vm.handle, i+1, m.handle);
+            }
+
         }
         WrenNative.wrenCall(vm.handle, vm.GetCallHandle(signature));
     }
