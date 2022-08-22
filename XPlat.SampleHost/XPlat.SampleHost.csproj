@@ -17,6 +17,11 @@
     <LangVersion>10.0</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="assets\assets\**" />
+    <EmbeddedResource Remove="assets\assets\**" />
+    <None Remove="assets\assets\**" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\XPlat.Core\XPlat.Core.csproj" />
     <ProjectReference Include="..\XPlat.NanoVg\XPlat.NanoVg.csproj" />
     <ProjectReference Include="..\XPlat.NanoGui\XPlat.NanoGui.csproj" />
@@ -39,8 +44,5 @@
   <ItemGroup>
     <None Remove="assets\" />
     <None Remove="assets\assets\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="assets\assets\" />
   </ItemGroup>
 </Project>

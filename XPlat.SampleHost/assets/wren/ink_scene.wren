@@ -175,6 +175,29 @@ class Button {
     }
 }
 
+class UI is Component {
+    construct new(mode){
+        super(node)
+        _choices = []
+        _choiceCallback = null
+        _text = []
+    }
+
+    onChoice(fn){
+        _choiceCallback = fn
+    }
+
+    dispatchChoice(num){
+        if(_choiceCallback != null){
+            _choiceCallback.call(num)
+        }
+    }
+
+    addChoice(){
+
+    }
+}
+
 
 class Interface is Component {
     construct new(node){

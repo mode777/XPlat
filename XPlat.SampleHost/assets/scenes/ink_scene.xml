@@ -10,7 +10,7 @@
 
   <node name="root">
     <canvas name="canvas" />
-    <wren name="ink" res="script:InkDriver" />
+    <!-- <wren name="ink" res="script:InkDriver" /> -->
     <wren name="interface" res="script:Interface" />
   </node>
 </scene>
