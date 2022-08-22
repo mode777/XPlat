@@ -3495,6 +3495,7 @@ namespace XPlat.NanoVg
         public void LineCap(int cap) => NanoVgApi.nvgLineCap(this, cap);
         public void FillPaint(NVGpaint paint) => NanoVgApi.nvgFillPaint(this, paint);
         public void FillColor(string color) => NanoVgApi.nvgFillColor(this, (NVGcolor)color);
+        public void FillColor(int r, int g, int b, int a) => NanoVgApi.nvgFillColor(this, NanoVgApi.nvgRGBA((byte)r,(byte)g,(byte)b,(byte)a));
         public void FillColor(NVGcolor color) => NanoVgApi.nvgFillColor(this, color);
     }
 

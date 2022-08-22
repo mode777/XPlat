@@ -36,11 +36,11 @@ namespace XPlat.Engine
         public Node RootNode { get; private set; }
         //public LuaHost LuaHost { get; private set; }
         public TemplateCollection Templates { get; set; } = new();
+        public ResourceManager Resources { get; set; } = new();
 
-        public Scene(SceneConfiguration config)
+        public Scene()
         {
             RootNode = new Node(this);
-            config?.Apply(this);
         }
 
 

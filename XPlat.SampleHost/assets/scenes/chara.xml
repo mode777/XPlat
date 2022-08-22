@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<scene version="1.0">
+  <configuration template="2d" />
+  <resources>
+    <atlas name="chara" src="../sprites/mod_chara" width="4096" height="4096"/>
+    <font name="merriweather" src="../fonts/Merriweather-Regular.ttf" />
+    <wren-script name="script" src="../wren/chara.wren" watch="true" />
+  </resources>
+
+  <templates>
+  </templates>
+
+  <node name="root">
+    <canvas name="canvas" />
+        
+    <node name="camera" translate="0,0" />
+
+    <node name="chara" translate="300, 300, 0">      
+      <wren res="script:Character" />
+      <node name="shirt" translate="0,-50">
+        <sprite res="chara:blueShirt1" origin="80,150" />
+        <node name="arm_r" translate="70,-110">
+          <sprite res="chara:blueArm_long" origin="30,40" /></node>
+        <node name="arm_l" scale="-1,1" translate="-80,-110">
+          <sprite res="chara:blueArm_long" origin="30,40" />
+        </node>
+      </node>
+      <node name="crotch" translate="0,0"><sprite res="chara:pantsBlue11" origin="80,45" /></node>
+      <node name="leg_r" translate="55,-5">
+        <node name="shoe_r" translate="10,140"><sprite res="chara:brownShoe5" origin="30,10" /></node>
+        <sprite res="chara:pantsBlue1_long" origin="60,20" />
+      </node>
+      <node name="leg_l" translate="-60,-5" scale="-1,1">
+        <node name="shoe_l" translate="10,140"><sprite res="chara:brownShoe5" origin="30,10" /></node>
+        <sprite res="chara:pantsBlue1_long" origin="60,20" />
+      </node>
+      
+      <node name="ref" scale="0.01,15"><sprite res="chara:redShirt1" origin="0,150"/></node>
+      <node name="ref2" scale="15,0.01"><sprite res="chara:redShirt1" origin="70,0"/></node>
+    </node>
+
+  </node>
+</scene>

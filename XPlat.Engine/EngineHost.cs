@@ -35,7 +35,12 @@ namespace XPlat.Engine
             //config.GetReloadToken()
             if(this.config.Debug){
                 this.watcher = new SimpleFileWatcher(this.config.InitialScene);
-                this.watcher.FileChanged += (a,b) => sceneChanged = true;
+                this.watcher.FileChanged += (a, b) =>
+                {
+                    hasError = false;
+                    sceneChanged = true;
+                };
+                this.watcher.Watch();
             }
             events.Subscribe(SDL.SDL_EventType.SDL_KEYUP, OnKeyUp);
         }
@@ -44,6 +49,7 @@ namespace XPlat.Engine
         {
             if (ev.key.keysym.sym == SDL.SDL_Keycode.SDLK_F5)
             {
+                hasError = false;
                 Init();
             }
         }
@@ -63,6 +69,7 @@ namespace XPlat.Engine
         }
 
         private void TryExecute(Action code, Action<Exception> error){
+            if(hasError) return;
             if(config.ThrowExceptions){
                 code.Invoke();
             } else {
@@ -84,14 +91,21 @@ namespace XPlat.Engine
             sceneChanged = false;
         }
 
+        private float t = 0;
+
         private void UpdateRaw(){
+            //System.Console.WriteLine(1/(Time.RunningTime - t));
+            //t = Time.RunningTime;
             scene?.Update();
             scene?.Render();
         }
 
+        private bool hasError = false;
+
         private void OnError(Exception e){
             scene?.Dispose();   
             logger.LogError(e.ToString());
+            hasError = true;
         }
     }
 }

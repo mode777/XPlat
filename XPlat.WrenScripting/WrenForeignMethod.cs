@@ -31,6 +31,17 @@ public abstract class WrenForeignInvokeable {
         else if(type == typeof(float)) WrenNative.wrenSetSlotDouble(vmHandle, slot, (double)(float)value);
         else if(type == typeof(bool)) 
             WrenNative.wrenSetSlotBool(vmHandle, slot, (bool)value);
+        else if(typeof(IList).IsAssignableFrom(type)){
+            var contentType = type.GenericTypeArguments.First();
+            var list = value as IList;
+            WrenNative.wrenEnsureSlots(vmHandle, slot + 2);
+            WrenNative.wrenSetSlotNewList(vmHandle, slot);
+            foreach (var item in list)
+            {
+                SetWrenSlot(vmHandle, contentType, item, slot+1);
+                WrenNative.wrenInsertInList(vmHandle, slot, -1, slot+1);
+            }
+        }
         else if(type == typeof(WrenObjectHandle))
             WrenNative.wrenSetSlotHandle(vmHandle, slot, (value as WrenObjectHandle).handle);
         else {

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<scene version="1.0">
+  <configuration template="2d" />
+  <resources>
+    <font name="merriweather" src="../fonts/Merriweather-Regular.ttf" />
+    <wren-script name="script" src="../wren/ink_scene.wren" watch="true" />
+    <ink name="intercept" src="../ink/intercept.ink" />
+    <ink name="test2" src="../ink/test2.ink" />
+  </resources>
+
+  <node name="root">
+    <canvas name="canvas" />
+    <wren name="ink" res="script:InkDriver" />
+    <wren name="interface" res="script:Interface" />
+  </node>
+</scene>

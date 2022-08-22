@@ -1,5 +1,3 @@
-//using IronWren;
-
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -8,7 +6,7 @@ namespace XPlat.WrenScripting;
 public class WrenVm : IDisposable
 {
     static void WriteStatic(IntPtr vm, string str) => System.Console.Write(str);
-    static void ErrorStatic(IntPtr vm, WrenNative.WrenErrorType type, string module, int line, string message) => throw new WrenScriptException(vm, type, module, line, message);
+    static void ErrorStatic(IntPtr vm, WrenNative.WrenErrorType type, string module, int line, string message) => GetVm(vm).AddException(new WrenScriptException(vm, type, module, line, message));
     static WrenNative.WrenForeignClassMethods BindForeignClassStatic(IntPtr vm, string module, string className) => GetVm(vm).BindForeignClass(module, className);
     static WrenNative.WrenForeignMethodFn BindForeignMethodStatic(IntPtr vm, string module, string className, bool isStatic, string signature) => GetVm(vm).BindForeignMethod(module, className, isStatic, signature);
     static WrenNative.WrenLoadModuleResult LoadModuleStatic(IntPtr vm, string name) {
@@ -22,7 +20,7 @@ public class WrenVm : IDisposable
     }
     
     private static Dictionary<IntPtr, WrenVm> Lookup = new();
-     public static WrenVm GetVm(IntPtr ptr){
+    public static WrenVm GetVm(IntPtr ptr){
         return Lookup[ptr];
      }
     private readonly ConditionalWeakTable<object, WrenObjectHandle> foreignObjectsLookup = new();
@@ -40,6 +38,22 @@ public class WrenVm : IDisposable
             var m = c.WrapManagedObject(obj);
             foreignObjectsLookup.Add(obj, m);
             return m;
+        }
+    }
+
+    private readonly List<WrenScriptException> exceptions = new(); 
+    private void AddException(WrenScriptException e){
+        exceptions.Add(e);
+    }
+
+    public void ThrowExceptions(){
+        if(exceptions.Count == 0) return;
+        var x = exceptions.ToArray();
+        exceptions.Clear();
+        if(x.Length > 1){
+            throw new AggregateException(x);
+        } else {
+            throw x.First();
         }
     }
 
@@ -65,8 +79,6 @@ public class WrenVm : IDisposable
         if(v != 4000) throw new BadImageFormatException($"Expected Wren version 4000 but got {v}");
         WrenNative.wrenInitConfiguration(out var config);
         config.writeFn = WriteStatic;
-        // Todo: Pin delegates
-        //GCHandle.Alloc(config.writeFn);
         config.errorFn = ErrorStatic;
         config.bindForeignClassFn = BindForeignClassStatic;
         config.bindForeignMethodFn = BindForeignMethodStatic;
@@ -90,7 +102,8 @@ public class WrenVm : IDisposable
         if(module == "random")
             return fcm;
 
-        var type = AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.ExportedTypes).FirstOrDefault(x => x.Namespace == module && x.Name == className);
+        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+        var type = assemblies.SelectMany(x => x.ExportedTypes).FirstOrDefault(x => x.Namespace == module && x.Name == className);
         if(type == null) throw new InvalidOperationException($"Did not find .NET type '{module}.{className}'");
         
         var c = new WrenForeignClass(this, module, className, type, () => null);
@@ -169,6 +182,9 @@ public class WrenVm : IDisposable
 
     public void Interpret(string module, string code){
         var result = WrenNative.wrenInterpret(handle, module, code);
+        if(result != WrenNative.WrenInterpretResult.WREN_RESULT_SUCCESS){
+            ThrowExceptions();
+        }
     }
 
     public WrenObjectHandle GetObject(string module, string className){

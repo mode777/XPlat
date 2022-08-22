@@ -15,11 +15,16 @@ namespace XPlat.Engine
         {
             return _resources[id];
         }
+        
+        public object? GetValue(string id){
+            return _resources[id]?.Value;
+        }
 
-        public T? LoadValue<T>(string id) where T : class
+        public T? GetValue<T>(string id) where T : class
         {
             return _resources[id]?.GetValue<T>();
         }
+
 
         public IEnumerator<IResource> GetEnumerator()
         {

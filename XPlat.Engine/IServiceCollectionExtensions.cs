@@ -37,45 +37,28 @@ public static class WrenVmExtensions {
 public static class IServiceCollectionExtensions
 {
     public static void AddEngineServices(this IServiceCollection services){
-        var config = services.BuildServiceProvider()
+        var configProvider = services.BuildServiceProvider();
+        var config = configProvider
             .GetService<IConfiguration>()
             .GetSection("Engine")
             .Get<EngineConfiguration>();
 
-        services.AddTransient<SceneReader>();
+        services.AddSingleton<EngineConfiguration>(config);
 
-        var tr = new TypeRegistry();
-        tr.LoadElementsFromAssembly(typeof(IServiceCollectionExtensions).Assembly);
-        foreach (var item in config.Import)
+        var startups = AssemblyScanner.FindTypes<IStartup>(typeof(IServiceCollectionExtensions).Assembly)
+            .Concat(config.Import
+                .SelectMany(x => AssemblyScanner.FindTypes<IStartup>(AssemblyScanner.LoadAssembly(x))))
+            .ToArray();
+
+        foreach (var item in startups)
         {
-            tr.LoadElementsFromAssembly(item);
+            services.AddTransient(item, item);
         }
-        services.AddSingleton<TypeRegistry>(tr);
-
-        foreach (var item in tr.SceneElements)
-            if(!item.Value.IsAbstract && !item.Value.IsInterface)
-                services.AddTransient(item.Value, item.Value);
-
-        foreach (var item in tr.SceneTemplates)
-            if(!item.Value.IsAbstract && !item.Value.IsInterface)
-                services.AddTransient(item.Value, item.Value);
-
-        foreach (var item in tr.Resources)
-            if(!item.Value.IsAbstract && !item.Value.IsInterface)
-                services.AddTransient(item.Value, item.Value);
-
-        services.AddScoped<LuaHost>(s => {
-            var l = new LuaHost();
-            l.ImportNamespace(nameof(XPlat)+ "." + nameof(Core));
-            return l;
-        });
-        services.AddScoped<WrenVm>(s => {
-            var vm = new WrenVm();
-            vm.AddEngineModules();
-            return vm;
-        });
-        services.AddScoped<ResourceManager>();
-        services.AddScoped<NVGcontext>(s => NVGcontext.CreateGl());
-
+        var startupProvider = services.BuildServiceProvider();
+        foreach (var item in startups)
+        {
+            var startup = startupProvider.GetRequiredService(item) as IStartup;
+            startup.ConfigureServices(services);
+        }
     }
 }

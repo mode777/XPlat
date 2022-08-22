@@ -19,10 +19,19 @@ foreign class Window {
 
 foreign class Input {
     foreign static isKeyDown(key)
+    foreign static mouseX
+    foreign static mouseY
+    foreign static isMouseDown(button)
 }
 
 foreign class Time {
     foreign static runningTime
+}
+
+class MouseButton {
+    static LEFT { 1 }
+    static MIDDLE { 2 }
+    static RIGHT { 3 }
 }
 
 class Key {

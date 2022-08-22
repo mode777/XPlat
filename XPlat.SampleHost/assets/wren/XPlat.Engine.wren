@@ -20,6 +20,11 @@ foreign class Scene {
     foreign instantiate(template, parentNode, transform)
     foreign delete(node)
     foreign findNode(name)
+    foreign resources
+}
+
+foreign class ResourceManager {
+    foreign getValue(id)
 }
 
 class Component {
@@ -89,6 +94,8 @@ class Component {
         }
     }
 }
+
+
 
 foreign class TemplateCollection {
     foreign [name]

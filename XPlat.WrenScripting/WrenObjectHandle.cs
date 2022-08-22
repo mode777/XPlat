@@ -46,7 +46,10 @@ public class WrenObjectHandle : IDisposable {
             }
 
         }
-        WrenNative.wrenCall(vm.handle, vm.GetCallHandle(signature));
+        var result = WrenNative.wrenCall(vm.handle, vm.GetCallHandle(signature));
+        if(result != WrenNative.WrenInterpretResult.WREN_RESULT_SUCCESS){
+            vm.ThrowExceptions();
+        }
     }
 
     protected virtual void Dispose(bool disposing)

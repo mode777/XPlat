@@ -2,10 +2,14 @@ using Microsoft.Extensions.Hosting;
 
 using Ink.Runtime;
 using Ink;
-using Microsoft.Extensions.FileProviders;
+using XPlat.Engine;
+using System.Xml.Linq;
+using XPlat.Engine.Serialization;
 
-namespace net6test
+namespace XPlat.Ink
 {
+
+
     public class InkService
     {
         public InkService()
@@ -26,6 +30,7 @@ namespace net6test
                 {
                     for (int i = 0; i < story.currentChoices.Count; ++i) {
                         Choice choice = story.currentChoices [i];
+                        
                         System.Console.WriteLine("Choice " + (i + 1) + ". " + choice.text);
                     }
                     int choiceNo;
@@ -41,7 +46,7 @@ namespace net6test
         }
 
 
-        private Ink.Runtime.Story CompileFile(string filename)
+        private Story CompileFile(string filename)
         {
             var compiler = CreateCompiler(filename);
 

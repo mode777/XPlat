@@ -12,5 +12,21 @@ namespace XPlat.Core
                 return arr[(int)scancode] > 0;
             }
         }
+        public static int MouseX {
+            get {
+                SDL.SDL_GetMouseState(out var x, out var y);
+                return x;
+            }
+        }
+        public static int MouseY {
+            get {
+                SDL.SDL_GetMouseState(out var x, out var y);
+                return y;
+            }
+        }
+
+        public static bool IsMouseDown(MouseButton button){
+            return ((int)SDL.SDL_GetMouseState(out var x, out var y) & (int)button) > 0;
+        }
     }
 }
