@@ -13,6 +13,9 @@ namespace XPlat.Engine.Components
         public Vector2 Origin = Vector2.Zero;
         public float OriginX { get => Origin.X; set => Origin.X = value; }
         public float OriginY { get => Origin.Y; set => Origin.Y = value; }
+        public float Width => Sprite.Rectangle.Width;
+        public float Height => Sprite.Rectangle.Height;
+
 
         public SpriteAtlasResource Resource { 
             get => _resource; 
@@ -40,6 +43,17 @@ namespace XPlat.Engine.Components
 
             base.Parse(el, reader);
         }
+
+        public void SetSprite(string res){
+            Sprite = Resource.Atlas[res];
+        }
+
+        public void Center(){
+            OriginX = Width/2;
+            OriginY = Height/2;
+        }
+
+
     }
 }
 

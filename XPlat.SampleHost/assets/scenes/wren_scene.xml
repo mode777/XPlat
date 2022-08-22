@@ -4,18 +4,38 @@
   <resources>
     <atlas name="space" src="../sprites/space" width="1024" height="1024"/>
     <font name="merriweather" src="../fonts/Merriweather-Regular.ttf" />
-    <wren-script name="ship" src="../wren/ship.wren" watch="true" />
+    <wren-script name="script" src="../wren/wren_scene.wren" watch="true" />
   </resources>
+
+  <templates>
+      <node name="laser">      
+        <collider2d name="collider" mode="ghost" weight="0">
+          <capsule a="0,0" b="0,50" r="5" />
+        </collider2d>
+        <sprite res="space:laserGreen07" origin="5,5" />
+        <wren name="script" res="script:Laser" />
+      </node>
+      <node name="meteor">
+        <collider2d name="collider" mode="active" weight="0">
+          <circle p="0,0" r="5" />
+        </collider2d>
+        <wren res="script:Meteor" />
+        <sprite name="sprite" res="space:meteorBrown_big1" />
+      </node>
+  </templates>
 
   <node name="root">
     <canvas name="canvas" />
+    <wren name="generator" res="script:Generator" />
+    <wren name="draw" res="script:Canvas" />
         
     <node name="camera" translate="0,0">
       <camera2d name="cam"/>
+      <wren res="script:Camera" />
     </node>
 
     <node name="player" translate="0, 0, 0">      
-      <wren res="ship:ShipControl" />
+      <wren res="script:Ship" />
       <collider2d mode="active" weight="1">
         <!-- <capsule a="0,-30" b="0,10" r="15" /> -->
         <circle p="0,-15" r="35" />

@@ -4,13 +4,18 @@ namespace XPlat.WrenScripting;
 
 public class WrenObjectHandle : IDisposable {
     internal readonly IntPtr handle;
+    //private readonly int no;
     private readonly WrenVm vm;
     private bool disposedValue;
+    //private static int ctr = 0;
 
     internal WrenObjectHandle(WrenVm vm, int slot)
     {
         this.vm = vm;
         this.handle = WrenNative.wrenGetSlotHandle(vm.handle,slot);
+        //this.no = ctr++;
+        //System.Console.WriteLine($"Allocate {no}");
+        vm.RegisterHandle(this);
     }
 
     public void Call(string signature, params object[] parameters){
@@ -31,12 +36,20 @@ public class WrenObjectHandle : IDisposable {
         {
             var p = parameters[i];
             var t = p.GetType();
-            // todo handle primitives
-            var m = vm.GetWrenObject(t, p);
 
-            WrenNative.wrenSetSlotHandle(vm.handle, i+1, m.handle);
+            if(p is WrenObjectHandle obj){
+                WrenNative.wrenSetSlotHandle(vm.handle, i+1, obj.handle);
+            // todo: handle primitives
+            } else {
+                var m = vm.GetWrenObject(t, p);
+                WrenNative.wrenSetSlotHandle(vm.handle, i+1, m.handle);
+            }
+
         }
-        WrenNative.wrenCall(vm.handle, vm.GetCallHandle(signature));
+        var result = WrenNative.wrenCall(vm.handle, vm.GetCallHandle(signature));
+        if(result != WrenNative.WrenInterpretResult.WREN_RESULT_SUCCESS){
+            vm.ThrowExceptions();
+        }
     }
 
     protected virtual void Dispose(bool disposing)
@@ -45,6 +58,8 @@ public class WrenObjectHandle : IDisposable {
         {
             WrenNative.wrenReleaseHandle(vm.handle, handle);
             disposedValue = true;
+            //System.Console.WriteLine($"Dispose {no}");
+
         }
     }
 

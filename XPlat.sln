@@ -45,6 +45,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.Voxels", "XPlat.Voxel
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XPlat.WrenScripting", "XPlat.WrenScripting\XPlat.WrenScripting.csproj", "{A54C0E83-23E8-44BE-952D-A13B5D2743E5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ink", "ink", "{F2ACBF67-F9F8-427A-BE9B-2277DBD785E2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ink_compiler", "ink\compiler\ink_compiler.csproj", "{C255AB68-3C58-4616-81F5-83D3141674BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ink-engine-runtime", "ink\ink-engine-runtime\ink-engine-runtime.csproj", "{C8812A85-066D-483C-8ABA-D201568D71B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XPlat.Ink", "XPlat.Ink\XPlat.Ink.csproj", "{B0A9C3C6-9BE2-4996-8C0A-16DFF63BFD5B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,11 +143,27 @@ Global
 		{A54C0E83-23E8-44BE-952D-A13B5D2743E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A54C0E83-23E8-44BE-952D-A13B5D2743E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A54C0E83-23E8-44BE-952D-A13B5D2743E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C255AB68-3C58-4616-81F5-83D3141674BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C255AB68-3C58-4616-81F5-83D3141674BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C255AB68-3C58-4616-81F5-83D3141674BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C255AB68-3C58-4616-81F5-83D3141674BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8812A85-066D-483C-8ABA-D201568D71B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8812A85-066D-483C-8ABA-D201568D71B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8812A85-066D-483C-8ABA-D201568D71B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8812A85-066D-483C-8ABA-D201568D71B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0A9C3C6-9BE2-4996-8C0A-16DFF63BFD5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0A9C3C6-9BE2-4996-8C0A-16DFF63BFD5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0A9C3C6-9BE2-4996-8C0A-16DFF63BFD5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0A9C3C6-9BE2-4996-8C0A-16DFF63BFD5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2A26DF3B-3FA2-46D2-9572-E4A244CA4C51}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C255AB68-3C58-4616-81F5-83D3141674BE} = {F2ACBF67-F9F8-427A-BE9B-2277DBD785E2}
+		{C8812A85-066D-483C-8ABA-D201568D71B1} = {F2ACBF67-F9F8-427A-BE9B-2277DBD785E2}
 	EndGlobalSection
 EndGlobal

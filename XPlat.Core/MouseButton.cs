@@ -5,7 +5,7 @@ namespace XPlat.Core
         /// <summary>
         /// The left mouse button.
         /// </summary>
-        Left = 0,
+        Left = 1,
         /// <summary>
         /// The middle mouse button.
         /// </summary>

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\ink\ink-engine-runtime\ink-engine-runtime.csproj" />
+    <ProjectReference Include="..\ink\compiler\ink_compiler.csproj" />
+    <ProjectReference Include="..\XPlat.Engine\XPlat.Engine.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

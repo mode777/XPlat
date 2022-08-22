@@ -43,6 +43,10 @@ namespace XPlat.Engine.Components
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+
+        public virtual void OnAttach(){
+
+        }
     }
 }
 

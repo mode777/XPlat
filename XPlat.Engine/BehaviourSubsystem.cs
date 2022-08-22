@@ -25,6 +25,10 @@ namespace XPlat.Engine
                         b.Init();
                         b.WasInitialized = true;
                     }
+                    foreach (var msg in n.Messages)
+                    {
+                        b.OnMessage(msg);
+                    }
                     foreach (var c in n.Collisions)
                     {
                         b.OnCollision(c);
@@ -32,6 +36,7 @@ namespace XPlat.Engine
                     if (b.IsEnabled) b.Update();
                 }
             }
+            n.ResetMessages();
         }
     }
 }

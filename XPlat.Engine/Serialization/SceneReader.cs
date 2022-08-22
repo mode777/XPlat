@@ -63,7 +63,8 @@ namespace XPlat.Engine.Serialization
         {
             var sceneEl = doc.Element("scene") ?? throw new InvalidDataException("Root element 'scene' not found");
 
-            Scene = new Scene(null);
+            Scene = new Scene();
+            
 
             ParseImports(sceneEl);
             ParseConfiguration(sceneEl);
@@ -154,6 +155,7 @@ namespace XPlat.Engine.Serialization
                     }
                 }
             }
+            Scene.Resources = Resources;
         }
     }
 }

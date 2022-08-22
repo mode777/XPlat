@@ -19,9 +19,9 @@ namespace XPlat.Engine
 
         public void Parse(XElement el, SceneReader reader)
         {
-            if(el.TryGetAttribute("src", out var src)) { Filename = reader.ResolvePath(src); Load(); }
             if(el.TryGetAttribute("width", out var w) && int.TryParse(w, out var width)) Width = width;
             if(el.TryGetAttribute("height", out var h) && int.TryParse(h, out var height)) Height = height;
+            if(el.TryGetAttribute("src", out var src)) { Filename = reader.ResolvePath(src); Load(); }
             
             //if(el.TryGetAttribute("watch", out var value) && bool.TryParse(value, out var watch) && watch) { Watch(); }
         }

@@ -31,7 +31,8 @@ namespace XPlat.SampleHost
         public void Init()
         {
 
-            scene = new Scene(config);
+            scene = new Scene();
+            config.Apply(scene);
 
             var camera = new Node(scene)
             {

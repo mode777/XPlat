@@ -10,7 +10,6 @@ namespace XPlat.Voxels;
 public class VoxResource : FileResource, ISerializableResource
 {
     public Mesh Mesh => Value as Mesh;
-    private readonly IServiceProvider services;
 
     public VoxResource() : base()
     {
