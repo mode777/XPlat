@@ -7,5 +7,6 @@ foreign class NVGcontext {
     foreign textBox(x,y,width,text)
     foreign beginPath()
     foreign rect(x,y,w,h)
+    foreign roundedRect(x,y,w,h,r)
     foreign fill()
 }

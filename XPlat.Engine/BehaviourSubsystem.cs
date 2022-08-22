@@ -16,6 +16,7 @@ namespace XPlat.Engine
 
         public void OnUpdate(Node n)
         {
+            var msgs = n.GetMessages();
             foreach (var comp in n.Components)
             {
                 if (comp is Behaviour b)
@@ -25,7 +26,7 @@ namespace XPlat.Engine
                         b.Init();
                         b.WasInitialized = true;
                     }
-                    foreach (var msg in n.Messages)
+                    foreach (var msg in msgs)
                     {
                         b.OnMessage(msg);
                     }
@@ -36,7 +37,7 @@ namespace XPlat.Engine
                     if (b.IsEnabled) b.Update();
                 }
             }
-            n.ResetMessages();
+            msgs.Clear();
         }
     }
 }

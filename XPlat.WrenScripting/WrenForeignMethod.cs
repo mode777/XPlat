@@ -69,7 +69,7 @@ public abstract class WrenForeignInvokeable {
                 var ptr = WrenNative.wrenGetSlotForeign(vmHandle, slot);
                 var handle = (GCHandle)Marshal.ReadIntPtr(ptr);
                 return handle.Target;
-            } else if(slotType == WrenNative.WrenType.WREN_TYPE_UNKNOWN || slotType == WrenNative.WrenType.WREN_TYPE_MAP) {
+            } else if(slotType == WrenNative.WrenType.WREN_TYPE_UNKNOWN || slotType == WrenNative.WrenType.WREN_TYPE_MAP || slotType == WrenNative.WrenType.WREN_TYPE_LIST) {
                 return new WrenObjectHandle(vm, slot);
             } else {
                 throw new NotImplementedException();

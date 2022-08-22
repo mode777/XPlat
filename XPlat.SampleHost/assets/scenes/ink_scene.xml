@@ -3,6 +3,7 @@
   <configuration template="2d" />
   <resources>
     <font name="merriweather" src="../fonts/Merriweather-Regular.ttf" />
+    <wren-script name="ui" src="../wren/ui.wren" watch="true" />
     <wren-script name="script" src="../wren/ink_scene.wren" watch="true" />
     <ink name="intercept" src="../ink/intercept.ink" />
     <ink name="test2" src="../ink/test2.ink" />
@@ -10,7 +11,10 @@
 
   <node name="root">
     <canvas name="canvas" />
-    <wren name="ink" res="script:InkDriver" />
+    <!-- <wren name="controller" res="script:Controller" /> -->
+    <wren name="story" res="script:InkDriver" />
     <wren name="interface" res="script:Interface" />
+    <!-- <wren name="a" res="script:Ping" /> -->
+    <!-- <wren name="b" res="script:Pong" /> -->
   </node>
 </scene>

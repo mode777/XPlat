@@ -16,7 +16,9 @@ namespace XPlat.Engine
         public string? Name { get; set; }
         private List<Node> _children = new();
         private List<Component> _components = new();
-        private Queue<object> _messages = new();
+        private Queue<object> _messagesA = new();
+        private Queue<object> _messagesB = new();
+        private Queue<object> _messages = null;
         private Dictionary<string, Component> _componentsById = new();
         private bool disposedValue;
         internal Dictionary<Node, CollisionInfo> _collisions = new();
@@ -28,6 +30,8 @@ namespace XPlat.Engine
 
         public Node? Parent { get; internal set; }
         public string Tag { get; set; }
+
+        
 
         //internal void Init()
         //{
@@ -52,6 +56,7 @@ namespace XPlat.Engine
         public Node(Scene scene) 
         { 
             Scene = scene ?? throw new ArgumentNullException(nameof(scene));
+            _messages = _messagesA;
         }
 
         public void AddChild(Node node)
@@ -319,8 +324,14 @@ namespace XPlat.Engine
             _messages.Enqueue(message);
         }
 
-        internal void ResetMessages(){
-            _messages.Clear();
+        public Queue<object> GetMessages(){
+            if(_messages == _messagesA){
+                _messages = _messagesB;
+                return _messagesA;
+            } else {
+                _messages = _messagesA;
+                return _messagesB;
+            }
         }
 
         //public 

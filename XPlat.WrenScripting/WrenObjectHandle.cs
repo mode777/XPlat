@@ -30,7 +30,9 @@ public class WrenObjectHandle : IDisposable {
 
     private void CallInternal(string signature, params object[] parameters){
         //var start = WrenNative.wrenGetSlotCount(vm.handle);
+        //System.Console.WriteLine(start);
         WrenNative.wrenEnsureSlots(vm.handle, parameters.Length+1);
+        //System.Console.WriteLine("C# " + handle);
         WrenNative.wrenSetSlotHandle(vm.handle, 0, handle);
         for (int i = 0; i < parameters.Length; i++)
         {
