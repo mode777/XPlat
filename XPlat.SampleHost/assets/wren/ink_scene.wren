@@ -1,6 +1,6 @@
 import "XPlat.Engine" for Component
 import "XPlat.Core" for Window, Input, Key, Time, MouseButton
-import "ui" for TextBlock, Button
+import "ui" for TextBlock, Button, ButtonGroup
 
 class MessageBroker {
     construct new(node){
@@ -87,10 +87,14 @@ class Interface is Component {
         _button = Button.new(10,200,Window.width-20,40,"Continue")
         _button.hide()
         _text = TextBlock.new("")
+        _options = ButtonGroup.new(10,10,Window.width-20,40)
+        _options.hideAll()
         _broker.on("story"){|args| paragraph(args[0]) }
+        _broker.on("choices"){|args| choice(args) }
     }
     update(){
         _button.update()
+        _options.update()
         //System.print("%(Input.mouseX),%(Input.mouseY),%(Input.isMouseDown(MouseButton.LEFT))")
     }
     paragraph(p){
@@ -102,8 +106,18 @@ class Interface is Component {
         _text.fadeOut(30)
         _broker.send("continue")
     }
+    choice(choices){
+        for(c in choices){
+            _options.label(c.index, c.text)
+            _options.show(c.index)
+        }
+        var choice = _options.waitForChoice()
+        _options.hideAll()
+        _broker.send("select", [choice])
+    }
     draw(vg){
-        _button.draw(vg)    
+        _options.draw(vg)
+        _button.draw(vg)  
         
         if(_text){
             _text.draw(vg)

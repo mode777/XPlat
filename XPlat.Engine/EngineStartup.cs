@@ -61,7 +61,7 @@ public class EngineStartup : IStartup
 
     private WrenVm CreateWrenVm(IServiceProvider services){
         var vm = new WrenVm();
-        var options = services.GetRequiredService<IOptions<WrenVmOptions>>();
+        var options = services.GetRequiredService<IOptionsSnapshot<WrenVmOptions>>();
         foreach (var kv in options.Value.PreloadModules)
         {
             vm.Interpret(kv.Key, kv.Value);

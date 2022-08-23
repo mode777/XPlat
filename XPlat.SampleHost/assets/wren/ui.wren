@@ -1,4 +1,5 @@
 import "XPlat.Core" for Window, Input, Key, Time, MouseButton
+import "XPlat.NanoVg" for NVGalign
 
 class TextBlock {
     construct new(text){
@@ -34,7 +35,8 @@ class TextBlock {
         vg.fillColor(_color[0],_color[1],_color[2],_opacity)
         vg.fontFace(_face)
         vg.fontSize(_size)
-        vg.textBox(10,30,Window.width-20,_text)
+        vg.textAlign(NVGalign.TOP | NVGalign.LEFT)
+        vg.textBox(10,10,Window.width-20,_text)
     }
 }
 
@@ -49,6 +51,9 @@ class Button {
         _clicked = 0
         _visble = true
     }
+
+    label=(v) { _label = v }
+    label { _label }
 
     show(){
         _visble = true
@@ -79,6 +84,10 @@ class Button {
     }
 
     update(){
+        if(!_visble){
+            _state == "passive"
+            return
+        }
         if(_state == "passive"){
             if(hasMouseOver){
                 _state = "hover"
@@ -125,8 +134,56 @@ class Button {
             vg.fillColor(color)
             vg.fill()
             vg.fillColor("#ff0000")
+            vg.textAlign(NVGalign.TOP | NVGalign.CENTER)
             vg.fontSize(40)
-            vg.textBox(_x+10,_y+10,_w-20,_label)
+            vg.textBox(_x+10,_y,_w-20,_label)
         }
     }
+}
+
+class ButtonGroup {
+    construct new(x,y,w,h){
+        _clicked = 0
+        _options = []
+        for(i in 0...10){
+            var b = Button.new(x,y + ((h+10)*i),w,h,"")
+            _options.add(b)
+            b.onClick {
+                _choice = i
+                _clicked = _clicked+1
+            }
+        }
+    }
+
+    hideAll(){
+        for(b in _options){
+            b.hide()
+        }  
+    }
+    label(i,text){
+        _options[i].label = text
+    }
+    show(i){
+        _options[i].show()
+    }
+    update(){
+        for(b in _options){
+            b.update()
+        }  
+    }
+    draw(vg){
+        for(b in _options){
+            b.draw(vg)
+        } 
+    }
+
+    waitForChoice(){
+        var target = _clicked + 1
+        while(_clicked < target){
+            Fiber.yield()
+        }
+        return _choice
+    }
+
+
 }
