@@ -34,7 +34,9 @@ namespace XPlat.Engine.Components
 
         public override void Update()
         {
+            //System.Console.WriteLine("Update in");
             instance.Call("updateFibers()");
+            //System.Console.WriteLine("Update out");
             //instance.Call("update()");
         }
 
